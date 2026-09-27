@@ -38,16 +38,29 @@
       
       <!-- Actions Header -->
       <div class="flex items-center space-x-2 sm:space-x-3">
-        <!-- Bouton copier tout le catalogue (Vert Emerald) -->
-        <button onclick="copierToutLeCatalogue()" class="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span class="hidden sm:inline">Copier le Catalogue</span>
+        
+        <!-- Bouton Copier Mon Lien Vendeur -->
+        <button onclick="copierMonLienVendeur()" class="px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95" title="Obtenir mon lien revendeur affilié">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <span class="hidden sm:inline">Mon Lien Vendeur</span>
         </button>
 
-        <!-- Bouton Publier un produit (Bleu Royal vers Jaune/Or) -->
+        <!-- Bouton Devenir Vendeur (Redirection vers vendeur.html) -->
+        <a id="btnDevenirVendeur" href="vendeur.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z"/></svg>
+          <span class="hidden sm:inline">Devenir Vendeur</span>
+        </a>
+
+        <!-- Bouton copier tout le catalogue -->
+        <button onclick="copierToutLeCatalogue()" class="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span class="hidden md:inline">Copier Catalogue</span>
+        </button>
+
+        <!-- Bouton Publier un produit -->
         <button onclick="ouvrirModalAjout()" class="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center space-x-1.5 active:scale-95">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          <span>Ajouter Produit</span>
+          <span>Publier Produit</span>
         </button>
       </div>
     </div>
@@ -55,12 +68,12 @@
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
     
-    <!-- Toast Notification (Vert Emerald) -->
+    <!-- Toast Notification -->
     <div id="toastNotification" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/40 flex items-center space-x-3 transition-all duration-300">
       <div class="w-7 h-7 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
       </div>
-      <span id="toastMessage">Texte copié ! Prêt à être collé sur WhatsApp, Facebook & TikTok.</span>
+      <span id="toastMessage">Texte copié ! Prêt à être collé sur vos réseaux.</span>
     </div>
 
     <!-- Banner Info Dropshipping -->
@@ -75,24 +88,16 @@
         </div>
       </div>
       <div class="flex items-center gap-2 text-xs font-bold">
+        <a href="vendeur.html" class="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 transition">Espace Vendeur →</a>
         <span class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">✓ Marge Garantie</span>
-        <span class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30">⚡ Stock Disponible</span>
       </div>
     </div>
 
-    <!-- En-tête de section & Filtres -->
+    <!-- En-tête de section -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
       <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Catalogue Dropshipper</h1>
         <p class="text-xs sm:text-sm text-slate-400 mt-1">Exportez vos offres directement vers WhatsApp, Facebook Marketplace, TikTok et Status.</p>
-      </div>
-
-      <!-- Filtres de Catégorie (Bouton actif en Bleu Royal / Or) -->
-      <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 text-xs no-scrollbar">
-        <button onclick="filtrerProduits('Tous', this)" class="filtre-btn active px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-md transition-all">Tous</button>
-        <button onclick="filtrerProduits('Mocassins', this)" class="filtre-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 rounded-xl transition-all">Mocassins</button>
-        <button onclick="filtrerProduits('Richelieu', this)" class="filtre-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 rounded-xl transition-all">Richelieu</button>
-        <button onclick="filtrerProduits('Derbies', this)" class="filtre-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 rounded-xl transition-all">Derbies</button>
       </div>
     </div>
 
@@ -103,60 +108,102 @@
   </main>
 
   <!-- Modal Publication Produit -->
-  <div id="modalAjout" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
+  <div id="modalAjout" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
       <button onclick="fermerModalAjout()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
       
-      <div class="mb-5">
+      <div class="mb-6">
         <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-bold uppercase mb-2">
-          Espace Fournisseur / Dropship
+          Espace Publication Vendeur
         </div>
-        <h3 class="text-xl font-bold text-white">Ajouter au Catalogue</h3>
-        <p class="text-xs text-slate-400 mt-0.5">Renseignez l'article pour permettre sa revente par les affiliés.</p>
+        <h3 class="text-xl font-bold text-white">Publier un produit dans le catalogue</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Remplissez les détails du produit et vérifiez le rendu en direct avant la mise en ligne.</p>
       </div>
       
-      <form id="formProduit" onsubmit="sauvegarderProduit(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Nom du produit</label>
-          <input type="text" id="nom" required placeholder="Ex: Mocassin Cuir Italien Noir" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
+      <!-- Grille Formulaire + Aperçu -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- Formulaire -->
+        <form id="formProduit" onsubmit="sauvegarderProduit(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-amber-400 mb-1">Prix Promo / Vente (FCFA)</label>
-            <input type="number" id="prixPromo" required placeholder="45000" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nom du produit</label>
+            <input type="text" id="nom" oninput="mettreAJourApercu()" required placeholder="Ex: Chaussure Luxe Cuir Italien" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
           </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-amber-400 mb-1">Prix Vente / Promo (FCFA)</label>
+              <input type="number" id="prixPromo" oninput="mettreAJourApercu()" required placeholder="45000" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-red-400 mb-1">Prix Normal / Barré (FCFA)</label>
+              <input type="number" id="prixNormal" oninput="mettreAJourApercu()" required placeholder="60000" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-500 transition">
+            </div>
+          </div>
+
           <div>
-            <label class="block text-xs font-semibold text-red-400 mb-1">Prix Barre / Normal (FCFA)</label>
-            <input type="number" id="prixNormal" required placeholder="60000" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Catégorie</label>
+            <input type="text" id="categorie" oninput="mettreAJourApercu()" placeholder="Ex: Chaussures, Sacs, Montres..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">URL de l'image</label>
+            <input type="url" id="imageUrl" oninput="mettreAJourApercu()" required placeholder="https://..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Description Commerciale</label>
+            <textarea id="description" rows="3" oninput="mettreAJourApercu()" required placeholder="Qualité supérieure, finitions impeccables..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/20 transition mt-2 active:scale-95">
+            Publier dans le Catalogue
+          </button>
+        </form>
+
+        <!-- Zone d'Aperçu -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Aperçu en temps réel
+            </span>
+            <span class="text-[11px] text-slate-500">Rendu revendeur</span>
+          </div>
+
+          <div class="glass-card rounded-2xl overflow-hidden border border-slate-700/80 shadow-xl">
+            <div class="relative h-48 bg-slate-950 overflow-hidden">
+              <img id="prevImg" src="https://via.placeholder.com/400x300/0f172a/94a3b8?text=Image+Produit" alt="Aperçu" class="w-full h-full object-cover">
+              <span id="prevBadgeReduc" class="absolute top-3 left-3 bg-red-600 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-lg">-0% OFF</span>
+              <span id="prevCategorie" class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg">CATEGORIE</span>
+            </div>
+
+            <div class="p-4">
+              <h2 id="prevNom" class="text-base font-bold text-white truncate">Titre du produit</h2>
+              <p id="prevDesc" class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">La description du produit s'affichera ici au fur et à mesure de votre saisie.</p>
+            </div>
+
+            <div class="px-4 pb-4 pt-3 border-t border-slate-800/80">
+              <div class="flex items-baseline justify-between mb-3">
+                <div>
+                  <span class="text-xs text-slate-500 block">Prix Revente :</span>
+                  <span id="prevPrixPromo" class="text-lg font-extrabold text-amber-400">0 FCFA</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-slate-500 block">Prix Conseillé :</span>
+                  <span id="prevPrixNormal" class="text-xs font-semibold text-red-400 line-through">0 FCFA</span>
+                </div>
+              </div>
+
+              <div class="w-full py-2.5 bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-xl text-center">
+                Bouton de copie auto-généré
+              </div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Catégorie</label>
-          <select id="categorie" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500 transition">
-            <option value="Mocassins">Mocassins</option>
-            <option value="Richelieu">Richelieu</option>
-            <option value="Derbies">Derbies</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">URL Image Produit</label>
-          <input type="url" id="imageUrl" required placeholder="https://..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Description Commerciale (Courte)</label>
-          <textarea id="description" rows="2" required placeholder="Cuir véritable de veau, finition artisanale haut de gamme..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"></textarea>
-        </div>
-
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/20 transition mt-2 active:scale-95">
-          Publier dans le Catalogue
-        </button>
-      </form>
+      </div>
     </div>
   </div>
 
@@ -165,7 +212,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Configuration Firebase
     const firebaseConfig = {
       databaseURL: "https://votre-projet-default-rtdb.firebaseio.com"
     };
@@ -176,7 +222,6 @@
 
     let listeProduits = [];
 
-    // Chargement dynamique des produits enregistrés
     onValue(produitsRef, (snapshot) => {
       listeProduits = [];
       const data = snapshot.val();
@@ -188,7 +233,6 @@
       afficherProduits(listeProduits);
     });
 
-    // Fonction d'affichage dynamique dans le DOM
     window.afficherProduits = function(produits) {
       const container = document.getElementById('gridProduits');
       container.innerHTML = '';
@@ -199,37 +243,32 @@
             <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
             </div>
-            <p class="text-sm font-semibold text-slate-300">Aucun produit disponible dans cette catégorie.</p>
-            <p class="text-xs text-slate-500 mt-1">Cliquez sur "Ajouter Produit" pour alimenter le catalogue dropshipping.</p>
+            <p class="text-sm font-semibold text-slate-300">Aucun produit disponible pour le moment.</p>
+            <p class="text-xs text-slate-500 mt-1">Cliquez sur "Publier Produit" ou "Devenir Vendeur" pour alimenter le catalogue.</p>
           </div>`;
         return;
       }
 
       produits.forEach(p => {
-        const reduction = Math.round(((p.prixNormal - p.prixPromo) / p.prixNormal) * 100);
+        const reduction = (p.prixNormal && p.prixNormal > p.prixPromo) 
+          ? Math.round(((p.prixNormal - p.prixPromo) / p.prixNormal) * 100) 
+          : 0;
         
         container.innerHTML += `
           <div class="glass-card rounded-2xl overflow-hidden hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between group">
             <div>
-              <!-- Image & Badges Rouge + Bleu -->
               <div class="relative h-52 bg-slate-950 overflow-hidden">
                 <img src="${p.imageUrl}" alt="${p.nom}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300/0f172a/94a3b8?text=DAKPROELITE'">
-                
-                <!-- Badge Réduction Rouge Flash -->
                 ${reduction > 0 ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-lg shadow-red-600/30">-${reduction}% OFF</span>` : ''}
-                
-                <!-- Badge Catégorie Bleu -->
-                <span class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg shadow-md">${p.categorie || 'CHAUSSURES'}</span>
+                <span class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg shadow-md">${p.categorie || 'GENERAL'}</span>
               </div>
 
-              <!-- Infos Produit -->
               <div class="p-4">
                 <h2 class="text-base font-bold text-white truncate">${p.nom}</h2>
                 <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${p.description}</p>
               </div>
             </div>
 
-            <!-- Prix Jaune/Or & Bouton Vert Copie -->
             <div class="px-4 pb-4 pt-3 border-t border-slate-800/80">
               <div class="flex items-baseline justify-between mb-3">
                 <div>
@@ -242,7 +281,6 @@
                 </div>
               </div>
 
-              <!-- Bouton Copier Produit Dropship (Vert Emerald) -->
               <button onclick="copierPartageSocial('${p.id}')" class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-md">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 <span>Copier Texte de Vente</span>
@@ -253,14 +291,13 @@
       });
     };
 
-    // Publication d'un nouveau produit
     window.sauvegarderProduit = function(e) {
       e.preventDefault();
       const nouveauProduit = {
         nom: document.getElementById('nom').value,
         prixPromo: Number(document.getElementById('prixPromo').value),
         prixNormal: Number(document.getElementById('prixNormal').value),
-        categorie: document.getElementById('categorie').value,
+        categorie: document.getElementById('categorie').value || 'Général',
         imageUrl: document.getElementById('imageUrl').value,
         description: document.getElementById('description').value,
         dateCreation: Date.now()
@@ -269,33 +306,32 @@
       push(produitsRef, nouveauProduit).then(() => {
         fermerModalAjout();
         document.getElementById('formProduit').reset();
-        afficherToast("Produit ajouté au catalogue dropshipping !");
+        mettreAJourApercu();
+        afficherToast("Produit publié avec succès !");
       });
     };
 
-    // Fonction de copie du texte de revente Dropshipping
     window.copierPartageSocial = function(id) {
       const p = listeProduits.find(item => item.id === id);
       if (!p) return;
 
       const texteSocial = 
 `🔥 *OFFRE SPECIALE - DISPONIBLE EN STOCK* 🔥
-👞 *${p.nom.toUpperCase()}*
+📦 *${p.nom.toUpperCase()}*
 
 📝 ${p.description}
 
 💰 *Prix Promo : ${Number(p.prixPromo).toLocaleString('fr-FR')} FCFA*
-❌ Prix Habituelles : ~${Number(p.prixNormal).toLocaleString('fr-FR')} FCFA~
+❌ Prix Habituel : ~${Number(p.prixNormal).toLocaleString('fr-FR')} FCFA~
 
 📦 *Livraison rapide disponible partout*
-📲 Envoyez un message direct pour réserver votre pointure !`;
+📲 Contactez-nous pour commander !`;
 
       navigator.clipboard.writeText(texteSocial).then(() => {
         afficherToast("Texte de revente copié ! Collez-le sur WhatsApp / Facebook.");
       });
     };
 
-    // Copier l'ensemble du catalogue dropship
     window.copierToutLeCatalogue = function() {
       if (listeProduits.length === 0) return;
 
@@ -311,37 +347,66 @@
         afficherToast("Catalogue complet copié ! Prêt pour vos canaux de revente.");
       });
     };
-
-    // Filtrage dynamique
-    window.filtrerProduits = function(cat, btnElement) {
-      document.querySelectorAll('.filtre-btn').forEach(btn => {
-        btn.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-indigo-600', 'text-white', 'font-bold', 'shadow-md');
-        btn.classList.add('bg-slate-900', 'border', 'border-slate-800', 'text-slate-300');
-      });
-
-      if (btnElement) {
-        btnElement.classList.remove('bg-slate-900', 'border', 'border-slate-800', 'text-slate-300');
-        btnElement.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-indigo-600', 'text-white', 'font-bold', 'shadow-md');
-      }
-
-      if (cat === 'Tous') {
-        afficherProduits(listeProduits);
-      } else {
-        const filtrés = listeProduits.filter(p => p.categorie === cat);
-        afficherProduits(filtrés);
-      }
-    };
   </script>
 
+  <!-- Script UI & Génération de lien Vendeur Personnalisé -->
   <script>
-    function ouvrirModalAjout() { document.getElementById('modalAjout').classList.remove('hidden'); }
-    function fermerModalAjout() { document.getElementById('modalAjout').classList.add('hidden'); }
+    function ouvrirModalAjout() { 
+      document.getElementById('modalAjout').classList.remove('hidden'); 
+      mettreAJourApercu();
+    }
+
+    function fermerModalAjout() { 
+      document.getElementById('modalAjout').classList.add('hidden'); 
+    }
 
     function afficherToast(message) {
       const toast = document.getElementById('toastNotification');
       document.getElementById('toastMessage').innerText = message;
       toast.classList.remove('hidden');
       setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    }
+
+    // Générer et copier un lien vendeur au nom du revendeur
+    function copierMonLienVendeur() {
+      const nomVendeur = prompt("Entrez votre Nom / Identifiant Vendeur :", "mon_nom");
+      if (!nomVendeur) return;
+
+      const baseDomain = window.location.origin; // Récupère le nom de domaine de votre application
+      const slug = nomVendeur.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+      const lienVendeur = `${baseDomain}/vendeur.html?ref=${slug}`;
+
+      navigator.clipboard.writeText(lienVendeur).then(() => {
+        afficherToast(`Lien généré et copié : ${lienVendeur}`);
+      });
+    }
+
+    // Mise à jour instantanée de l'aperçu
+    function mettreAJourApercu() {
+      const nom = document.getElementById('nom').value || 'Titre du produit';
+      const prixPromo = Number(document.getElementById('prixPromo').value) || 0;
+      const prixNormal = Number(document.getElementById('prixNormal').value) || 0;
+      const categorie = document.getElementById('categorie').value || 'CATEGORIE';
+      const imageUrl = document.getElementById('imageUrl').value;
+      const description = document.getElementById('description').value || 'La description du produit s\'affichera ici au fur et à mesure de votre saisie.';
+
+      document.getElementById('prevNom').innerText = nom;
+      document.getElementById('prevDesc').innerText = description;
+      document.getElementById('prevCategorie').innerText = categorie;
+      document.getElementById('prevPrixPromo').innerText = `${prixPromo.toLocaleString('fr-FR')} FCFA`;
+      document.getElementById('prevPrixNormal').innerText = `${prixNormal.toLocaleString('fr-FR')} FCFA`;
+
+      const prevImg = document.getElementById('prevImg');
+      prevImg.src = imageUrl || 'https://via.placeholder.com/400x300/0f172a/94a3b8?text=Image+Produit';
+
+      const badgeReduc = document.getElementById('prevBadgeReduc');
+      if (prixNormal > prixPromo && prixNormal > 0) {
+        const reduction = Math.round(((prixNormal - prixPromo) / prixNormal) * 100);
+        badgeReduc.innerText = `-${reduction}% OFF`;
+        badgeReduc.classList.remove('hidden');
+      } else {
+        badgeReduc.classList.add('hidden');
+      }
     }
   </script>
 
