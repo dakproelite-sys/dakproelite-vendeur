@@ -1,245 +1,292 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="h-full bg-slate-50">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion / Inscription - Vendeur</title>
+  <title>DAKPROELITE - Connexion & Inscription Dropshipping</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background-color: #f4f6f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .auth-container {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-    .tabs {
-      display: flex;
-      margin-bottom: 25px;
-      border-bottom: 2px solid #e0e0e0;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 12px;
-      background: none;
-      border: none;
-      font-size: 16px;
-      font-weight: 600;
-      color: #777;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .tab-btn.active {
-      color: #0066cc;
-      border-bottom: 3px solid #0066cc;
-    }
-    .form-group {
-      margin-bottom: 18px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #333;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      outline: none;
-    }
-    .form-group input:focus {
-      border-color: #0066cc;
-    }
-    .btn-submit {
-      width: 100%;
-      padding: 12px;
-      background-color: #0066cc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .btn-submit:hover {
-      background-color: #004fb3;
-    }
-    .message {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      display: none;
-      text-align: center;
-    }
-    .message.error {
-      background-color: #ffe6e6;
-      color: #d93025;
-      display: block;
-    }
-    .message.success {
-      background-color: #e6f4ea;
-      color: #137333;
-      display: block;
-    }
-    .form-container {
-      display: none;
-    }
-    .form-container.active {
-      display: block;
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col justify-between antialiased selection:bg-blue-600 selection:text-white">
 
-  <div class="auth-container">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('connexion')">Connexion</button>
-      <button class="tab-btn" onclick="switchTab('inscription')">Inscription</button>
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      
+      <!-- Titre de la plateforme de dropshipping -->
+      <a href="index.html" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-blue-500/20 group-hover:bg-blue-700 transition-all">
+          D
+        </div>
+        <div>
+          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 block leading-none">DAKPROELITE</span>
+          <span class="text-[10px] font-bold text-blue-600 tracking-wider uppercase flex items-center gap-1 mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Plateforme Dropshipping
+          </span>
+        </div>
+      </a>
+
+      <!-- Lien Retour au Catalogue -->
+      <a href="index.html" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl transition-all flex items-center space-x-2">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span>Retour au Catalogue</span>
+      </a>
     </div>
+  </header>
 
-    <div id="feedback-message" class="message"></div>
+  <!-- Formulaire Connexion & Inscription -->
+  <main class="max-w-md mx-auto px-4 py-10 w-full flex-1 flex flex-col justify-center">
+    
+    <!-- Zone d'affichage des erreurs/succès -->
+    <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-xs font-semibold flex items-center space-x-3 transition-all duration-300"></div>
 
-    <!-- FORMULAIRE DE CONNEXION -->
-    <form id="form-connexion" class="form-container active">
-      <div class="form-group">
-        <label for="login-email">Adresse Email</label>
-        <input type="email" id="login-email" required placeholder="exemple@domaine.com">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl shadow-slate-200/50">
+      
+      <!-- Onglets d'action -->
+      <div class="flex border-b border-slate-200 mb-6">
+        <button id="tabConnexion" type="button" onclick="basculerMode('connexion')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all">
+          Connexion
+        </button>
+        <button id="tabInscription" type="button" onclick="basculerMode('inscription')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all">
+          Inscription Vendeur
+        </button>
       </div>
-      <div class="form-group">
-        <label for="login-password">Mot de passe</label>
-        <input type="password" id="login-password" required placeholder="••••••••">
-      </div>
-      <button type="submit" class="btn-submit">Se connecter</button>
-    </form>
 
-    <!-- FORMULAIRE D'INSCRIPTION -->
-    <form id="form-inscription" class="form-container">
-      <div class="form-group">
-        <label for="reg-boutique">Nom de la boutique</label>
-        <input type="text" id="reg-boutique" required placeholder="Ma Super Boutique">
-      </div>
-      <div class="form-group">
-        <label for="reg-email">Adresse Email</label>
-        <input type="email" id="reg-email" required placeholder="exemple@domaine.com">
-      </div>
-      <div class="form-group">
-        <label for="reg-password">Mot de passe</label>
-        <input type="password" id="reg-password" required minlength="6" placeholder="••••••••">
-      </div>
-      <button type="submit" class="btn-submit">Créer mon compte vendeur</button>
-    </form>
-  </div>
+      <form id="authForm" onsubmit="traiterFormulaire(event)" class="space-y-4">
+        
+        <!-- Champ Nom complet (Masqué en mode connexion) -->
+        <div id="fieldNomComplet" class="hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Nom & Prénom</label>
+          <input type="text" id="nomCompletInput" placeholder="Ex: Jean Dupont" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
+        </div>
 
+        <!-- Champ Email -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Adresse Email</label>
+          <input type="email" id="emailInput" required placeholder="votre@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
+        </div>
+
+        <!-- Champ Téléphone (Masqué en mode connexion) -->
+        <div id="fieldTelephone" class="hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Numéro Téléphone / WhatsApp</label>
+          <input type="tel" id="telephoneInput" placeholder="+229 01020304" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
+        </div>
+
+        <!-- Champ Mot de passe avec bouton Œil -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Mot de passe</label>
+          <div class="relative">
+            <input type="password" id="passwordInput" required minlength="6" placeholder="••••••••" class="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
+            <button type="button" onclick="basculerVisibilitePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-blue-600 transition-colors focus:outline-none">
+              <!-- Icône Œil Ouvert -->
+              <svg id="eyeOpen" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <!-- Icône Œil Fermé -->
+              <svg id="eyeClosed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a8.962 8.962 0 012.122-.163c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21f-9-9m-6-6l-1.5-1.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Case à cocher : J'ai lu et j'accepte -->
+        <div class="flex items-start space-x-2 pt-2">
+          <input type="checkbox" id="acceptTerms" required class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer">
+          <label for="acceptTerms" class="text-xs text-slate-600 leading-tight cursor-pointer selection:bg-none">
+            J'ai lu et j'accepte les <a href="#" class="text-blue-600 font-bold hover:underline">conditions d'utilisation</a> et la politique de confidentialité.
+          </label>
+        </div>
+
+        <!-- Bouton Soumission -->
+        <button type="submit" id="submitBtn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/25 active:scale-95 flex items-center justify-center space-x-2 mt-6">
+          <span id="submitBtnText">Se connecter</span>
+          <svg id="submitSpinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-slate-500 border-t border-slate-200 bg-white">
+    © DAKPROELITE - Plateforme Dropshipping. Tous droits réservés.
+  </footer>
+
+  <!-- Firebase SDK Modules (v10) -->
   <script type="module">
-    // Importation directe depuis vos modules npm / vite ou bundler via firebase-config.js
-    import { auth, db } from "./firebase-config.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { 
+      getAuth, 
+      onAuthStateChanged, 
       signInWithEmailAndPassword, 
       createUserWithEmailAndPassword, 
-      onAuthStateChanged 
-    } from "firebase/auth";
-    import { 
-      ref, 
-      set 
-    } from "firebase/database";
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const feedbackEl = document.getElementById("feedback-message");
+    // Vos identifiants Firebase exacts
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
 
-    function showMessage(msg, type) {
-      feedbackEl.textContent = msg;
-      feedbackEl.className = `message ${type}`;
-    }
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    // Redirection automatique vers profil-vendeur.html si l'utilisateur est déjà connecté
+    let currentMode = 'connexion';
+
+    // Redirection automatique si l'utilisateur est déjà connecté
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        window.location.href = "profil-vendeur.html";
+        window.location.href = "profil_vendeur.html";
       }
     });
 
-    // 1. GESTION DE LA CONNEXION
-    document.getElementById("form-connexion").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login-email").value.trim();
-      const password = document.getElementById("login-password").value;
+    // Basculer l'affichage du mot de passe (Œil)
+    window.basculerVisibilitePassword = function() {
+      const pwdInput = document.getElementById('passwordInput');
+      const eyeOpen = document.getElementById('eyeOpen');
+      const eyeClosed = document.getElementById('eyeClosed');
 
-      try {
-        showMessage("Connexion en cours...", "success");
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "profil-vendeur.html";
-      } catch (error) {
-        console.error(error);
-        showMessage("Identifiants incorrects ou compte inexistant.", "error");
-      }
-    });
-
-    // 2. GESTION DE L'INSCRIPTION
-    document.getElementById("form-inscription").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const boutique = document.getElementById("reg-boutique").value.trim();
-      const email = document.getElementById("reg-email").value.trim();
-      const password = document.getElementById("reg-password").value;
-
-      try {
-        showMessage("Création du compte en cours...", "success");
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Enregistrement des informations vendeur dans la base de données Firebase
-        await set(ref(db, `vendeurs/${user.uid}`), {
-          nomBoutique: boutique,
-          email: email,
-          role: "vendeur",
-          createdAt: new Date().toISOString()
-        });
-
-        window.location.href = "profil-vendeur.html";
-      } catch (error) {
-        console.error(error);
-        if (error.code === 'auth/email-already-in-use') {
-          showMessage("Cet email est déjà utilisé.", "error");
-        } else {
-          showMessage("Erreur lors de l'inscription : " + error.message, "error");
-        }
-      }
-    });
-
-    // Gestion du basculement d'onglets (Connexion / Inscription)
-    window.switchTab = function(tabName) {
-      feedbackEl.style.display = 'none';
-      const tabs = document.querySelectorAll('.tab-btn');
-      const forms = document.querySelectorAll('.form-container');
-
-      tabs.forEach(tab => tab.classList.remove('active'));
-      forms.forEach(form => form.classList.remove('active'));
-
-      if (tabName === 'connexion') {
-        tabs[0].classList.add('active');
-        document.getElementById('form-connexion').classList.add('active');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
       } else {
-        tabs[1].classList.add('active');
-        document.getElementById('form-inscription').classList.add('active');
+        pwdInput.type = 'password';
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
       }
     };
+
+    // Gestion du basculement entre Connexion et Inscription
+    window.basculerMode = function(mode) {
+      currentMode = mode;
+      const fieldNom = document.getElementById('fieldNomComplet');
+      const fieldTel = document.getElementById('fieldTelephone');
+      const tabConnexion = document.getElementById('tabConnexion');
+      const tabInscription = document.getElementById('tabInscription');
+      const submitBtnText = document.getElementById('submitBtnText');
+
+      if (mode === 'inscription') {
+        fieldNom.classList.remove('hidden');
+        fieldTel.classList.remove('hidden');
+        tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
+        tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
+        submitBtnText.innerText = "Créer mon compte vendeur";
+      } else {
+        fieldNom.classList.add('hidden');
+        fieldTel.classList.add('hidden');
+        tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
+        tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
+        submitBtnText.innerText = "Se connecter";
+      }
+    };
+
+    // Traitement de la connexion / inscription
+    window.traiterFormulaire = async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const nomComplet = document.getElementById('nomCompletInput').value.trim();
+      const telephone = document.getElementById('telephoneInput').value.trim();
+      const acceptTerms = document.getElementById('acceptTerms').checked;
+
+      if (!acceptTerms) {
+        afficherAlerte("Veuillez cocher la case pour accepter les conditions d'utilisation.", "error");
+        return;
+      }
+
+      afficherChargement(true);
+
+      try {
+        if (currentMode === 'connexion') {
+          // Action : Connexion
+          await signInWithEmailAndPassword(auth, email, password);
+          afficherAlerte("Connexion réussie ! Redirection vers votre profil...", "success");
+          window.location.href = "profil_vendeur.html";
+        } else {
+          // Action : Inscription
+          if (!nomComplet) {
+            throw new Error("Veuillez saisir votre Nom et Prénom.");
+          }
+
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Mise à jour du nom d'affichage dans Firebase Auth
+          await updateProfile(user, { displayName: nomComplet });
+
+          // Enregistrement des détails dans la Realtime Database
+          await set(ref(db, 'vendeurs/' + user.uid), {
+            uid: user.uid,
+            nomComplet: nomComplet,
+            email: email,
+            telephone: telephone,
+            role: "vendeur",
+            dateCreation: new Date().toISOString()
+          });
+
+          afficherAlerte("Compte créé avec succès ! Redirection...", "success");
+          window.location.href = "profil_vendeur.html";
+        }
+      } catch (error) {
+        let textErreur = error.message;
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          textErreur = "Identifiants incorrects. Vérifiez votre email et mot de passe.";
+        } else if (error.code === 'auth/email-already-in-use') {
+          textErreur = "Cet email est déjà utilisé par un autre compte.";
+        } else if (error.code === 'auth/weak-password') {
+          textErreur = "Le mot de passe doit contenir au moins 6 caractères.";
+        }
+        afficherAlerte(textErreur, "error");
+      } finally {
+        afficherChargement(false);
+      }
+    };
+
+    function afficherAlerte(message, type) {
+      const box = document.getElementById('alertBox');
+      box.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+      
+      if (type === 'error') {
+        box.classList.add('bg-red-50', 'border', 'border-red-200', 'text-red-700');
+      } else {
+        box.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-700');
+      }
+      
+      box.innerText = message;
+    }
+
+    function afficherChargement(isLoading) {
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('submitSpinner');
+      if (isLoading) {
+        btn.disabled = true;
+        spinner.classList.remove('hidden');
+      } else {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
   </script>
+
 </body>
 </html>
