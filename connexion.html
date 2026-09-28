@@ -92,11 +92,11 @@
           </div>
         </div>
 
-        <!-- Case à cocher : J'ai lu et j'accepte -->
+        <!-- Case à cocher -->
         <div class="flex items-start space-x-2 pt-2">
           <input type="checkbox" id="acceptTerms" required class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer">
-          <label for="acceptTerms" class="text-xs text-slate-600 leading-tight cursor-pointer selection:bg-none">
-            J'ai lu et j'accepte les <a href="#" class="text-blue-600 font-bold hover:underline">conditions d'utilisation</a> et la politique de confidentialité.
+          <label for="acceptTerms" class="text-xs text-slate-600 leading-tight cursor-pointer">
+            J'ai lu et j'accepte les <a href="#" class="text-blue-600 font-bold hover:underline">conditions d'utilisation</a>.
           </label>
         </div>
 
@@ -112,15 +112,13 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="py-4 text-center text-xs text-slate-500 border-t border-slate-200 bg-white">
     © DAKPROELITE - Plateforme Dropshipping. Tous droits réservés.
   </footer>
 
-  <!-- Firebase SDK Modules -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { 
       getAuth, 
       onAuthStateChanged, 
@@ -145,11 +143,13 @@
 
     let currentMode = 'connexion';
 
-    // Vérification de session au chargement
-    onAuthStateChanged(auth, (user) => {
-      // Redirige vers le profil si déjà connecté
-      if (user && !sessionStorage.getItem('isRegistering')) {
-        window.location.href = "profil_vendeur.html";
+    // 🔄 Redirection automatique si l'utilisateur est déjà authentifié et enregistré
+    onAuthStateChanged(auth, async (user) => {
+      if (user && !sessionStorage.getItem('isProcessing')) {
+        const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
+        if (snapshot.exists()) {
+          window.location.href = "profil_vendeur.html";
+        }
       }
     });
 
@@ -157,7 +157,6 @@
       const pwdInput = document.getElementById('passwordInput');
       const eyeOpen = document.getElementById('eyeOpen');
       const eyeClosed = document.getElementById('eyeClosed');
-
       if (pwdInput.type === 'password') {
         pwdInput.type = 'text';
         eyeOpen.classList.remove('hidden');
@@ -207,15 +206,31 @@
       }
 
       afficherChargement(true);
+      sessionStorage.setItem('isProcessing', 'true');
 
       try {
         if (currentMode === 'connexion') {
           // --- CONNEXION ---
-          await signInWithEmailAndPassword(auth, email, password);
-          afficherAlerte("Connexion réussie ! Redirection...", "success");
-          setTimeout(() => {
-            window.location.href = "profil_vendeur.html";
-          }, 800);
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Vérification de présence dans Realtime Database
+          const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
+          if (!snapshot.exists()) {
+            // Création automatique du nœud utilisateur s'il manquaient les données dans la base de données
+            await set(ref(db, 'vendeurs/' + user.uid), {
+              uid: user.uid,
+              nomComplet: user.displayName || "Vendeur",
+              email: user.email,
+              telephone: telephone || "",
+              role: "vendeur",
+              dateCreation: new Date().toISOString()
+            });
+          }
+
+          afficherAlerte("Connexion réussie ! Redirection vers votre profil...", "success");
+          sessionStorage.removeItem('isProcessing');
+          setTimeout(() => { window.location.href = "profil_vendeur.html"; }, 800);
 
         } else {
           // --- INSCRIPTION ---
@@ -223,16 +238,14 @@
             throw new Error("Veuillez saisir votre Nom et Prénom.");
           }
 
-          sessionStorage.setItem('isRegistering', 'true');
-
-          // 1. Création de l'utilisateur dans Firebase Auth
+          // 1. Création compte Firebase Auth
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
-          // 2. Mise à jour du profil d'affichage Auth
+          // 2. Mise à jour de displayName
           await updateProfile(user, { displayName: nomComplet });
 
-          // 3. Écriture obligatoire dans la Realtime Database (node 'vendeurs')
+          // 3. Écriture directe dans Firebase Realtime Database
           const userData = {
             uid: user.uid,
             nomComplet: nomComplet,
@@ -244,16 +257,12 @@
 
           await set(ref(db, 'vendeurs/' + user.uid), userData);
 
-          sessionStorage.removeItem('isRegistering');
-          afficherAlerte("Compte créé avec succès ! Redirection vers votre profil...", "success");
-
-          // 4. Redirection forcée
-          setTimeout(() => {
-            window.location.href = "profil_vendeur.html";
-          }, 1000);
+          afficherAlerte("Compte créé avec succès ! Redirection...", "success");
+          sessionStorage.removeItem('isProcessing');
+          setTimeout(() => { window.location.href = "profil_vendeur.html"; }, 1000);
         }
       } catch (error) {
-        sessionStorage.removeItem('isRegistering');
+        sessionStorage.removeItem('isProcessing');
         let textErreur = error.message;
 
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -262,8 +271,6 @@
           textErreur = "Cet email est déjà utilisé par un autre compte.";
         } else if (error.code === 'auth/weak-password') {
           textErreur = "Le mot de passe doit contenir au moins 6 caractères.";
-        } else if (error.code === 'PERMISSION_DENIED') {
-          textErreur = "Erreur de permissions Realtime Database. Assurez-vous que vos règles de sécurité autorisent l'écriture sous les comptes authentifiés.";
         }
 
         afficherAlerte(textErreur, "error");
