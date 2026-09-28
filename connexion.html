@@ -155,7 +155,7 @@
         try {
           const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
           if (snapshot.exists()) {
-            window.location.replace("profil_vendeur.html");
+            window.location.replace("profil-vendeur.html");
           }
         } catch (e) {
           console.error("Erreur lors de la vérification du profil:", e);
@@ -193,12 +193,10 @@
         fieldNom.classList.remove('hidden');
         fieldTel.classList.remove('hidden');
         
-        // Afficher les conditions et rendre obligatoire
         fieldTerms.classList.remove('hidden');
         fieldTerms.classList.add('flex');
         acceptTerms.required = true;
 
-        // Masquer "Mot de passe oublié" en mode inscription
         forgotPasswordBtn.classList.add('hidden');
 
         tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
@@ -208,12 +206,10 @@
         fieldNom.classList.add('hidden');
         fieldTel.classList.add('hidden');
 
-        // Masquer les conditions et désactiver le required
         fieldTerms.classList.add('hidden');
         fieldTerms.classList.remove('flex');
         acceptTerms.required = false;
 
-        // Afficher "Mot de passe oublié" en mode connexion
         forgotPasswordBtn.classList.remove('hidden');
 
         tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
@@ -272,8 +268,8 @@
             });
           }
 
-          afficherAlerte("Connexion réussie ! Redirection vers votre profil...", "success");
-          window.location.replace("profil_vendeur.html");
+          afficherAlerte("Connexion réussie ! Redirection...", "success");
+          window.location.replace("profil-vendeur.html");
 
         } else {
           // --- INSCRIPTION ---
@@ -308,7 +304,7 @@
           await set(ref(db, 'vendeurs/' + user.uid), userData);
 
           afficherAlerte("Compte créé avec succès ! Redirection...", "success");
-          window.location.replace("profil_vendeur.html");
+          window.location.replace("profil-vendeur.html");
         }
       } catch (error) {
         let textErreur = error.message;
