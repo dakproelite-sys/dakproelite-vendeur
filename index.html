@@ -99,32 +99,61 @@
 
     <!-- Grille des produits -->
     <div id="gridProduits" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
-      <!-- Produits injectés dynamiquement par Firebase -->
+      <!-- Les cartes produits dynamiques s'afficheront ici -->
     </div>
   </main>
 
-  <!-- Intégration Firebase SDK v9+ -->
+  <!-- Script Notification & Actions UI -->
+  <script>
+    function afficherToast(message) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').innerText = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    }
+
+    function copierMonLienVendeur() {
+      const nomVendeur = prompt("Entrez votre Identifiant Vendeur / Affilié :", "mon_nom");
+      if (!nomVendeur) return;
+
+      const baseDomain = window.location.origin;
+      const slug = nomVendeur.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+      const lienVendeur = `${baseDomain}/index.html?ref=${slug}`;
+
+      navigator.clipboard.writeText(lienVendeur).then(() => {
+        afficherToast(`Lien généré et copié : ${lienVendeur}`);
+      });
+    }
+  </script>
+
+  <!-- Intégration Firebase SDK v9+ Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // Configuration Firebase du projet DAKPROELITE
     const firebaseConfig = {
-      databaseURL: "https://votre-projet-default-rtdb.firebaseio.com"
+      apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.appspot.com",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const produitsRef = ref(db, 'produits_vendeurs');
 
-    // Tableau initialement vide
     let listeProduits = [];
 
-    // Affichage initial (page vide)
+    // Chargement initial
     window.addEventListener('DOMContentLoaded', () => {
       afficherProduits(listeProduits);
     });
 
-    // Écoute dynamique de Firebase Realtime Database
+    // Écoute dynamique Realtime Database
     onValue(produitsRef, (snapshot) => {
       listeProduits = [];
       const data = snapshot.val();
@@ -138,6 +167,7 @@
 
     window.afficherProduits = function(produits) {
       const container = document.getElementById('gridProduits');
+      if (!container) return;
       container.innerHTML = '';
 
       if (!produits || produits.length === 0) {
@@ -176,16 +206,16 @@
               <div class="flex items-baseline justify-between mb-3">
                 <div>
                   <span class="text-xs text-slate-500 block">Prix Revente :</span>
-                  <span class="text-lg font-extrabold text-amber-400">${Number(p.prixPromo).toLocaleString('fr-FR')} FCFA</span>
+                  <span class="text-lg font-extrabold text-amber-400">${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <div class="text-right">
                   <span class="text-xs text-slate-500 block">Prix Conseillé :</span>
-                  <span class="text-xs font-semibold text-red-400 line-through">${Number(p.prixNormal).toLocaleString('fr-FR')} FCFA</span>
+                  <span class="text-xs font-semibold text-red-400 line-through">${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA</span>
                 </div>
               </div>
 
               <button onclick="copierPartageSocial('${p.id}')" class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-md">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 <span>Copier Texte de Vente</span>
               </button>
             </div>
@@ -204,8 +234,8 @@
 
 📝 ${p.description}
 
-💰 *Prix Promo : ${Number(p.prixPromo).toLocaleString('fr-FR')} FCFA*
-❌ Prix Habituel : ~${Number(p.prixNormal).toLocaleString('fr-FR')} FCFA~
+💰 *Prix Promo : ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA*
+❌ Prix Habituel : ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~
 
 📦 *Livraison rapide disponible partout*
 📲 Contactez-nous pour commander !`;
@@ -224,7 +254,7 @@
       let texteCatalogue = `💥 *CATALOGUE OFFRES DROPSHIPPING - DAKPROELITE* 💥\n\n`;
       
       listeProduits.forEach((p, idx) => {
-        texteCatalogue += `${idx + 1}. *${p.nom}*\n💰 ${Number(p.prixPromo).toLocaleString('fr-FR')} FCFA (au lieu de ~${Number(p.prixNormal).toLocaleString('fr-FR')} FCFA~)\n\n`;
+        texteCatalogue += `${idx + 1}. *${p.nom}*\n💰 ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA (au lieu de ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~)\n\n`;
       });
 
       texteCatalogue += `📲 *Contactez-moi directement pour passer votre commande !*`;
@@ -233,30 +263,6 @@
         afficherToast("Catalogue complet copié ! Prêt pour vos canaux de revente.");
       });
     };
-  </script>
-
-  <!-- Script Notification UI -->
-  <script>
-    function afficherToast(message) {
-      const toast = document.getElementById('toastNotification');
-      document.getElementById('toastMessage').innerText = message;
-      toast.classList.remove('hidden');
-      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
-    }
-
-    // Générer et copier un lien affilié
-    function copierMonLienVendeur() {
-      const nomVendeur = prompt("Entrez votre Identifiant Vendeur / Affilié :", "mon_nom");
-      if (!nomVendeur) return;
-
-      const baseDomain = window.location.origin;
-      const slug = nomVendeur.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
-      const lienVendeur = `${baseDomain}/index.html?ref=${slug}`;
-
-      navigator.clipboard.writeText(lienVendeur).then(() => {
-        afficherToast(`Lien généré et copié : ${lienVendeur}`);
-      });
-    }
   </script>
 
 </body>
