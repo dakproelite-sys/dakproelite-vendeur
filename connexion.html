@@ -1,1469 +1,336 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full bg-slate-50">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>DAKPROELITE - Connexion & Inscription Dropshipping</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    /* Écran de chargement */
-    #pageLoader {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(248, 250, 252, 0.98);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.3s ease;
-    }
-
-    #pageLoader.hidden-loader {
-      opacity: 0;
-      pointer-events: none;
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
   </style>
 </head>
-
-
 <body class="bg-slate-50 text-slate-800 min-h-full flex flex-col justify-between antialiased selection:bg-blue-600 selection:text-white">
 
-
-  <!-- =========================================================
-       ÉCRAN DE CHARGEMENT
-       ========================================================= -->
-
-  <div id="pageLoader">
-
-    <div class="text-center">
-
-      <div class="w-12 h-12 mx-auto mb-4 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-blue-500/20">
-        D
-      </div>
-
-      <div class="flex justify-center mb-3">
-
-        <svg
-          class="animate-spin h-6 w-6 text-blue-600"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          ></path>
-
-        </svg>
-
-      </div>
-
-      <p class="text-sm font-semibold text-slate-600">
-        Vérification de votre session...
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================================================
-       HEADER
-       ========================================================= -->
-
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-
       <a href="index.html" class="flex items-center space-x-3 group">
-
         <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-blue-500/20 group-hover:bg-blue-700 transition-all">
           D
         </div>
-
         <div>
-
-          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 block leading-none">
-            DAKPROELITE
-          </span>
-
+          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 block leading-none">DAKPROELITE</span>
           <span class="text-[10px] font-bold text-blue-600 tracking-wider uppercase flex items-center gap-1 mt-0.5">
-
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-
-            Plateforme Dropshipping
-
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Plateforme Dropshipping
           </span>
-
         </div>
-
       </a>
 
-
-      <a
-        href="index.html"
-        class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl transition-all flex items-center space-x-2"
-      >
-
-        <svg
-          class="w-4 h-4 text-slate-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-
+      <a href="index.html" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl transition-all flex items-center space-x-2">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
-
         <span>Retour au Catalogue</span>
-
       </a>
-
     </div>
-
   </header>
 
-
-  <!-- =========================================================
-       FORMULAIRE CONNEXION / INSCRIPTION
-       ========================================================= -->
-
+  <!-- Formulaire Connexion & Inscription -->
   <main class="max-w-md mx-auto px-4 py-10 w-full flex-1 flex flex-col justify-center">
-
-
-    <!-- ZONE MESSAGE -->
-
-    <div
-      id="alertBox"
-      class="hidden mb-6 p-4 rounded-xl text-xs font-semibold flex items-center space-x-3 transition-all duration-300"
-    ></div>
-
+    
+    <!-- Zone d'affichage des erreurs/succès -->
+    <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-xs font-semibold flex items-center space-x-3 transition-all duration-300"></div>
 
     <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl shadow-slate-200/50">
-
-
-      <!-- =====================================================
-           ONGLETS
-           ===================================================== -->
-
+      
+      <!-- Onglets d'action -->
       <div class="flex border-b border-slate-200 mb-6">
-
-        <button
-          id="tabConnexion"
-          type="button"
-          onclick="basculerMode('connexion')"
-          class="flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all"
-        >
+        <button id="tabConnexion" type="button" onclick="basculerMode('connexion')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all">
           Connexion
         </button>
-
-
-        <button
-          id="tabInscription"
-          type="button"
-          onclick="basculerMode('inscription')"
-          class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all"
-        >
+        <button id="tabInscription" type="button" onclick="basculerMode('inscription')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all">
           Inscription Vendeur
         </button>
-
       </div>
 
-
-      <!-- =====================================================
-           FORMULAIRE
-           ===================================================== -->
-
-      <form
-        id="authForm"
-        onsubmit="traiterFormulaire(event)"
-        class="space-y-4"
-      >
-
-
-        <!-- NOM COMPLET -->
-
+      <form id="authForm" onsubmit="traiterFormulaire(event)" class="space-y-4">
+        
+        <!-- Champ Nom complet (Inscription uniquement) -->
         <div id="fieldNomComplet" class="hidden">
-
-          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
-            Nom & Prénom
-          </label>
-
-          <input
-            type="text"
-            id="nomCompletInput"
-            placeholder="Ex: Jean Dupont"
-            autocomplete="name"
-            class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
-          >
-
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Nom & Prénom</label>
+          <input type="text" id="nomCompletInput" placeholder="Ex: Jean Dupont" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
         </div>
 
-
-        <!-- EMAIL -->
-
+        <!-- Champ Email -->
         <div>
-
-          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
-            Adresse Email
-          </label>
-
-          <input
-            type="email"
-            id="emailInput"
-            required
-            autocomplete="email"
-            placeholder="votre@email.com"
-            class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
-          >
-
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Adresse Email</label>
+          <input type="email" id="emailInput" required placeholder="votre@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
         </div>
 
-
-        <!-- TELEPHONE -->
-
+        <!-- Champ Téléphone (Inscription uniquement) -->
         <div id="fieldTelephone" class="hidden">
-
-          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
-            Numéro Téléphone / WhatsApp
-          </label>
-
-          <input
-            type="tel"
-            id="telephoneInput"
-            placeholder="+229 01020304"
-            autocomplete="tel"
-            class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
-          >
-
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Numéro Téléphone / WhatsApp</label>
+          <input type="tel" id="telephoneInput" placeholder="+229 01020304" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
         </div>
 
-
-        <!-- MOT DE PASSE -->
-
+        <!-- Champ Mot de passe + Lien Mot de passe oublié -->
         <div>
-
           <div class="flex justify-between items-center mb-1.5">
-
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Mot de passe
-            </label>
-
-
-            <button
-              type="button"
-              id="forgotPasswordBtn"
-              onclick="reinitialiserMotDePasse()"
-              class="text-xs font-semibold text-blue-600 hover:underline"
-            >
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mot de passe</label>
+            <button type="button" id="forgotPasswordBtn" onclick="reinitialiserMotDePasse()" class="text-xs font-semibold text-blue-600 hover:underline">
               Mot de passe oublié ?
             </button>
-
           </div>
-
-
           <div class="relative">
-
-            <input
-              type="password"
-              id="passwordInput"
-              required
-              minlength="6"
-              autocomplete="current-password"
-              placeholder="••••••••"
-              class="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
-            >
-
-
-            <button
-              type="button"
-              onclick="basculerVisibilitePassword()"
-              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-blue-600 transition-colors focus:outline-none"
-            >
-
-              <!-- OEIL OUVERT -->
-
-              <svg
-                id="eyeOpen"
-                class="w-5 h-5 hidden"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-
+            <input type="password" id="passwordInput" required minlength="6" placeholder="••••••••" class="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
+            <button type="button" onclick="basculerVisibilitePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-blue-600 transition-colors focus:outline-none">
+              <svg id="eyeOpen" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-
-
-              <!-- OEIL FERME -->
-
-              <svg
-                id="eyeClosed"
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a8.962 8.962 0 012.122-.163c4.478 0 8.268 2.943 9.542 7 1.274 4.057 5.064 7 9.542 7 4.477 0 8.268-2.943 9.542-7z"
-                />
-
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 3l18 18"
-                />
-
+              <svg id="eyeClosed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a8.962 8.962 0 012.122-.163c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21f-9-9m-6-6l-1.5-1.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
               </svg>
-
             </button>
-
           </div>
-
         </div>
 
-
-        <!-- CONDITIONS -->
-
-        <div
-          id="fieldTerms"
-          class="hidden items-start space-x-2 pt-2"
-        >
-
-          <input
-            type="checkbox"
-            id="acceptTerms"
-            class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer"
-          >
-
-          <label
-            for="acceptTerms"
-            class="text-xs text-slate-600 leading-tight cursor-pointer"
-          >
-
-            J'ai lu et j'accepte les
-
-            <a
-              href="#"
-              class="text-blue-600 font-bold hover:underline"
-            >
-              conditions d'utilisation
-            </a>.
-
+        <!-- Case à cocher Conditions (Inscription uniquement) -->
+        <div id="fieldTerms" class="hidden items-start space-x-2 pt-2">
+          <input type="checkbox" id="acceptTerms" class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer">
+          <label for="acceptTerms" class="text-xs text-slate-600 leading-tight cursor-pointer">
+            J'ai lu et j'accepte les <a href="#" class="text-blue-600 font-bold hover:underline">conditions d'utilisation</a>.
           </label>
-
         </div>
 
-
-        <!-- BOUTON -->
-
-        <button
-          type="submit"
-          id="submitBtn"
-          class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/25 active:scale-95 flex items-center justify-center space-x-2 mt-6"
-        >
-
-          <span id="submitBtnText">
-            Se connecter
-          </span>
-
-
-          <svg
-            id="submitSpinner"
-            class="hidden animate-spin h-4 w-4 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-
+        <!-- Bouton Soumission -->
+        <button type="submit" id="submitBtn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/25 active:scale-95 flex items-center justify-center space-x-2 mt-6">
+          <span id="submitBtnText">Se connecter</span>
+          <svg id="submitSpinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-
         </button>
-
       </form>
-
     </div>
-
   </main>
 
-
-  <!-- =========================================================
-       FOOTER
-       ========================================================= -->
-
   <footer class="py-4 text-center text-xs text-slate-500 border-t border-slate-200 bg-white">
-
     © DAKPROELITE - Plateforme Dropshipping. Tous droits réservés.
-
   </footer>
 
-
-  <!-- =========================================================
-       FIREBASE
-       ========================================================= -->
-
   <script type="module">
-
-    /*
-     * =========================================================
-     * FIREBASE CENTRALISE
-     * =========================================================
-     *
-     * La configuration se trouve dans :
-     *
-     * js/firebaseConfig.js
-     *
-     * Ce fichier doit exporter :
-     *
-     * export const db;
-     * export const auth;
-     *
-     * =========================================================
-     */
-
-    import {
-      db,
-      auth
-    } from "./js/firebaseConfig.js";
-
-
-    import {
-      ref,
-      set,
-      get
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-
-    import {
-      onAuthStateChanged,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
       updateProfile,
       sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
 
-    /* =========================================================
-       VARIABLES
-       ========================================================= */
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    let currentMode = "connexion";
+    let currentMode = 'connexion';
 
-    let redirectionEnCours = false;
-
-    let sessionVerifiee = false;
-
-
-    /* =========================================================
-       LOADER
-       ========================================================= */
-
-    function cacherPageLoader() {
-
-      const loader =
-        document.getElementById("pageLoader");
-
-      if (!loader) return;
-
-      loader.classList.add("hidden-loader");
-
-      setTimeout(() => {
-
-        loader.style.display = "none";
-
-      }, 350);
-
-    }
-
-
-    /* =========================================================
-       MESSAGE
-       ========================================================= */
-
-    function afficherAlerte(
-      message,
-      type = "error"
-    ) {
-
-      const box =
-        document.getElementById("alertBox");
-
-      if (!box) return;
-
-
-      box.classList.remove(
-        "hidden",
-        "bg-red-50",
-        "border-red-200",
-        "text-red-700",
-        "bg-emerald-50",
-        "border-emerald-200",
-        "text-emerald-700"
-      );
-
-
-      if (type === "error") {
-
-        box.classList.add(
-          "bg-red-50",
-          "border",
-          "border-red-200",
-          "text-red-700"
-        );
-
+    window.basculerVisibilitePassword = function() {
+      const pwdInput = document.getElementById('passwordInput');
+      const eyeOpen = document.getElementById('eyeOpen');
+      const eyeClosed = document.getElementById('eyeClosed');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
       } else {
-
-        box.classList.add(
-          "bg-emerald-50",
-          "border",
-          "border-emerald-200",
-          "text-emerald-700"
-        );
-
+        pwdInput.type = 'password';
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
       }
+    };
 
+    window.basculerMode = function(mode) {
+      currentMode = mode;
+      const fieldNom = document.getElementById('fieldNomComplet');
+      const fieldTel = document.getElementById('fieldTelephone');
+      const fieldTerms = document.getElementById('fieldTerms');
+      const acceptTerms = document.getElementById('acceptTerms');
+      const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+      const tabConnexion = document.getElementById('tabConnexion');
+      const tabInscription = document.getElementById('tabInscription');
+      const submitBtnText = document.getElementById('submitBtnText');
 
-      box.innerText = message;
+      if (mode === 'inscription') {
+        fieldNom.classList.remove('hidden');
+        fieldTel.classList.remove('hidden');
+        
+        fieldTerms.classList.remove('hidden');
+        fieldTerms.classList.add('flex');
+        acceptTerms.required = true;
 
-    }
+        forgotPasswordBtn.classList.add('hidden');
 
-
-    /* =========================================================
-       CHARGEMENT BOUTON
-       ========================================================= */
-
-    function afficherChargement(
-      isLoading
-    ) {
-
-      const btn =
-        document.getElementById("submitBtn");
-
-      const spinner =
-        document.getElementById("submitSpinner");
-
-
-      if (!btn || !spinner) return;
-
-
-      if (isLoading) {
-
-        btn.disabled = true;
-
-        btn.classList.add(
-          "opacity-70",
-          "cursor-not-allowed"
-        );
-
-        spinner.classList.remove("hidden");
-
+        tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
+        tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
+        submitBtnText.innerText = "Créer mon compte vendeur";
       } else {
+        fieldNom.classList.add('hidden');
+        fieldTel.classList.add('hidden');
 
-        btn.disabled = false;
+        fieldTerms.classList.add('hidden');
+        fieldTerms.classList.remove('flex');
+        acceptTerms.required = false;
 
-        btn.classList.remove(
-          "opacity-70",
-          "cursor-not-allowed"
-        );
+        forgotPasswordBtn.classList.remove('hidden');
 
-        spinner.classList.add("hidden");
-
+        tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
+        tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
+        submitBtnText.innerText = "Se connecter";
       }
+    };
 
-    }
-
-
-    /* =========================================================
-       REDIRECTION PROFIL VENDEUR
-       ========================================================= */
-
-    function redirigerVersProfil() {
-
-      if (redirectionEnCours) {
+    window.reinitialiserMotDePasse = async function() {
+      const email = document.getElementById('emailInput').value.trim();
+      if (!email) {
+        afficherAlerte("Saisissez votre adresse email puis cliquez à nouveau sur 'Mot de passe oublié ?'", "error");
         return;
       }
 
+      try {
+        await sendPasswordResetEmail(auth, email);
+        afficherAlerte("Un email de réinitialisation de mot de passe vous a été envoyé.", "success");
+      } catch (error) {
+        let errText = "Impossible d'envoyer l'email de réinitialisation.";
+        if (error.code === 'auth/user-not-found') {
+          errText = "Aucun compte n'est associé à cette adresse email.";
+        } else if (error.code === 'auth/invalid-email') {
+          errText = "Veuillez entrer une adresse email valide.";
+        }
+        afficherAlerte(errText, "error");
+      }
+    };
 
-      redirectionEnCours = true;
-
+    window.traiterFormulaire = async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const nomComplet = document.getElementById('nomCompletInput').value.trim();
+      const telephone = document.getElementById('telephoneInput').value.trim();
 
       afficherChargement(true);
 
+      try {
+        if (currentMode === 'connexion') {
+          // --- CONNEXION ---
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-      afficherAlerte(
-        "Connexion réussie ! Ouverture de votre espace vendeur...",
-        "success"
-      );
-
-
-      /*
-       * On laisse le message visible environ 1 seconde.
-       * Ensuite seulement, on ouvre le profil vendeur.
-       */
-
-      setTimeout(() => {
-
-        window.location.replace(
-          "profil-vendeur.html"
-        );
-
-      }, 1000);
-
-    }
-
-
-    /* =========================================================
-       VERIFICATION DE SESSION EXISTANTE
-       ========================================================= */
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        try {
-
-          sessionVerifiee = true;
-
-
-          /*
-           * Aucun utilisateur connecté.
-           * On reste sur connexion.html.
-           */
-
-          if (!user) {
-
-            cacherPageLoader();
-
-            return;
+          // Vérification / Création sous users/{uid} si absent
+          const snapshot = await get(ref(db, 'users/' + user.uid));
+          if (!snapshot.exists()) {
+            await set(ref(db, 'users/' + user.uid), {
+              uid: user.uid,
+              nomComplet: user.displayName || "Vendeur",
+              email: user.email,
+              telephone: telephone || "",
+              role: "vendeur",
+              dateCreation: new Date().toISOString()
+            });
           }
 
-
-          /*
-           * IMPORTANT :
-           *
-           * Le profil vendeur est enregistré ici :
-           *
-           * users/{uid}
-           *
-           * et NON :
-           *
-           * vendeurs/{uid}
-           */
-
-          const userRef =
-            ref(
-              db,
-              "users/" + user.uid
-            );
-
-
-          const snapshot =
-            await get(userRef);
-
-
-          /*
-           * Le compte Firebase existe ET le profil
-           * existe dans Realtime Database.
-           */
-
-          if (snapshot.exists()) {
-
-            redirigerVersProfil();
-
-            return;
-          }
-
-
-          /*
-           * Si Authentication existe mais que users/{uid}
-           * n'existe pas, on reste sur la page.
-           */
-
-          cacherPageLoader();
-
-
-        } catch (error) {
-
-          console.error(
-            "Erreur vérification session :",
-            error
-          );
-
-          cacherPageLoader();
-
-        }
-
-      }
-    );
-
-
-    /* =========================================================
-       AFFICHER / CACHER MOT DE PASSE
-       ========================================================= */
-
-    window.basculerVisibilitePassword =
-      function() {
-
-        const pwdInput =
-          document.getElementById(
-            "passwordInput"
-          );
-
-        const eyeOpen =
-          document.getElementById(
-            "eyeOpen"
-          );
-
-        const eyeClosed =
-          document.getElementById(
-            "eyeClosed"
-          );
-
-
-        if (
-          pwdInput.type === "password"
-        ) {
-
-          pwdInput.type = "text";
-
-          eyeOpen.classList.remove(
-            "hidden"
-          );
-
-          eyeClosed.classList.add(
-            "hidden"
-          );
+          afficherAlerte("Connexion réussie ! Redirection...", "success");
+          window.location.replace("redirect.html");
 
         } else {
-
-          pwdInput.type = "password";
-
-          eyeOpen.classList.add(
-            "hidden"
-          );
-
-          eyeClosed.classList.remove(
-            "hidden"
-          );
-
-        }
-
-      };
-
-
-    /* =========================================================
-       BASCULER CONNEXION / INSCRIPTION
-       ========================================================= */
-
-    window.basculerMode =
-      function(mode) {
-
-        currentMode = mode;
-
-
-        const fieldNom =
-          document.getElementById(
-            "fieldNomComplet"
-          );
-
-        const fieldTel =
-          document.getElementById(
-            "fieldTelephone"
-          );
-
-        const fieldTerms =
-          document.getElementById(
-            "fieldTerms"
-          );
-
-        const acceptTerms =
-          document.getElementById(
-            "acceptTerms"
-          );
-
-        const forgotPasswordBtn =
-          document.getElementById(
-            "forgotPasswordBtn"
-          );
-
-        const tabConnexion =
-          document.getElementById(
-            "tabConnexion"
-          );
-
-        const tabInscription =
-          document.getElementById(
-            "tabInscription"
-          );
-
-        const submitBtnText =
-          document.getElementById(
-            "submitBtnText"
-          );
-
-        const passwordInput =
-          document.getElementById(
-            "passwordInput"
-          );
-
-
-        /* ===============================
-           INSCRIPTION
-           =============================== */
-
-        if (mode === "inscription") {
-
-          fieldNom.classList.remove(
-            "hidden"
-          );
-
-          fieldTel.classList.remove(
-            "hidden"
-          );
-
-
-          fieldTerms.classList.remove(
-            "hidden"
-          );
-
-          fieldTerms.classList.add(
-            "flex"
-          );
-
-
-          acceptTerms.required = true;
-
-
-          forgotPasswordBtn.classList.add(
-            "hidden"
-          );
-
-
-          tabInscription.className =
-            "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
-
-
-          tabConnexion.className =
-            "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
-
-
-          submitBtnText.innerText =
-            "Créer mon compte vendeur";
-
-
-          passwordInput.setAttribute(
-            "autocomplete",
-            "new-password"
-          );
-
-
-          return;
-        }
-
-
-        /* ===============================
-           CONNEXION
-           =============================== */
-
-        fieldNom.classList.add(
-          "hidden"
-        );
-
-        fieldTel.classList.add(
-          "hidden"
-        );
-
-
-        fieldTerms.classList.add(
-          "hidden"
-        );
-
-        fieldTerms.classList.remove(
-          "flex"
-        );
-
-
-        acceptTerms.required = false;
-
-
-        forgotPasswordBtn.classList.remove(
-          "hidden"
-        );
-
-
-        tabConnexion.className =
-          "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
-
-
-        tabInscription.className =
-          "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
-
-
-        submitBtnText.innerText =
-          "Se connecter";
-
-
-        passwordInput.setAttribute(
-          "autocomplete",
-          "current-password"
-        );
-
-      };
-
-
-    /* =========================================================
-       MOT DE PASSE OUBLIE
-       ========================================================= */
-
-    window.reinitialiserMotDePasse =
-      async function() {
-
-        const email =
-          document
-            .getElementById(
-              "emailInput"
-            )
-            .value
-            .trim();
-
-
-        if (!email) {
-
-          afficherAlerte(
-            "Saisissez votre adresse email puis cliquez à nouveau sur « Mot de passe oublié ? ».",
-            "error"
-          );
-
-          return;
-        }
-
-
-        try {
-
-          await sendPasswordResetEmail(
-            auth,
-            email
-          );
-
-
-          afficherAlerte(
-            "Un email de réinitialisation de mot de passe vous a été envoyé.",
-            "success"
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "Erreur mot de passe oublié :",
-            error
-          );
-
-
-          let message =
-            "Impossible d'envoyer l'email de réinitialisation.";
-
-
-          switch (error.code) {
-
-            case "auth/user-not-found":
-
-              message =
-                "Aucun compte n'est associé à cette adresse email.";
-
-              break;
-
-
-            case "auth/invalid-email":
-
-              message =
-                "Veuillez entrer une adresse email valide.";
-
-              break;
-
-
-            case "auth/too-many-requests":
-
-              message =
-                "Trop de tentatives. Veuillez patienter avant de réessayer.";
-
-              break;
-
-          }
-
-
-          afficherAlerte(
-            message,
-            "error"
-          );
-
-        }
-
-      };
-
-
-    /* =========================================================
-       TRAITEMENT DU FORMULAIRE
-       ========================================================= */
-
-    window.traiterFormulaire =
-      async function(e) {
-
-        e.preventDefault();
-
-
-        if (redirectionEnCours) {
-          return;
-        }
-
-
-        const email =
-          document
-            .getElementById(
-              "emailInput"
-            )
-            .value
-            .trim();
-
-
-        const password =
-          document
-            .getElementById(
-              "passwordInput"
-            )
-            .value
-            .trim();
-
-
-        const nomComplet =
-          document
-            .getElementById(
-              "nomCompletInput"
-            )
-            .value
-            .trim();
-
-
-        const telephone =
-          document
-            .getElementById(
-              "telephoneInput"
-            )
-            .value
-            .trim();
-
-
-        afficherChargement(true);
-
-
-        try {
-
-
-          /* ===================================================
-             CONNEXION
-             =================================================== */
-
-          if (
-            currentMode === "connexion"
-          ) {
-
-
-            /*
-             * 1. Connexion Firebase Authentication
-             */
-
-            const userCredential =
-              await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-              );
-
-
-            const user =
-              userCredential.user;
-
-
-            /*
-             * 2. Chercher le profil dans :
-             *
-             * users/{uid}
-             */
-
-            const userRef =
-              ref(
-                db,
-                "users/" + user.uid
-              );
-
-
-            const snapshot =
-              await get(userRef);
-
-
-            /*
-             * 3. Si le profil n'existe pas encore,
-             * on le crée automatiquement.
-             *
-             * Cela permet de réparer un compte Firebase
-             * qui aurait été créé sans son profil.
-             */
-
-            if (!snapshot.exists()) {
-
-              await set(
-                userRef,
-                {
-
-                  uid:
-                    user.uid,
-
-                  nomComplet:
-                    user.displayName ||
-                    "Vendeur",
-
-                  email:
-                    user.email ||
-                    email,
-
-                  telephone:
-                    telephone || "",
-
-                  role:
-                    "vendeur",
-
-                  dateCreation:
-                    new Date().toISOString()
-
-                }
-              );
-
-            }
-
-
-            /*
-             * 4. Redirection
-             */
-
-            redirigerVersProfil();
-
-            return;
-
-          }
-
-
-          /* ===================================================
-             INSCRIPTION
-             =================================================== */
-
-          const acceptTerms =
-            document
-              .getElementById(
-                "acceptTerms"
-              )
-              .checked;
-
-
+          // --- INSCRIPTION ---
+          const acceptTerms = document.getElementById('acceptTerms').checked;
           if (!acceptTerms) {
-
-            afficherAlerte(
-              "Veuillez cocher la case pour accepter les conditions d'utilisation.",
-              "error"
-            );
-
+            afficherAlerte("Veuillez cocher la case pour accepter les conditions d'utilisation.", "error");
             afficherChargement(false);
-
             return;
-
           }
-
 
           if (!nomComplet) {
-
-            afficherAlerte(
-              "Veuillez saisir votre Nom et Prénom.",
-              "error"
-            );
-
-            afficherChargement(false);
-
-            return;
-
+            throw new Error("Veuillez saisir votre Nom et Prénom.");
           }
 
+          // 1. Création compte Firebase Auth
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-          if (password.length < 6) {
+          // 2. Mise à jour de displayName
+          await updateProfile(user, { displayName: nomComplet });
 
-            afficherAlerte(
-              "Le mot de passe doit contenir au moins 6 caractères.",
-              "error"
-            );
-
-            afficherChargement(false);
-
-            return;
-
-          }
-
-
-          /*
-           * 1. Création du compte dans
-           * Firebase Authentication
-           */
-
-          const userCredential =
-            await createUserWithEmailAndPassword(
-              auth,
-              email,
-              password
-            );
-
-
-          const user =
-            userCredential.user;
-
-
-          /*
-           * 2. Enregistrer le nom dans
-           * Firebase Authentication
-           */
-
-          await updateProfile(
-            user,
-            {
-              displayName:
-                nomComplet
-            }
-          );
-
-
-          /*
-           * 3. CRÉATION DU PROFIL DANS REALTIME DATABASE
-           *
-           * CHEMIN :
-           *
-           * users/{uid}
-           *
-           * C'est exactement l'architecture
-           * montrée dans ta capture Firebase.
-           */
-
+          // 3. Écriture directe sous users/{uid} d'après la structure exacte de votre Realtime Database
           const userData = {
-
-            uid:
-              user.uid,
-
-            nomComplet:
-              nomComplet,
-
-            email:
-              email,
-
-            telephone:
-              telephone || "",
-
-            role:
-              "vendeur",
-
-            dateCreation:
-              new Date().toISOString()
-
+            uid: user.uid,
+            nomComplet: nomComplet,
+            email: email,
+            telephone: telephone || "",
+            role: "vendeur",
+            dateCreation: new Date().toISOString()
           };
 
+          await set(ref(db, 'users/' + user.uid), userData);
 
-          await set(
+          afficherAlerte("Compte créé avec succès ! Redirection...", "success");
+          window.location.replace("redirect.html");
+        }
+      } catch (error) {
+        let textErreur = error.message;
 
-            ref(
-              db,
-              "users/" + user.uid
-            ),
-
-            userData
-
-          );
-
-
-          /*
-           * 4. Tout est terminé.
-           *
-           * On redirige vers le profil vendeur.
-           */
-
-          redirigerVersProfil();
-
-
-        } catch (error) {
-
-          console.error(
-            "Erreur Firebase :",
-            error
-          );
-
-
-          let textErreur =
-            "Une erreur est survenue. Veuillez réessayer.";
-
-
-          switch (error.code) {
-
-
-            case "auth/user-not-found":
-
-            case "auth/wrong-password":
-
-            case "auth/invalid-credential":
-
-            case "auth/invalid-login-credentials":
-
-              textErreur =
-                "Identifiants incorrects. Vérifiez votre email et votre mot de passe.";
-
-              break;
-
-
-            case "auth/email-already-in-use":
-
-              textErreur =
-                "Cet email est déjà utilisé par un autre compte.";
-
-              break;
-
-
-            case "auth/weak-password":
-
-              textErreur =
-                "Le mot de passe doit contenir au moins 6 caractères.";
-
-              break;
-
-
-            case "auth/invalid-email":
-
-              textErreur =
-                "Veuillez entrer une adresse email valide.";
-
-              break;
-
-
-            case "auth/too-many-requests":
-
-              textErreur =
-                "Trop de tentatives. Veuillez patienter avant de réessayer.";
-
-              break;
-
-
-            case "auth/network-request-failed":
-
-              textErreur =
-                "Problème de connexion Internet. Vérifiez votre connexion puis réessayez.";
-
-              break;
-
-
-            case "auth/operation-not-allowed":
-
-              textErreur =
-                "La connexion par email et mot de passe n'est pas activée dans Firebase Authentication.";
-
-              break;
-
-
-            case "PERMISSION_DENIED":
-
-              textErreur =
-                "Firebase refuse l'accès à Realtime Database. Vérifiez les règles de la base.";
-
-              break;
-
-
-            default:
-
-              if (error.message) {
-
-                textErreur =
-                  error.message;
-
-              }
-
-              break;
-
-          }
-
-
-          afficherAlerte(
-            textErreur,
-            "error"
-          );
-
-
-          afficherChargement(false);
-
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          textErreur = "Identifiants incorrects. Vérifiez votre email et mot de passe.";
+        } else if (error.code === 'auth/email-already-in-use') {
+          textErreur = "Cet email est déjà utilisé par un autre compte.";
+        } else if (error.code === 'auth/weak-password') {
+          textErreur = "Le mot de passe doit contenir au moins 6 caractères.";
         }
 
-      };
+        afficherAlerte(textErreur, "error");
+        afficherChargement(false);
+      }
+    };
 
+    function afficherAlerte(message, type) {
+      const box = document.getElementById('alertBox');
+      box.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+      
+      if (type === 'error') {
+        box.classList.add('bg-red-50', 'border', 'border-red-200', 'text-red-700');
+      } else {
+        box.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-700');
+      }
+      
+      box.innerText = message;
+    }
+
+    function afficherChargement(isLoading) {
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('submitSpinner');
+      if (isLoading) {
+        btn.disabled = true;
+        spinner.classList.remove('hidden');
+      } else {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
   </script>
 
 </body>
