@@ -355,39 +355,39 @@
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
-      <li class="active" onclick="showTab('dashboard', this)">
+      <li class="active" onclick="window.showTab('dashboard', this)">
         <a><i class="fa-solid fa-chart-line"></i><span class="menu-text">Tableau de bord</span></a>
       </li>
-      <li onclick="showTab('publier', this)">
+      <li onclick="window.showTab('publier', this)">
         <a><i class="fa-solid fa-plus-circle"></i><span class="menu-text">Publier Produit/Cours</span></a>
       </li>
-      <li onclick="showTab('boutique', this)">
+      <li onclick="window.showTab('boutique', this)">
         <a><i class="fa-solid fa-store"></i><span class="menu-text">Ma Boutique</span></a>
       </li>
-      <li onclick="showTab('affiliation', this)">
+      <li onclick="window.showTab('affiliation', this)">
         <a><i class="fa-solid fa-link"></i><span class="menu-text">Liens d'Affiliation</span></a>
       </li>
-      <li onclick="showTab('commandes', this)">
+      <li onclick="window.showTab('commandes', this)">
         <a><i class="fa-solid fa-box-open"></i><span class="menu-text">Commandes</span></a>
       </li>
-      <li onclick="showTab('retrait', this)">
+      <li onclick="window.showTab('retrait', this)">
         <a><i class="fa-solid fa-wallet"></i><span class="menu-text">Retraits</span></a>
       </li>
-      <li onclick="showTab('coupons', this)">
+      <li onclick="window.showTab('coupons', this)">
         <a><i class="fa-solid fa-ticket"></i><span class="menu-text">Coupons Promo</span></a>
       </li>
-      <li onclick="showTab('analytics', this)">
+      <li onclick="window.showTab('analytics', this)">
         <a><i class="fa-solid fa-chart-pie"></i><span class="menu-text">Analytiques</span></a>
       </li>
-      <li onclick="showTab('avis', this)">
+      <li onclick="window.showTab('avis', this)">
         <a><i class="fa-solid fa-star"></i><span class="menu-text">Avis Clients</span></a>
       </li>
-      <li onclick="showTab('profil', this)">
+      <li onclick="window.showTab('profil', this)">
         <a><i class="fa-solid fa-user-gear"></i><span class="menu-text">Mon Profil</span></a>
       </li>
     </ul>
     <div class="sidebar-footer">
-      <button class="logout-btn" onclick="deconnexionVendeur()">
+      <button class="logout-btn" onclick="window.deconnexionVendeur()">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span class="menu-text">Déconnexion</span>
       </button>
@@ -443,15 +443,15 @@
       </div>
     </section>
 
-    <!-- 2. PUBLIER (PRODUIT / COURS / EPREUVE / LIEN) -->
+    <!-- 2. PUBLIER -->
     <section id="publier" class="tab-section">
       <div class="content-card">
         <h3>Publier un Produit, un Cours en Ligne ou un Lien Externe</h3>
-        <form onsubmit="publierElement(event)">
+        <form onsubmit="window.publierElement(event)">
           <div class="form-grid">
             <div class="form-group">
               <label>Type de Publication</label>
-              <select id="pType" required onchange="toggleTypeFields()">
+              <select id="pType" required onchange="window.toggleTypeFields()">
                 <option value="produit">Produit Physique / Numérique</option>
                 <option value="cours">Cours en ligne / Formation</option>
                 <option value="epreuve">Épreuve / Document d'étude</option>
@@ -484,7 +484,7 @@
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>Photo du Produit/Cours (Choix depuis la galerie - Compresse à 60x60 px)</label>
-              <input type="file" id="pInputImage" accept="image/*" required onchange="handleImageCompress(event, 'previewPublish', 'base64Publish')">
+              <input type="file" id="pInputImage" accept="image/*" required onchange="window.handleImageCompress(event, 'previewPublish', 'base64Publish')">
               <input type="hidden" id="base64Publish">
               <img id="previewPublish" class="image-preview" alt="Aperçu">
             </div>
@@ -574,7 +574,7 @@
       <div class="content-card">
         <h3>Demander un Retrait de Solde</h3>
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Solde disponible : <strong id="retraitSoldeDispo">0 FCFA</strong></p>
-        <form onsubmit="demanderRetrait(event)">
+        <form onsubmit="window.demanderRetrait(event)">
           <div class="form-grid">
             <div class="form-group">
               <label>Montant à retirer (FCFA)</label>
@@ -624,11 +624,11 @@
       </div>
     </section>
 
-    <!-- 7. GESTION DES COUPONS PROMO (NOUVEAU) -->
+    <!-- 7. GESTION DES COUPONS PROMO -->
     <section id="coupons" class="tab-section">
       <div class="content-card">
         <h3>Créer un Code Promo / Coupon de Réduction</h3>
-        <form onsubmit="creerCoupon(event)">
+        <form onsubmit="window.creerCoupon(event)">
           <div class="form-grid">
             <div class="form-group">
               <label>Code Promo (ex: DAKPRO10)</label>
@@ -651,7 +651,7 @@
       </div>
     </section>
 
-    <!-- 8. ANALYTIQUES DÉTAILLÉES (NOUVEAU) -->
+    <!-- 8. ANALYTIQUES DÉTAILLÉES -->
     <section id="analytics" class="tab-section">
       <div class="content-card">
         <h3>Statistiques d'Audience et Revenus</h3>
@@ -660,7 +660,7 @@
       </div>
     </section>
 
-    <!-- 9. AVIS CLIENTS (NOUVEAU) -->
+    <!-- 9. AVIS CLIENTS -->
     <section id="avis" class="tab-section">
       <div class="content-card">
         <h3>Évaluations & Commentaires des Clients</h3>
@@ -686,11 +686,11 @@
     <section id="profil" class="tab-section">
       <div class="content-card">
         <h3>Modifier Mon Profil & Photo de Profil</h3>
-        <form onsubmit="mettreAJourProfil(event)">
+        <form onsubmit="window.mettreAJourProfil(event)">
           <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>Photo de Profil (Choix galerie - Compression auto à 60x60 px)</label>
-              <input type="file" id="pInputAvatar" accept="image/*" onchange="handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
+              <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
               <input type="hidden" id="base64Avatar">
               <img id="previewAvatar" class="image-preview" alt="Aperçu Profil">
             </div>
@@ -718,19 +718,19 @@
 
   </main>
 
-  <!-- FIREBASE SCRIPTS & LOGIQUE METIER -->
+  <!-- FIREBASE SCRIPTS & LOGIQUE MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Config Firebase
+    // REMPLACEZ ICI PAR LA CONFIGURATION DE VOTRE BASE DE DONNÉES FIREBASE
     const firebaseConfig = {
-      apiKey: "VOTRE_API_KEY",
-      authDomain: "votre-app.firebaseapp.com",
-      databaseURL: "https://votre-app-default-rtdb.firebaseio.com",
-      projectId: "votre-app-id",
-      storageBucket: "votre-app.appspot.com",
+      apiKey: "VOTRE_API_KEY_REELLE",
+      authDomain: "votre-projet.firebaseapp.com",
+      databaseURL: "https://votre-projet-default-rtdb.firebaseio.com",
+      projectId: "votre-projet-id",
+      storageBucket: "votre-projet.appspot.com",
       messagingSenderId: "1234567890",
       appId: "1:1234567890:web:abcdef"
     };
@@ -740,6 +740,34 @@
     const database = getDatabase(app);
 
     let currentVendeurUid = null;
+
+    // AFFICHER DATE
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // NAVIGATION SESSIONS / ONCLICK AU PERIMETRE GLOBAL
+    window.showTab = function(tabId, element) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      if (element) {
+        element.classList.add('active');
+      }
+
+      const titles = {
+        'dashboard': 'Tableau de Bord Vendeur & Affilié',
+        'publier': 'Publier Produit / Cours / Épreuve',
+        'boutique': 'Ma Boutique',
+        'affiliation': 'Liens d\'Affiliation',
+        'commandes': 'Commandes Clients',
+        'retrait': 'Gestion des Retraits Mobile Money',
+        'coupons': 'Coupons de Réduction',
+        'analytics': 'Analytiques & Performance',
+        'avis': 'Évaluations Clients',
+        'profil': 'Mon Profil Vendeur'
+      };
+      document.getElementById('pageTitle').innerText = titles[tabId] || 'Espace Profil';
+    };
 
     // COMPRESSION IMAGE 60x60
     window.handleImageCompress = function(event, previewId, hiddenInputId) {
@@ -871,7 +899,7 @@
                   ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
                 </td>
                 <td>${prod.stock}</td>
-                <td><button class="btn-copy" onclick="copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
+                <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
               </tr>
             `;
           }
@@ -902,7 +930,7 @@
               <td><strong>${prod.nom}</strong></td>
               <td>${prod.prixPromo || prod.prixNormal} FCFA</td>
               <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
-              <td><button class="btn-copy" onclick="copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
+              <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
             </tr>
           `;
         });
@@ -914,7 +942,7 @@
     // COPIER LIEN
     window.copierLien = function(lien) {
       navigator.clipboard.writeText(lien).then(() => {
-        alert("Lien d'affiliation copié !");
+        alert("Lien copié dans le presse-papier !");
       });
     };
 
@@ -1074,61 +1102,39 @@
         window.location.href = "vendeur.html";
       });
     };
-  </script>
 
-  <!-- NAVIGATION TABS & GRAPHIQUES -->
-  <script>
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-    function showTab(tabId, element) {
-      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
-      document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-
-      document.getElementById(tabId).classList.add('active');
-      element.classList.add('active');
-
-      const titles = {
-        'dashboard': 'Tableau de Bord Vendeur & Affilié',
-        'publier': 'Publier Produit / Cours / Épreuve',
-        'boutique': 'Ma Boutique',
-        'affiliation': 'Liens d\'Affiliation',
-        'commandes': 'Commandes Clients',
-        'retrait': 'Gestion des Retraits Mobile Money',
-        'coupons': 'Coupons de Réduction',
-        'analytics': 'Analytiques & Performance',
-        'avis': 'Évaluations Clients',
-        'profil': 'Mon Profil Vendeur'
-      };
-      document.getElementById('pageTitle').innerText = titles[tabId];
-    }
-
-    // Graphique Performance Dashboard
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-        datasets: [{
-          label: 'Ventes & Gains (FCFA)',
-          data: [120000, 190000, 300000, 250000, 420000, 550000],
-          borderColor: '#d4af37',
-          backgroundColor: 'rgba(212, 175, 55, 0.1)',
-          fill: true,
-          tension: 0.3
-        }]
+    // INITIALISATION DES GRAPHIQUES
+    window.addEventListener('DOMContentLoaded', () => {
+      const ctxPerf = document.getElementById('performanceChart')?.getContext('2d');
+      if (ctxPerf) {
+        new Chart(ctxPerf, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [{
+              label: 'Ventes & Gains (FCFA)',
+              data: [120000, 190000, 300000, 250000, 420000, 550000],
+              borderColor: '#d4af37',
+              backgroundColor: 'rgba(212, 175, 55, 0.1)',
+              fill: true,
+              tension: 0.3
+            }]
+          }
+        });
       }
-    });
 
-    // Graphique Analytiques Dédié
-    const ctxAnalytics = document.getElementById('analyticsChart').getContext('2d');
-    new Chart(ctxAnalytics, {
-      type: 'bar',
-      data: {
-        labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-        datasets: [
-          { label: 'Ventes Directes', data: [50000, 75000, 60000, 90000], backgroundColor: '#0f172a' },
-          { label: 'Gains Affiliation', data: [15000, 25000, 20000, 35000], backgroundColor: '#d4af37' }
-        ]
+      const ctxAnalytics = document.getElementById('analyticsChart')?.getContext('2d');
+      if (ctxAnalytics) {
+        new Chart(ctxAnalytics, {
+          type: 'bar',
+          data: {
+            labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+            datasets: [
+              { label: 'Ventes Directes', data: [50000, 75000, 60000, 90000], backgroundColor: '#0f172a' },
+              { label: 'Gains Affiliation', data: [15000, 25000, 20000, 35000], backgroundColor: '#d4af37' }
+            ]
+          }
+        });
       }
     });
   </script>
