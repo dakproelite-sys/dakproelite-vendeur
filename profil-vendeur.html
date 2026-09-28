@@ -1,1290 +1,2909 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAKPRO ÉLITE - ESPACE PROFIL VENDEUR & AFFILIÉ</title>
-  
-  <!-- FontAwesome & Chart.js -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module">
+
+/* =========================================================
+   DAKPRO ÉLITE
+   PROFIL VENDEUR
+   Firebase Authentication + Realtime Database
+
+   CHEMIN PRINCIPAL PRODUITS :
+   produits/{id}
+
+   PROFIL :
+   users/{uid}
+
+   STATS :
+   vendeurs_stats/{uid}
+
+   RETRAITS :
+   retraits/{id}
+
+   COMMANDES :
+   commandes/{id}
+
+   COUPONS :
+   coupons/{uid}/{id}
+   ========================================================= */
+
+
+/* =========================================================
+   IMPORTS FIREBASE
+   ========================================================= */
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  push,
+  onValue,
+  update
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* =========================================================
+   CONFIGURATION FIREBASE DAKPROELITE
+   ========================================================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
+
+  authDomain:
+    "dakproelite.firebaseapp.com",
+
+  databaseURL:
+    "https://dakproelite-default-rtdb.firebaseio.com",
+
+  projectId:
+    "dakproelite",
+
+  storageBucket:
+    "dakproelite.firebasestorage.app",
+
+  messagingSenderId:
+    "580591769206",
+
+  appId:
+    "1:580591769206:web:9dc5fc1ba7d6db46087157"
+};
+
+
+/* =========================================================
+   INITIALISATION FIREBASE
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const database = getDatabase(app);
+
+
+/* =========================================================
+   VARIABLES GLOBALES
+   ========================================================= */
+
+let currentVendeurUid = null;
+
+let listeMesProduits = [];
+
+let firebaseAuthReady = false;
+
+
+/* =========================================================
+   ÉCRAN DE CHARGEMENT
+   ÉVITE LE FLASH DU PROFIL AVANT AUTHENTIFICATION
+   ========================================================= */
+
+const loader = document.createElement("div");
+
+loader.id = "firebaseAuthLoader";
+
+loader.innerHTML = `
+
+  <div style="
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    background:#0f172a;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    text-align:center;
+  ">
+
+    <div style="
+      width:45px;
+      height:45px;
+      border:4px solid rgba(255,255,255,.2);
+      border-top-color:#d4af37;
+      border-radius:50%;
+      animation:spinDakpro 1s linear infinite;
+      margin-bottom:18px;
+    "></div>
+
+    <strong style="
+      color:#d4af37;
+      font-size:20px;
+    ">
+      DAKPRO ÉLITE
+    </strong>
+
+    <span style="
+      margin-top:8px;
+      font-size:14px;
+      color:#cbd5e1;
+    ">
+      Vérification de votre compte...
+    </span>
+
+  </div>
 
   <style>
-    :root {
-      --primary-gold: #d4af37;
-      --secondary-gold: #b8860b;
-      --dark-bg: #0f172a;
-      --card-bg: #ffffff;
-      --sidebar-width: 260px;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --danger-color: #ef4444;
-      --info-color: #3b82f6;
-      --bg-light: #f8fafc;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-light);
-      color: var(--text-main);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: var(--sidebar-width);
-      background-color: var(--dark-bg);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      z-index: 100;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar-header {
-      padding: 24px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      text-align: center;
-    }
-
-    .sidebar-header h2 {
-      color: var(--primary-gold);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      padding: 15px 0;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .sidebar-menu li a {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 24px;
-      color: #94a3b8;
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .sidebar-menu li a:hover,
-    .sidebar-menu li.active a {
-      color: #ffffff;
-      background-color: rgba(212, 175, 55, 0.15);
-      border-left: 4px solid var(--primary-gold);
-    }
-
-    .sidebar-menu li a i {
-      font-size: 16px;
-      width: 20px;
-    }
-
-    .sidebar-footer {
-      padding: 16px 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .logout-btn {
-      width: 100%;
-      padding: 10px;
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .logout-btn:hover {
-      background: var(--danger-color);
-      color: #ffffff;
-    }
-
-    /* MAIN CONTENT */
-    .main-content {
-      margin-left: var(--sidebar-width);
-      flex: 1;
-      padding: 30px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      background: var(--card-bg);
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    }
-
-    .vendeur-info-summary {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar-circle {
-      width: 55px;
-      height: 55px;
-      background: var(--dark-bg);
-      color: var(--primary-gold);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 18px;
-      border: 2px solid var(--primary-gold);
-      overflow: hidden;
-    }
-
-    .avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* SECTIONS */
-    .tab-section {
-      display: none;
-    }
-
-    .tab-section.active {
-      display: block;
-    }
-
-    /* STATS GRID */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 25px;
-    }
-
-    .stat-card {
-      background: var(--card-bg);
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      border: 1px solid var(--border-color);
-    }
-
-    .stat-card .title {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .stat-card .amount {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    /* CARDS & FORMS */
-    .content-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      margin-bottom: 24px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-    }
-
-    .btn-action {
-      background-color: var(--dark-bg);
-      color: var(--primary-gold);
-      border: 1px solid var(--primary-gold);
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-action:hover {
-      background-color: #000;
-    }
-
-    .btn-copy {
-      background: var(--primary-gold);
-      color: #000;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .btn-copy:hover {
-      background: var(--secondary-gold);
-      color: #fff;
-    }
-
-    /* TABLES */
-    .table-container {
-      overflow-x: auto;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 16px;
-      min-width: 600px;
-    }
-
-    .data-table th, .data-table td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 13.5px;
-    }
-
-    .data-table th {
-      background: #f1f5f9;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-
-    .price-promo {
-      color: var(--danger-color);
-      font-weight: bold;
-    }
-
-    .price-old {
-      text-decoration: line-through;
-      color: var(--text-muted);
-      font-size: 12px;
-      margin-left: 6px;
-    }
-
-    /* BADGES */
-    .status-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .status-success { background: #d1fae5; color: #065f46; }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-danger { background: #fee2e2; color: #991b1b; }
-    .status-info { background: #dbeafe; color: #1e40af; }
-
-    /* IMAGE PREVIEW & CAMERA CONTAINER */
-    .image-preview {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      border: 1px dashed var(--primary-gold);
-      object-fit: cover;
-      margin-top: 8px;
-      display: none;
-    }
-
-    .camera-box {
-      border: 1px dashed var(--border-color);
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 8px;
-      background: #fafafa;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .camera-box video {
-      width: 100%;
-      max-width: 240px;
-      border-radius: 6px;
-      background: #000;
-    }
-
-    .btn-camera {
-      background: var(--info-color);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 70px; }
-      .sidebar-header h2, .menu-text { display: none; }
-      .main-content { margin-left: 70px; padding: 15px; }
+    @keyframes spinDakpro {
+      to {
+        transform:rotate(360deg);
+      }
     }
   </style>
-</head>
-<body>
+`;
 
-  <!-- SIDEBAR NAVIGATION ENRICHIE -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>DAKPRO ÉLITE</h2>
-    </div>
-    <ul class="sidebar-menu">
-      <li class="active" onclick="window.showTab('dashboard', this)">
-        <a><i class="fa-solid fa-chart-line"></i><span class="menu-text">Tableau de bord</span></a>
-      </li>
-      <li onclick="window.showTab('publier', this)">
-        <a><i class="fa-solid fa-plus-circle"></i><span class="menu-text">Publier Produit/Cours</span></a>
-      </li>
-      <li onclick="window.showTab('boutique', this)">
-        <a><i class="fa-solid fa-store"></i><span class="menu-text">Ma Boutique</span></a>
-      </li>
-      <li onclick="window.showTab('affiliation', this)">
-        <a><i class="fa-solid fa-link"></i><span class="menu-text">Liens d'Affiliation</span></a>
-      </li>
-      <li onclick="window.showTab('commandes', this)">
-        <a><i class="fa-solid fa-box-open"></i><span class="menu-text">Commandes</span></a>
-      </li>
-      <li onclick="window.showTab('retrait', this)">
-        <a><i class="fa-solid fa-wallet"></i><span class="menu-text">Retraits</span></a>
-      </li>
-      <li onclick="window.showTab('coupons', this)">
-        <a><i class="fa-solid fa-ticket"></i><span class="menu-text">Coupons Promo</span></a>
-      </li>
-      <li onclick="window.showTab('analytics', this)">
-        <a><i class="fa-solid fa-chart-pie"></i><span class="menu-text">Analytiques</span></a>
-      </li>
-      <li onclick="window.showTab('avis', this)">
-        <a><i class="fa-solid fa-star"></i><span class="menu-text">Avis Clients</span></a>
-      </li>
-      <li onclick="window.showTab('profil', this)">
-        <a><i class="fa-solid fa-user-gear"></i><span class="menu-text">Mon Profil</span></a>
-      </li>
-    </ul>
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="window.deconnexionVendeur()">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        <span class="menu-text">Déconnexion</span>
-      </button>
-    </div>
-  </aside>
+document.body.prepend(loader);
 
-  <!-- CONTENU PRINCIPAL -->
-  <main class="main-content">
 
-    <!-- En-tête -->
-    <div class="top-bar">
-      <div>
-        <h2 id="pageTitle">Tableau de Bord Vendeur</h2>
-        <p style="font-size: 13px; color: var(--text-muted);" id="currentDate"></p>
-      </div>
-      <div class="vendeur-info-summary">
-        <div class="avatar-circle" id="vendeurAvatar">V</div>
-        <div>
-          <strong id="headerBoutiqueName">Chargement...</strong><br>
-          <small id="headerEmail" style="color: var(--text-muted);"></small>
-        </div>
-      </div>
-    </div>
+/* =========================================================
+   FONCTION UTILITAIRE
+   ========================================================= */
 
-    <!-- 1. DASHBOARD -->
-    <section id="dashboard" class="tab-section active">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="title">Solde Disponible</div>
-          <div class="amount" id="statSolde">0 FCFA</div>
-        </div>
-        <div class="stat-card">
-          <div class="title">Gains d'Affiliation</div>
-          <div class="amount" id="statGainsAffiliation">0 FCFA</div>
-        </div>
-        <div class="stat-card">
-          <div class="title">Ventes Totales</div>
-          <div class="amount" id="statVentes">0 FCFA</div>
-        </div>
-        <div class="stat-card">
-          <div class="title">Visiteurs / Clics</div>
-          <div class="amount" id="statVisiteurs">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="title">Produits / Cours</div>
-          <div class="amount" id="statProduits">0</div>
-        </div>
-      </div>
+function getElement(id) {
+  return document.getElementById(id);
+}
 
-      <div class="content-card">
-        <h3>Aperçu des performances de ventes & visites</h3>
-        <canvas id="performanceChart" style="max-height: 250px; margin-top: 15px;"></canvas>
-      </div>
-    </section>
 
-    <!-- 2. PUBLIER -->
-    <section id="publier" class="tab-section">
-      <div class="content-card">
-        <h3>Publier un Produit, un Cours en Ligne ou un Lien Externe</h3>
-        <form onsubmit="window.publierElement(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Type de Publication</label>
-              <select id="pType" required onchange="window.toggleTypeFields()">
-                <option value="produit">Produit Physique / Numérique</option>
-                <option value="cours">Cours en ligne / Formation</option>
-                <option value="epreuve">Épreuve / Document d'étude</option>
-                <option value="lien">Lien Externe / Produit Copié</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Nom ou Titre de la publication</label>
-              <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir / Cours JavaScript">
-            </div>
-            <div class="form-group">
-              <label>Prénom & Nom du Vendeur/Auteur</label>
-              <input type="text" id="pAuteur" required placeholder="Ex: Jean Dupont">
-            </div>
-            <div class="form-group">
-              <label>Prix Normal (FCFA)</label>
-              <input type="number" id="pPrixNormal" required placeholder="Ex: 30000">
-            </div>
-            <div class="form-group">
-              <label>Prix Promotionnel (FCFA)</label>
-              <input type="number" id="pPrixPromo" placeholder="Ex: 25000 (Optionnel)">
-            </div>
-            <div class="form-group">
-              <label>Quantité / Stock (Si applicable)</label>
-              <input type="number" id="pStock" value="100" required>
-            </div>
-            <div class="form-group" id="groupLienExt" style="display:none; grid-column: 1 / -1;">
-              <label>Lien du produit / de la ressource externe (Optionnel)</label>
-              <input type="url" id="pLienExterne" placeholder="https://exemple.com/mon-produit">
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo du Produit/Cours (Choix depuis la galerie - Compresse à 60x60 px)</label>
-              <input type="file" id="pInputImage" accept="image/*" required onchange="window.handleImageCompress(event, 'previewPublish', 'base64Publish')">
-              <input type="hidden" id="base64Publish">
-              <img id="previewPublish" class="image-preview" alt="Aperçu">
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Description détaillée</label>
-              <textarea id="pDescription" rows="4" required placeholder="Décrivez en détail votre produit, cours ou épreuve..."></textarea>
-            </div>
-          </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource</button>
-        </form>
-      </div>
-    </section>
+/* =========================================================
+   DATE DU JOUR
+   ========================================================= */
 
-    <!-- 3. MA BOUTIQUE -->
-    <section id="boutique" class="tab-section">
-      <div class="content-card">
-        <h3>Catalogue de Ma Boutique</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Image (60px)</th>
-                <th>Titre</th>
-                <th>Auteur</th>
-                <th>Prix Promo / Normal</th>
-                <th>Stock</th>
-                <th>Lien direct</th>
-              </tr>
-            </thead>
-            <tbody id="boutiqueProductsList">
-              <tr><td colspan="6" style="text-align:center;">Chargement des éléments...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+function afficherDateActuelle() {
 
-    <!-- 4. LIENS D'AFFILIATION GLOBAUX -->
-    <section id="affiliation" class="tab-section">
-      <div class="content-card">
-        <h3>Produits Éligibles à l'Affiliation sur la Plateforme</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Copiez n'importe quel lien ci-dessous et partagez-le. Chaque visite et vente générée par votre lien créditera vos gains dans le tableau de bord !</p>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Produit / Cours</th>
-                <th>Prix</th>
-                <th>Gains estimés (10%)</th>
-                <th>Mon Lien d'Affilié</th>
-              </tr>
-            </thead>
-            <tbody id="affiliationProductsList">
-              <tr><td colspan="5" style="text-align:center;">Chargement du catalogue d'affiliation...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+  const element =
+    getElement("currentDate");
 
-    <!-- 5. COMMANDES -->
-    <section id="commandes" class="tab-section">
-      <div class="content-card">
-        <h3>Historique des Commandes & Achats Clients</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID Commande</th>
-                <th>Client / Contact</th>
-                <th>Montant</th>
-                <th>Statut Livr.</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="commandesList">
-              <tr><td colspan="5" style="text-align:center;">Aucune commande pour le moment.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+  if (!element) return;
 
-    <!-- 6. DEMANDE DE RETRAIT -->
-    <section id="retrait" class="tab-section">
-      <div class="content-card">
-        <h3>Demander un Retrait de Solde</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Solde disponible : <strong id="retraitSoldeDispo">0 FCFA</strong></p>
-        <form onsubmit="window.demanderRetrait(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Montant à retirer (FCFA)</label>
-              <input type="number" id="rMontant" required min="1000" placeholder="Ex: 10000">
-            </div>
-            <div class="form-group">
-              <label>Réseau Mobile Money / Moyen de Paiement Afrique</label>
-              <select id="rMoyen" required>
-                <option value="">-- Sélectionnez le réseau --</option>
-                <option value="MTN MoMo">MTN Mobile Money (Bénin, CI, GH, CM)</option>
-                <option value="Moov Money">Moov Money / Flooz</option>
-                <option value="Wave">Wave Côte d'Ivoire / Sénégal</option>
-                <option value="Orange Money">Orange Money</option>
-                <option value="Celtiis Cash">Celtiis Cash Bénin</option>
-                <option value="Free Money">Free Money Sénégal</option>
-                <option value="Airtel Money">Airtel Money</option>
-                <option value="Virement Bancaire">Virement Bancaire (RIB)</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Numéro de Téléphone avec Indicatif Pays (ou RIB)</label>
-              <input type="text" id="rNumero" required placeholder="Ex: +229 01 97 00 00 00">
-            </div>
-          </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-paper-plane"></i> Lancer la demande de retrait</button>
-        </form>
-      </div>
-
-      <div class="content-card">
-        <h3>Historique des Demandes de Retrait</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Montant</th>
-                <th>Réseau</th>
-                <th>Numéro</th>
-                <th>Statut Realtime DB</th>
-              </tr>
-            </thead>
-            <tbody id="retraitsList">
-              <tr><td colspan="5" style="text-align:center;">Aucune demande enregistrée.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. GESTION DES COUPONS PROMO -->
-    <section id="coupons" class="tab-section">
-      <div class="content-card">
-        <h3>Créer un Code Promo / Coupon de Réduction</h3>
-        <form onsubmit="window.creerCoupon(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Code Promo (ex: DAKPRO10)</label>
-              <input type="text" id="cCode" required style="text-transform:uppercase;">
-            </div>
-            <div class="form-group">
-              <label>Réduction en FCFA ou %</label>
-              <input type="number" id="cValeur" required placeholder="Ex: 2000 FCFA ou 10%">
-            </div>
-            <div class="form-group">
-              <label>Type de réduction</label>
-              <select id="cType">
-                <option value="fixe">Montant fixe (FCFA)</option>
-                <option value="pourcentage">Pourcentage (%)</option>
-              </select>
-            </div>
-          </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-plus"></i> Générer Coupon</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- 8. ANALYTIQUES DÉTAILLÉES -->
-    <section id="analytics" class="tab-section">
-      <div class="content-card">
-        <h3>Statistiques d'Audience et Revenus</h3>
-        <p style="font-size: 13px; color: var(--text-muted);">Suivi détaillé des performances mensuelles sur la plateforme.</p>
-        <canvas id="analyticsChart" style="max-height: 280px; margin-top: 15px;"></canvas>
-      </div>
-    </section>
-
-    <!-- 9. AVIS CLIENTS -->
-    <section id="avis" class="tab-section">
-      <div class="content-card">
-        <h3>Évaluations & Commentaires des Clients</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Produit</th>
-                <th>Note</th>
-                <th>Commentaire</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="avisList">
-              <tr><td colspan="4" style="text-align:center;">Aucun avis reçu pour le moment.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 10. PROFIL VENDEUR & PIÈCES ADMINISTRATIVES (60x60px) -->
-    <section id="profil" class="tab-section">
-      <div class="content-card">
-        <h3>Modifier Mon Profil & Informations Générales</h3>
-        <form onsubmit="window.mettreAJourProfil(event)">
-          <div class="form-grid">
-            <!-- PHOTO DE PROFIL -->
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo de Profil (Galerie ou Caméra - Compression auto à 60x60 px)</label>
-              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
-                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxAvatar', 'videoAvatar', 'canvasAvatar', 'previewAvatar', 'base64Avatar')"><i class="fa-solid fa-camera"></i> Prendre Photo</button>
-              </div>
-              <div id="cameraBoxAvatar" class="camera-box">
-                <video id="videoAvatar" autoplay playsinline></video>
-                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoAvatar', 'canvasAvatar', 'previewAvatar', 'base64Avatar', 'cameraBoxAvatar')">Capturer</button>
-              </div>
-              <canvas id="canvasAvatar" style="display:none;"></canvas>
-              <input type="hidden" id="base64Avatar">
-              <img id="previewAvatar" class="image-preview" alt="Aperçu Profil">
-            </div>
-
-            <div class="form-group">
-              <label>Nom de la Boutique / Vendeur</label>
-              <input type="text" id="profBoutique" required>
-            </div>
-            <div class="form-group">
-              <label>E-mail du compte</label>
-              <input type="email" id="profEmail" readonly style="background: #f1f5f9;">
-            </div>
-            <div class="form-group">
-              <label>Téléphone Support / WhatsApp</label>
-              <input type="tel" id="profPhone" required placeholder="+22901000000">
-            </div>
-            <div class="form-group">
-              <label>Rôle</label>
-              <input type="text" id="profRole" value="Vendeur / Affilié Officiel" readonly style="background: #f1f5f9;">
-            </div>
-          </div>
-
-          <h3 style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">Documents d'Administration & Vérification (KYC)</h3>
-          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Veuillez soumettre vos pièces d'identité officielles. Elles seront compressées à 60x60 px avant enregistrement sécurisé sur Firebase.</p>
-          
-          <div class="form-grid">
-            <!-- CARTE D'IDENTITE (CNI / PASSEPORT) -->
-            <div class="form-group">
-              <label>Carte d'Identité / Passeport</label>
-              <div style="display:flex; gap:6px; flex-direction:column;">
-                <input type="file" id="pInputCNI" accept="image/*" onchange="window.handleImageCompress(event, 'previewCNI', 'base64CNI')">
-                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxCNI', 'videoCNI', 'canvasCNI', 'previewCNI', 'base64CNI')"><i class="fa-solid fa-camera"></i> Prendre avec la caméra</button>
-              </div>
-              <div id="cameraBoxCNI" class="camera-box">
-                <video id="videoCNI" autoplay playsinline></video>
-                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoCNI', 'canvasCNI', 'previewCNI', 'base64CNI', 'cameraBoxCNI')">Capturer CNI</button>
-              </div>
-              <canvas id="canvasCNI" style="display:none;"></canvas>
-              <input type="hidden" id="base64CNI">
-              <img id="previewCNI" class="image-preview" alt="Aperçu CNI">
-            </div>
-
-            <!-- PHOTO D'IDENTITE -->
-            <div class="form-group">
-              <label>Photo d'Identité (Visage)</label>
-              <div style="display:flex; gap:6px; flex-direction:column;">
-                <input type="file" id="pInputPhotoId" accept="image/*" onchange="window.handleImageCompress(event, 'previewPhotoId', 'base64PhotoId')">
-                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxPhotoId', 'videoPhotoId', 'canvasPhotoId', 'previewPhotoId', 'base64PhotoId')"><i class="fa-solid fa-camera"></i> Prendre Selfie / Photo</button>
-              </div>
-              <div id="cameraBoxPhotoId" class="camera-box">
-                <video id="videoPhotoId" autoplay playsinline></video>
-                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoPhotoId', 'canvasPhotoId', 'previewPhotoId', 'base64PhotoId', 'cameraBoxPhotoId')">Capturer Photo</button>
-              </div>
-              <canvas id="canvasPhotoId" style="display:none;"></canvas>
-              <input type="hidden" id="base64PhotoId">
-              <img id="previewPhotoId" class="image-preview" alt="Aperçu Photo Id">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Enregistrer le Profil & Documents</button>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- FIREBASE SCRIPTS & LOGIQUE COMPLÈTE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    // VOS CONFIGURATIONS REALTIME DATABASE ET FIREBASE
-    const firebaseConfig = {
-      apiKey: "VOTRE_API_KEY_REELLE",
-      authDomain: "votre-projet.firebaseapp.com",
-      databaseURL: "https://votre-projet-default-rtdb.firebaseio.com",
-      projectId: "votre-projet-id",
-      storageBucket: "votre-projet.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-
-    let currentVendeurUid = null;
-    let activeMediaStream = null;
-
-    // AFFICHER LA DATE DU JOUR
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-    // NAVIGATION PAR ONGLETS GLOBALEMENT DISPONIBLE
-    window.showTab = function(tabId, element) {
-      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
-      document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-
-      document.getElementById(tabId).classList.add('active');
-      if (element) {
-        element.classList.add('active');
+  element.innerText =
+    new Date().toLocaleDateString(
+      "fr-FR",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
       }
+    );
+}
 
-      const titles = {
-        'dashboard': 'Tableau de Bord Vendeur & Affilié',
-        'publier': 'Publier Produit / Cours / Épreuve',
-        'boutique': 'Ma Boutique',
-        'affiliation': 'Liens d\'Affiliation',
-        'commandes': 'Commandes Clients',
-        'retrait': 'Gestion des Retraits Mobile Money',
-        'coupons': 'Coupons de Réduction',
-        'analytics': 'Analytiques & Performance',
-        'avis': 'Évaluations Clients',
-        'profil': 'Mon Profil & Documents d\'Administration'
-      };
-      document.getElementById('pageTitle').innerText = titles[tabId] || 'Espace Profil';
-    };
 
-    // COMPRESSION IMAGE DEPUIS LA GALERIE À EXACTEMENT 60x60 px
-    window.handleImageCompress = function(event, previewId, hiddenInputId) {
-      const file = event.target.files[0];
-      if (!file) return;
+/* =========================================================
+   NAVIGATION DES ONGLETS
+   ========================================================= */
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        compressAndSetImage(e.target.result, previewId, hiddenInputId);
-      };
-      reader.readAsDataURL(file);
-    };
+window.showTab = function(tabId, element) {
 
-    // FONCTION DE COMPRESSION CANVAS UNIVERSELLE (60x60 px)
-    function compressAndSetImage(sourceUrl, previewId, hiddenInputId) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 60;
-        canvas.height = 60;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, 60, 60);
-        
-        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
-        const preview = document.getElementById(previewId);
-        if(preview) {
-          preview.src = compressedBase64;
-          preview.style.display = 'block';
-        }
+  document
+    .querySelectorAll(".tab-section")
+    .forEach(section => {
 
-        const hiddenInput = document.getElementById(hiddenInputId);
-        if(hiddenInput) {
-          hiddenInput.value = compressedBase64;
-        }
-      };
-      img.src = sourceUrl;
-    }
+      section.classList.remove("active");
 
-    // CAPTURE VIA CAMÉRA DIRECTE
-    window.startCamera = async function(boxId, videoId, canvasId, previewId, hiddenInputId) {
-      const box = document.getElementById(boxId);
-      const video = document.getElementById(videoId);
-      box.style.display = 'flex';
-
-      try {
-        if(activeMediaStream) {
-          activeMediaStream.getTracks().forEach(track => track.stop());
-        }
-        activeMediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-        video.srcObject = activeMediaStream;
-      } catch (err) {
-        alert("Impossible d'accéder à la caméra : " + err.message);
-        box.style.display = 'none';
-      }
-    };
-
-    window.takeCameraSnapshot = function(videoId, canvasId, previewId, hiddenInputId, boxId) {
-      const video = document.getElementById(videoId);
-      const canvas = document.getElementById(canvasId);
-      
-      canvas.width = video.videoWidth || 300;
-      canvas.height = video.videoHeight || 300;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const rawBase64 = canvas.toDataURL('image/jpeg');
-      compressAndSetImage(rawBase64, previewId, hiddenInputId);
-
-      if (activeMediaStream) {
-        activeMediaStream.getTracks().forEach(track => track.stop());
-      }
-      document.getElementById(boxId).style.display = 'none';
-    };
-
-    // AUTHENTIFICATION & ÉTAT UTILISATEUR
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentVendeurUid = user.uid;
-        document.getElementById('profEmail').value = user.email;
-        document.getElementById('headerEmail').innerText = user.email;
-        
-        chargerProfilVendeur(user.uid);
-        chargerMesProduits(user.uid);
-        chargerAffiliationGlobal();
-        chargerStats(user.uid);
-        chargerRetraits(user.uid);
-        chargerCommandes(user.uid);
-      } else {
-        window.location.href = "vendeur.html";
-      }
     });
 
-    // CHARGER LE PROFIL ET LES DOCUMENTS DE VÉRIFICATION
-    async function chargerProfilVendeur(uid) {
-      const snapshot = await get(ref(database, 'users/' + uid));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        document.getElementById('headerBoutiqueName').innerText = data.nomBoutique || "Boutique";
-        document.getElementById('profBoutique').value = data.nomBoutique || "";
-        document.getElementById('profPhone').value = data.telephone || "";
 
-        const avatarContainer = document.getElementById('vendeurAvatar');
-        if(data.photo60) {
-          avatarContainer.innerHTML = `<img src="${data.photo60}" alt="Avatar">`;
-          document.getElementById('previewAvatar').src = data.photo60;
-          document.getElementById('previewAvatar').style.display = 'block';
-          document.getElementById('base64Avatar').value = data.photo60;
-        } else {
-          avatarContainer.innerText = (data.nomBoutique || "V")[0].toUpperCase();
-        }
+  document
+    .querySelectorAll(".sidebar-menu li")
+    .forEach(li => {
 
-        if(data.cniPhoto60) {
-          document.getElementById('previewCNI').src = data.cniPhoto60;
-          document.getElementById('previewCNI').style.display = 'block';
-          document.getElementById('base64CNI').value = data.cniPhoto60;
-        }
+      li.classList.remove("active");
 
-        if(data.photoId60) {
-          document.getElementById('previewPhotoId').src = data.photoId60;
-          document.getElementById('previewPhotoId').style.display = 'block';
-          document.getElementById('base64PhotoId').value = data.photoId60;
-        }
+    });
+
+
+  const section =
+    getElement(tabId);
+
+  if (section) {
+
+    section.classList.add("active");
+
+  }
+
+
+  if (element) {
+
+    element.classList.add("active");
+
+  }
+
+
+  const titles = {
+
+    dashboard:
+      "Tableau de Bord Vendeur & Affilié",
+
+    publier:
+      "Publier Produit / Cours / Épreuve",
+
+    boutique:
+      "Ma Boutique",
+
+    affiliation:
+      "Liens d'Affiliation",
+
+    commandes:
+      "Commandes Clients",
+
+    retrait:
+      "Gestion des Retraits Mobile Money",
+
+    coupons:
+      "Coupons de Réduction",
+
+    analytics:
+      "Analytiques & Performance",
+
+    avis:
+      "Évaluations Clients",
+
+    profil:
+      "Mon Profil Vendeur"
+
+  };
+
+
+  const pageTitle =
+    getElement("pageTitle");
+
+  if (pageTitle) {
+
+    pageTitle.innerText =
+      titles[tabId] ||
+      "Espace Profil";
+
+  }
+};
+
+
+/* =========================================================
+   COMPRESSION IMAGE
+   ========================================================= */
+
+window.handleImageCompress =
+function(event, previewId, hiddenInputId) {
+
+  const file =
+    event.target.files?.[0];
+
+  if (!file) return;
+
+
+  if (!file.type.startsWith("image/")) {
+
+    alert(
+      "Veuillez sélectionner une image."
+    );
+
+    event.target.value = "";
+
+    return;
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+  function(e) {
+
+    const img =
+      new Image();
+
+
+    img.onload =
+    function() {
+
+      const canvas =
+        document.createElement("canvas");
+
+
+      /*
+       * Conservation de ton architecture :
+       * image légère de 60 x 60.
+       */
+
+      canvas.width = 60;
+
+      canvas.height = 60;
+
+
+      const ctx =
+        canvas.getContext("2d");
+
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        60,
+        60
+      );
+
+
+      const compressedBase64 =
+        canvas.toDataURL(
+          "image/jpeg",
+          0.85
+        );
+
+
+      const preview =
+        getElement(previewId);
+
+
+      const hidden =
+        getElement(hiddenInputId);
+
+
+      if (preview) {
+
+        preview.src =
+          compressedBase64;
+
+        preview.style.display =
+          "block";
+
       }
+
+
+      if (hidden) {
+
+        hidden.value =
+          compressedBase64;
+
+      }
+
+    };
+
+
+    img.onerror =
+    function() {
+
+      alert(
+        "Impossible de lire cette image."
+      );
+
+    };
+
+
+    img.src =
+      e.target.result;
+
+  };
+
+
+  reader.readAsDataURL(file);
+};
+
+
+/* =========================================================
+   PROTECTION CONTRE LE HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    String(value ?? "");
+
+  return div.innerHTML;
+}
+
+
+/* =========================================================
+   FORMAT PRIX
+   ========================================================= */
+
+function formatPrix(value) {
+
+  return Number(
+    value || 0
+  ).toLocaleString(
+    "fr-FR"
+  );
+}
+
+
+/* =========================================================
+   AUTHENTIFICATION FIREBASE
+   ========================================================= */
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+
+    /*
+     * Firebase vient de terminer
+     * la vérification de session.
+     */
+
+    firebaseAuthReady = true;
+
+
+    /* -----------------------------------------------------
+       AUCUN UTILISATEUR
+       ----------------------------------------------------- */
+
+    if (!user) {
+
+      window.location.replace(
+        "connexion.html"
+      );
+
+      return;
     }
 
-    // TOGGLE DES CHAMPS DE PUBLICATION
-    window.toggleTypeFields = function() {
-      const type = document.getElementById('pType').value;
-      const groupLien = document.getElementById('groupLienExt');
-      groupLien.style.display = (type === 'lien') ? 'flex' : 'none';
+
+    /* -----------------------------------------------------
+       UTILISATEUR CONNECTÉ
+       ----------------------------------------------------- */
+
+    currentVendeurUid =
+      user.uid;
+
+
+    console.log(
+      "DAKPROELITE - vendeur connecté :",
+      user.uid
+    );
+
+
+    console.log(
+      "Email :",
+      user.email
+    );
+
+
+    /* -----------------------------------------------------
+       EMAIL
+       ----------------------------------------------------- */
+
+    const profEmail =
+      getElement("profEmail");
+
+    const headerEmail =
+      getElement("headerEmail");
+
+
+    if (profEmail) {
+
+      profEmail.value =
+        user.email || "";
+
+    }
+
+
+    if (headerEmail) {
+
+      headerEmail.innerText =
+        user.email || "";
+
+    }
+
+
+    /* -----------------------------------------------------
+       CHARGEMENT DES DONNÉES
+       ----------------------------------------------------- */
+
+    try {
+
+      await chargerProfilVendeur(
+        user.uid
+      );
+
+
+      await chargerMesProduits(
+        user.uid
+      );
+
+
+      await chargerAffiliationGlobal(
+        user.uid
+      );
+
+
+      chargerStats(
+        user.uid
+      );
+
+
+      chargerRetraits(
+        user.uid
+      );
+
+
+      chargerCommandes(
+        user.uid
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Erreur chargement espace vendeur :",
+        error
+      );
+
+
+      alert(
+        "Certaines informations n'ont pas pu être chargées. Vérifiez votre connexion."
+      );
+
+    }
+
+
+    /*
+     * On garde l'écran de vérification
+     * pendant environ 1 seconde.
+     */
+
+    setTimeout(
+      () => {
+
+        if (loader) {
+
+          loader.remove();
+
+        }
+
+      },
+      1000
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CHARGER / CRÉER LE PROFIL VENDEUR
+   CHEMIN :
+   users/{uid}
+   ========================================================= */
+
+async function chargerProfilVendeur(uid) {
+
+  if (!uid) return;
+
+
+  const profilRef =
+    ref(
+      database,
+      "users/" + uid
+    );
+
+
+  const snapshot =
+    await get(profilRef);
+
+
+  /*
+   * Si le profil n'existe pas,
+   * on le crée automatiquement.
+   */
+
+  if (!snapshot.exists()) {
+
+    const nouveauProfil = {
+
+      email:
+        auth.currentUser?.email || "",
+
+      role:
+        "vendeur",
+
+      nomBoutique:
+        "Ma Boutique",
+
+      telephone:
+        "",
+
+      dateInscription:
+        new Date().toISOString()
+
     };
 
-    // PUBLIER UN PRODUIT / COURS
-    window.publierElement = async function(e) {
-      e.preventDefault();
-      if(!currentVendeurUid) return;
 
-      const photoBase64 = document.getElementById('base64Publish').value;
-      if(!photoBase64) {
-        alert("Veuillez sélectionner une image pour le produit/cours.");
+    await set(
+      profilRef,
+      nouveauProfil
+    );
+
+
+    afficherProfilDansInterface(
+      nouveauProfil
+    );
+
+
+    return;
+  }
+
+
+  const data =
+    snapshot.val() || {};
+
+
+  afficherProfilDansInterface(
+    data
+  );
+}
+
+
+/* =========================================================
+   AFFICHER PROFIL DANS L'INTERFACE
+   ========================================================= */
+
+function afficherProfilDansInterface(data) {
+
+  const nomBoutique =
+    data.nomBoutique ||
+    data.nom ||
+    "Ma Boutique";
+
+
+  /* -----------------------------------------------------
+     NOM BOUTIQUE
+     ----------------------------------------------------- */
+
+  const headerBoutiqueName =
+    getElement(
+      "headerBoutiqueName"
+    );
+
+
+  const profBoutique =
+    getElement(
+      "profBoutique"
+    );
+
+
+  if (headerBoutiqueName) {
+
+    headerBoutiqueName.innerText =
+      nomBoutique;
+
+  }
+
+
+  if (profBoutique) {
+
+    profBoutique.value =
+      nomBoutique;
+
+  }
+
+
+  /* -----------------------------------------------------
+     TÉLÉPHONE
+     ----------------------------------------------------- */
+
+  const profPhone =
+    getElement("profPhone");
+
+
+  if (profPhone) {
+
+    profPhone.value =
+      data.telephone ||
+      data.phone ||
+      "";
+
+  }
+
+
+  /* -----------------------------------------------------
+     EMAIL
+     ----------------------------------------------------- */
+
+  const profEmail =
+    getElement("profEmail");
+
+
+  if (profEmail) {
+
+    profEmail.value =
+      data.email ||
+      auth.currentUser?.email ||
+      "";
+
+  }
+
+
+  /* -----------------------------------------------------
+     PHOTO VENDEUR
+     ----------------------------------------------------- */
+
+  const avatar =
+    getElement(
+      "vendeurAvatar"
+    );
+
+
+  if (!avatar) return;
+
+
+  if (data.photo60) {
+
+    avatar.innerHTML = "";
+
+    const img =
+      document.createElement(
+        "img"
+      );
+
+
+    img.src =
+      data.photo60;
+
+    img.alt =
+      "Photo vendeur";
+
+
+    img.style.width =
+      "100%";
+
+    img.style.height =
+      "100%";
+
+    img.style.objectFit =
+      "cover";
+
+
+    avatar.appendChild(img);
+
+
+  } else {
+
+    avatar.innerText =
+      nomBoutique
+        .charAt(0)
+        .toUpperCase();
+
+  }
+}
+
+
+/* =========================================================
+   TYPE DE PUBLICATION
+   ========================================================= */
+
+window.toggleTypeFields =
+function() {
+
+  const type =
+    getElement(
+      "pType"
+    )?.value;
+
+
+  const groupLien =
+    getElement(
+      "groupLienExt"
+    );
+
+
+  if (!groupLien) return;
+
+
+  groupLien.style.display =
+    type === "lien"
+      ? "flex"
+      : "none";
+};
+
+
+/* =========================================================
+   PUBLICATION D'UN PRODUIT
+   CHEMIN :
+   produits/{id}
+   ========================================================= */
+
+window.publierElement =
+async function(e) {
+
+  e.preventDefault();
+
+
+  if (!currentVendeurUid) {
+
+    alert(
+      "Votre session a expiré. Veuillez vous reconnecter."
+    );
+
+    return;
+  }
+
+
+  /* -----------------------------------------------------
+     RÉCUPÉRATION DES CHAMPS
+     ----------------------------------------------------- */
+
+  const type =
+    getElement("pType")?.value ||
+    "produit";
+
+
+  const nom =
+    getElement("pNom")?.value.trim();
+
+
+  const auteur =
+    getElement("pAuteur")?.value.trim();
+
+
+  const description =
+    getElement("pDescription")?.value.trim();
+
+
+  const prixNormal =
+    Number(
+      getElement("pPrixNormal")?.value ||
+      0
+    );
+
+
+  const prixPromoInput =
+    Number(
+      getElement("pPrixPromo")?.value ||
+      0
+    );
+
+
+  const stock =
+    Number(
+      getElement("pStock")?.value ||
+      0
+    );
+
+
+  const lienExterne =
+    getElement("pLienExterne")?.value.trim() ||
+    "";
+
+
+  const photoBase64 =
+    getElement(
+      "base64Publish"
+    )?.value;
+
+
+  /* -----------------------------------------------------
+     VALIDATION
+     ----------------------------------------------------- */
+
+  if (!nom) {
+
+    alert(
+      "Veuillez renseigner le nom du produit."
+    );
+
+    return;
+  }
+
+
+  if (!prixNormal || prixNormal < 0) {
+
+    alert(
+      "Veuillez renseigner un prix normal valide."
+    );
+
+    return;
+  }
+
+
+  if (!photoBase64) {
+
+    alert(
+      "Veuillez sélectionner une image."
+    );
+
+    return;
+  }
+
+
+  if (
+    type === "lien" &&
+    !lienExterne
+  ) {
+
+    alert(
+      "Veuillez renseigner le lien externe."
+    );
+
+    return;
+  }
+
+
+  /*
+   * Si aucun prix promo n'est fourni,
+   * le prix normal est utilisé.
+   */
+
+  const prixPromo =
+    prixPromoInput > 0
+      ? prixPromoInput
+      : prixNormal;
+
+
+  try {
+
+    /* ---------------------------------------------------
+       NOUVEL ID PRODUIT
+       --------------------------------------------------- */
+
+    const newRef =
+      push(
+        ref(
+          database,
+          "produits"
+        )
+      );
+
+
+    const idProd =
+      newRef.key;
+
+
+    /* ---------------------------------------------------
+       DONNÉES PRODUIT
+
+       IMPORTANT :
+       imageUrl ET imageUrl60
+       sont enregistrés pour être
+       compatibles avec l'index.
+       --------------------------------------------------- */
+
+    const itemData = {
+
+      id:
+        idProd,
+
+      vendeurUid:
+        currentVendeurUid,
+
+      type:
+        type,
+
+      /*
+       * L'index utilise categorie.
+       * On enregistre donc les deux.
+       */
+
+      categorie:
+        type,
+
+      nom:
+        nom,
+
+      auteur:
+        auteur || "",
+
+      description:
+        description || "",
+
+      prixNormal:
+        prixNormal,
+
+      prixPromo:
+        prixPromo,
+
+      stock:
+        stock,
+
+      lienExterne:
+        lienExterne,
+
+      /*
+       * Compatibilité index.html
+       */
+
+      imageUrl:
+        photoBase64,
+
+      /*
+       * Compatibilité profil vendeur
+       */
+
+      imageUrl60:
+        photoBase64,
+
+      datePublication:
+        new Date().toISOString(),
+
+      statut:
+        "actif"
+
+    };
+
+
+    /* ---------------------------------------------------
+       ENREGISTREMENT FIREBASE
+       --------------------------------------------------- */
+
+    await set(
+      newRef,
+      itemData
+    );
+
+
+    /* ---------------------------------------------------
+       SUCCÈS
+       --------------------------------------------------- */
+
+    alert(
+      "Produit publié avec succès !"
+    );
+
+
+    /* ---------------------------------------------------
+       RÉINITIALISER FORMULAIRE
+       --------------------------------------------------- */
+
+    if (e.target) {
+
+      e.target.reset();
+
+    }
+
+
+    const preview =
+      getElement(
+        "previewPublish"
+      );
+
+
+    if (preview) {
+
+      preview.style.display =
+        "none";
+
+      preview.removeAttribute(
+        "src"
+      );
+
+    }
+
+
+    const hidden =
+      getElement(
+        "base64Publish"
+      );
+
+
+    if (hidden) {
+
+      hidden.value =
+        "";
+
+    }
+
+
+    /* ---------------------------------------------------
+       ACTUALISER LES DONNÉES
+       --------------------------------------------------- */
+
+    await chargerMesProduits(
+      currentVendeurUid
+    );
+
+
+    await chargerAffiliationGlobal(
+      currentVendeurUid
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erreur publication produit :",
+      error
+    );
+
+
+    alert(
+      "Impossible de publier le produit : " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   CHARGER MES PRODUITS
+   CHEMIN :
+   produits
+   ========================================================= */
+
+async function chargerMesProduits(uid) {
+
+  const tbody =
+    getElement(
+      "boutiqueProductsList"
+    );
+
+
+  if (!tbody) return;
+
+
+  tbody.innerHTML = "";
+
+
+  const snapshot =
+    await get(
+      ref(
+        database,
+        "produits"
+      )
+    );
+
+
+  let count = 0;
+
+  listeMesProduits = [];
+
+
+  if (snapshot.exists()) {
+
+    snapshot.forEach(
+      (child) => {
+
+        const prod =
+          child.val() || {};
+
+
+        if (
+          prod.vendeurUid === uid
+        ) {
+
+          count++;
+
+
+          listeMesProduits.push({
+            id: child.key,
+            ...prod
+          });
+
+
+          const link =
+            window.location.origin +
+            "/produit.html?id=" +
+            encodeURIComponent(
+              child.key
+            ) +
+            "&aff=" +
+            encodeURIComponent(
+              uid
+            );
+
+
+          const tr =
+            document.createElement(
+              "tr"
+            );
+
+
+          tr.innerHTML = `
+
+            <td>
+
+              <img
+                src="${escapeHTML(
+                  prod.imageUrl ||
+                  prod.imageUrl60 ||
+                  ""
+                )}"
+                width="60"
+                height="60"
+                style="
+                  border-radius:6px;
+                  object-fit:cover;
+                "
+                alt="Produit"
+              >
+
+            </td>
+
+
+            <td>
+
+              <strong>
+                ${escapeHTML(
+                  prod.nom || ""
+                )}
+              </strong>
+
+              <br>
+
+              <small style="color:var(--text-muted);">
+                ${escapeHTML(
+                  (
+                    prod.categorie ||
+                    prod.type ||
+                    ""
+                  ).toUpperCase()
+                )}
+              </small>
+
+            </td>
+
+
+            <td>
+
+              ${escapeHTML(
+                prod.auteur ||
+                "Non précisé"
+              )}
+
+            </td>
+
+
+            <td>
+
+              <span class="price-promo">
+
+                ${formatPrix(
+                  prod.prixPromo
+                )}
+
+                FCFA
+
+              </span>
+
+
+              ${
+                Number(
+                  prod.prixNormal || 0
+                ) >
+                Number(
+                  prod.prixPromo || 0
+                )
+
+                ?
+
+                `
+                <span class="price-old">
+
+                  ${formatPrix(
+                    prod.prixNormal
+                  )}
+
+                  FCFA
+
+                </span>
+                `
+
+                :
+
+                ""
+              }
+
+            </td>
+
+
+            <td>
+
+              ${Number(
+                prod.stock || 0
+              )}
+
+            </td>
+
+
+            <td>
+
+              <button
+                class="btn-copy"
+                data-link="${escapeHTML(link)}"
+                onclick="window.copierLien(this.dataset.link)"
+              >
+
+                <i class="fa-solid fa-copy"></i>
+
+                Copier Lien
+
+              </button>
+
+            </td>
+
+          `;
+
+
+          tbody.appendChild(
+            tr
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------------
+     STATISTIQUE PRODUITS
+     ----------------------------------------------------- */
+
+  const statProduits =
+    getElement(
+      "statProduits"
+    );
+
+
+  if (statProduits) {
+
+    statProduits.innerText =
+      count;
+
+  }
+
+
+  /* -----------------------------------------------------
+     AUCUN PRODUIT
+     ----------------------------------------------------- */
+
+  if (count === 0) {
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6"
+          style="text-align:center;"
+        >
+
+          Aucun élément publié.
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   AFFILIATION
+   TOUS LES PRODUITS
+   ========================================================= */
+
+async function chargerAffiliationGlobal(uid) {
+
+  if (!uid) return;
+
+
+  const tbody =
+    getElement(
+      "affiliationProductsList"
+    );
+
+
+  if (!tbody) return;
+
+
+  tbody.innerHTML = "";
+
+
+  const snapshot =
+    await get(
+      ref(
+        database,
+        "produits"
+      )
+    );
+
+
+  if (!snapshot.exists()) {
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="5"
+          style="text-align:center;"
+        >
+
+          Aucun produit disponible.
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+  }
+
+
+  snapshot.forEach(
+    (child) => {
+
+      const prod =
+        child.val() || {};
+
+
+      /*
+       * Produits actifs seulement
+       */
+
+      if (
+        prod.statut &&
+        prod.statut !== "actif"
+      ) {
+
         return;
+
       }
 
-      const newRef = push(ref(database, 'produits'));
-      const idProd = newRef.key;
 
-      const itemData = {
-        id: idProd,
-        vendeurUid: currentVendeurUid,
-        type: document.getElementById('pType').value,
-        nom: document.getElementById('pNom').value,
-        auteur: document.getElementById('pAuteur').value,
-        prixNormal: Number(document.getElementById('pPrixNormal').value),
-        prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
-        stock: Number(document.getElementById('pStock').value),
-        lienExterne: document.getElementById('pLienExterne').value || "",
-        imageUrl60: photoBase64,
-        description: document.getElementById('pDescription').value,
-        datePublication: new Date().toISOString()
-      };
+      const prix =
+        Number(
+          prod.prixPromo ||
+          prod.prixNormal ||
+          0
+        );
 
-      await set(newRef, itemData);
-      alert("Ressource publiée avec succès !");
+
+      /*
+       * Commission actuelle :
+       * 10 %
+       */
+
+      const gainsEstimes =
+        Math.round(
+          prix * 0.10
+        );
+
+
+      const affLink =
+        window.location.origin +
+        "/produit.html?id=" +
+        encodeURIComponent(
+          child.key
+        ) +
+        "&aff=" +
+        encodeURIComponent(
+          uid
+        );
+
+
+      const tr =
+        document.createElement(
+          "tr"
+        );
+
+
+      tr.innerHTML = `
+
+        <td>
+
+          <img
+            src="${escapeHTML(
+              prod.imageUrl ||
+              prod.imageUrl60 ||
+              ""
+            )}"
+            width="60"
+            height="60"
+            style="
+              border-radius:6px;
+              object-fit:cover;
+            "
+            alt="Produit"
+          >
+
+        </td>
+
+
+        <td>
+
+          <strong>
+
+            ${escapeHTML(
+              prod.nom || ""
+            )}
+
+          </strong>
+
+        </td>
+
+
+        <td>
+
+          ${formatPrix(
+            prix
+          )}
+
+          FCFA
+
+        </td>
+
+
+        <td>
+
+          <strong
+            style="color:var(--success-color);"
+          >
+
+            +${formatPrix(
+              gainsEstimes
+            )}
+
+            FCFA
+
+          </strong>
+
+        </td>
+
+
+        <td>
+
+          <button
+            class="btn-copy"
+            data-link="${escapeHTML(affLink)}"
+            onclick="window.copierLien(this.dataset.link)"
+          >
+
+            <i class="fa-solid fa-link"></i>
+
+            Copier Lien Affilié
+
+          </button>
+
+        </td>
+
+      `;
+
+
+      tbody.appendChild(
+        tr
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   COPIER UN LIEN
+   ========================================================= */
+
+window.copierLien =
+async function(lien) {
+
+  if (!lien) {
+
+    alert(
+      "Lien invalide."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    await navigator.clipboard.writeText(
+      lien
+    );
+
+
+    alert(
+      "Lien copié dans le presse-papier !"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erreur copie :",
+      error
+    );
+
+
+    /*
+     * Méthode de secours
+     */
+
+    try {
+
+      const textarea =
+        document.createElement(
+          "textarea"
+        );
+
+
+      textarea.value =
+        lien;
+
+
+      textarea.style.position =
+        "fixed";
+
+      textarea.style.opacity =
+        "0";
+
+
+      document.body.appendChild(
+        textarea
+      );
+
+
+      textarea.select();
+
+      document.execCommand(
+        "copy"
+      );
+
+
+      textarea.remove();
+
+
+      alert(
+        "Lien copié !"
+      );
+
+
+    } catch {
+
+      alert(
+        "Impossible de copier automatiquement le lien."
+      );
+
+    }
+
+  }
+
+};
+
+
+/* =========================================================
+   STATISTIQUES VENDEUR
+   vendeurs_stats/{uid}
+   ========================================================= */
+
+function chargerStats(uid) {
+
+  if (!uid) return;
+
+
+  const statsRef =
+    ref(
+      database,
+      "vendeurs_stats/" + uid
+    );
+
+
+  onValue(
+    statsRef,
+    (snapshot) => {
+
+      const data =
+        snapshot.exists()
+          ? snapshot.val()
+          : {};
+
+
+      const solde =
+        Number(
+          data.solde || 0
+        );
+
+
+      const gains =
+        Number(
+          data.gainsAffiliation || 0
+        );
+
+
+      const ventes =
+        Number(
+          data.ventesTotales || 0
+        );
+
+
+      const visiteurs =
+        Number(
+          data.visiteurs || 0
+        );
+
+
+      const statSolde =
+        getElement(
+          "statSolde"
+        );
+
+
+      if (statSolde) {
+
+        statSolde.innerText =
+          formatPrix(solde) +
+          " FCFA";
+
+      }
+
+
+      const retraitSoldeDispo =
+        getElement(
+          "retraitSoldeDispo"
+        );
+
+
+      if (retraitSoldeDispo) {
+
+        retraitSoldeDispo.innerText =
+          formatPrix(solde) +
+          " FCFA";
+
+      }
+
+
+      const statGainsAffiliation =
+        getElement(
+          "statGainsAffiliation"
+        );
+
+
+      if (statGainsAffiliation) {
+
+        statGainsAffiliation.innerText =
+          formatPrix(gains) +
+          " FCFA";
+
+      }
+
+
+      const statVentes =
+        getElement(
+          "statVentes"
+        );
+
+
+      if (statVentes) {
+
+        statVentes.innerText =
+          formatPrix(ventes) +
+          " FCFA";
+
+      }
+
+
+      const statVisiteurs =
+        getElement(
+          "statVisiteurs"
+        );
+
+
+      if (statVisiteurs) {
+
+        statVisiteurs.innerText =
+          visiteurs;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   DEMANDE DE RETRAIT
+   ========================================================= */
+
+window.demanderRetrait =
+async function(e) {
+
+  e.preventDefault();
+
+
+  if (!currentVendeurUid) {
+
+    alert(
+      "Vous devez être connecté."
+    );
+
+    return;
+  }
+
+
+  const montant =
+    Number(
+      getElement(
+        "rMontant"
+      )?.value ||
+      0
+    );
+
+
+  const moyen =
+    getElement(
+      "rMoyen"
+    )?.value ||
+    "";
+
+
+  const numero =
+    getElement(
+      "rNumero"
+    )?.value.trim() ||
+    "";
+
+
+  if (
+    !montant ||
+    montant < 1000
+  ) {
+
+    alert(
+      "Le montant minimum est de 1 000 FCFA."
+    );
+
+    return;
+  }
+
+
+  if (!moyen) {
+
+    alert(
+      "Veuillez sélectionner un moyen de paiement."
+    );
+
+    return;
+  }
+
+
+  if (!numero) {
+
+    alert(
+      "Veuillez renseigner votre numéro de réception."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const newRef =
+      push(
+        ref(
+          database,
+          "retraits"
+        )
+      );
+
+
+    await set(
+      newRef,
+      {
+
+        id:
+          newRef.key,
+
+        vendeurUid:
+          currentVendeurUid,
+
+        montant:
+          montant,
+
+        moyenPaiement:
+          moyen,
+
+        numeroReceiver:
+          numero,
+
+        statut:
+          "En attente",
+
+        dateDemande:
+          new Date().toISOString()
+
+      }
+    );
+
+
+    alert(
+      "Demande de retrait transmise avec succès !"
+    );
+
+
+    if (e.target) {
+
       e.target.reset();
-      document.getElementById('previewPublish').style.display = 'none';
-      chargerMesProduits(currentVendeurUid);
-      chargerAffiliationGlobal();
-    };
 
-    // CHARGER LES PRODUITS DU VENDEUR CONNECTÉ
-    async function chargerMesProduits(uid) {
-      const snapshot = await get(ref(database, 'produits'));
-      const tbody = document.getElementById('boutiqueProductsList');
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Erreur retrait :",
+      error
+    );
+
+
+    alert(
+      "Erreur lors de la demande de retrait : " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   HISTORIQUE DES RETRAITS
+   ========================================================= */
+
+function chargerRetraits(uid) {
+
+  const retraitsRef =
+    ref(
+      database,
+      "retraits"
+    );
+
+
+  onValue(
+    retraitsRef,
+    (snapshot) => {
+
+      const tbody =
+        getElement(
+          "retraitsList"
+        );
+
+
+      if (!tbody) return;
+
+
       tbody.innerHTML = "";
+
+
       let count = 0;
 
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          const prod = child.val();
-          if (prod.vendeurUid === uid) {
-            count++;
-            const link = window.location.origin + "/produit.html?id=" + prod.id + "&aff=" + uid;
-            tbody.innerHTML += `
-              <tr>
-                <td><img src="${prod.imageUrl60}" width="60" height="60" style="border-radius:6px; object-fit:cover;"></td>
-                <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type.toUpperCase()}</small></td>
-                <td>${prod.auteur || 'Non précisé'}</td>
-                <td>
-                  <span class="price-promo">${prod.prixPromo} FCFA</span>
-                  ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
-                </td>
-                <td>${prod.stock}</td>
-                <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
-              </tr>
-            `;
-          }
-        });
-        document.getElementById('statProduits').innerText = count;
-      }
-      
-      if(count === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun élément publié.</td></tr>`;
-      }
-    }
 
-    // CHARGER TOUS LES PRODUITS POUR AFFILIATION
-    async function chargerAffiliationGlobal() {
-      const snapshot = await get(ref(database, 'produits'));
-      const tbody = document.getElementById('affiliationProductsList');
+      if (snapshot.exists()) {
+
+        snapshot.forEach(
+          (child) => {
+
+            const ret =
+              child.val() || {};
+
+
+            if (
+              ret.vendeurUid !== uid
+            ) {
+
+              return;
+
+            }
+
+
+            count++;
+
+
+            let badgeClass =
+              "status-pending";
+
+
+            if (
+              ret.statut ===
+              "Validé"
+            ) {
+
+              badgeClass =
+                "status-success";
+
+            }
+
+
+            if (
+              ret.statut ===
+              "Rejeté"
+            ) {
+
+              badgeClass =
+                "status-danger";
+
+            }
+
+
+            const tr =
+              document.createElement(
+                "tr"
+              );
+
+
+            tr.innerHTML = `
+
+              <td>
+
+                ${
+                  ret.dateDemande
+
+                  ?
+
+                  new Date(
+                    ret.dateDemande
+                  ).toLocaleDateString(
+                    "fr-FR"
+                  )
+
+                  :
+
+                  ""
+                }
+
+              </td>
+
+
+              <td>
+
+                <strong>
+
+                  ${formatPrix(
+                    ret.montant
+                  )}
+
+                  FCFA
+
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                ${escapeHTML(
+                  ret.moyenPaiement ||
+                  ""
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${escapeHTML(
+                  ret.numeroReceiver ||
+                  ""
+                )}
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="status-badge ${badgeClass}"
+                >
+
+                  ${escapeHTML(
+                    ret.statut ||
+                    "En attente"
+                  )}
+
+                </span>
+
+              </td>
+
+            `;
+
+
+            tbody.appendChild(
+              tr
+            );
+
+          }
+        );
+
+      }
+
+
+      if (count === 0) {
+
+        tbody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="5"
+              style="text-align:center;"
+            >
+
+              Aucune demande de retrait effectuée.
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   COMMANDES VENDEUR
+   ========================================================= */
+
+function chargerCommandes(uid) {
+
+  const cmdRef =
+    ref(
+      database,
+      "commandes"
+    );
+
+
+  onValue(
+    cmdRef,
+    (snapshot) => {
+
+      const tbody =
+        getElement(
+          "commandesList"
+        );
+
+
+      if (!tbody) return;
+
+
       tbody.innerHTML = "";
 
+
+      let count = 0;
+
+
       if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          const prod = child.val();
-          const gainsEstimes = Math.round((prod.prixPromo || prod.prixNormal) * 0.10);
-          const affLink = window.location.origin + "/produit.html?id=" + prod.id + "&aff=" + currentVendeurUid;
-          
-          tbody.innerHTML += `
-            <tr>
-              <td><img src="${prod.imageUrl60 || 'https://via.placeholder.com/60'}" width="60" height="60" style="border-radius:6px; object-fit:cover;"></td>
-              <td><strong>${prod.nom}</strong></td>
-              <td>${prod.prixPromo || prod.prixNormal} FCFA</td>
-              <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
-              <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
-            </tr>
-          `;
-        });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit disponible.</td></tr>`;
-      }
-    }
 
-    // COPIER DANS LE PRESSE-PAPIER
-    window.copierLien = function(lien) {
-      navigator.clipboard.writeText(lien).then(() => {
-        alert("Lien copié avec succès !");
-      });
-    };
+        snapshot.forEach(
+          (child) => {
 
-    // CHARGER LES STATISTIQUES EN TEMPS RÉEL
-    function chargerStats(uid) {
-      const statsRef = ref(database, 'vendeurs_stats/' + uid);
-      onValue(statsRef, (snapshot) => {
-        if(snapshot.exists()) {
-          const data = snapshot.val();
-          document.getElementById('statSolde').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('statGainsAffiliation').innerText = (data.gainsAffiliation || 0) + " FCFA";
-          document.getElementById('statVentes').innerText = (data.ventesTotales || 0) + " FCFA";
-          document.getElementById('statVisiteurs').innerText = (data.visiteurs || 0);
-        }
-      });
-    }
+            const cmd =
+              child.val() || {};
 
-    // DEMANDER UN RETRAIT
-    window.demanderRetrait = async function(e) {
-      e.preventDefault();
-      const montant = Number(document.getElementById('rMontant').value);
-      const moyen = document.getElementById('rMoyen').value;
-      const numero = document.getElementById('rNumero').value;
 
-      if(!moyen) {
-        alert("Veuillez choisir un moyen de paiement Mobile Money !");
-        return;
-      }
+            if (
+              cmd.vendeurUid !== uid
+            ) {
 
-      const newRetraitRef = push(ref(database, 'retraits'));
-      await set(newRetraitRef, {
-        id: newRetraitRef.key,
-        vendeurUid: currentVendeurUid,
-        montant: montant,
-        moyenPaiement: moyen,
-        numeroReceiver: numero,
-        statut: "En attente",
-        dateDemande: new Date().toISOString()
-      });
+              return;
 
-      alert("Demande de retrait enregistrée !");
-      e.target.reset();
-    };
-
-    // HISTORIQUE DES RETRAITS
-    function chargerRetraits(uid) {
-      const retraitsRef = ref(database, 'retraits');
-      onValue(retraitsRef, (snapshot) => {
-        const tbody = document.getElementById('retraitsList');
-        tbody.innerHTML = "";
-        let count = 0;
-
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const ret = child.val();
-            if (ret.vendeurUid === uid) {
-              count++;
-              let badgeClass = "status-pending";
-              if(ret.statut === "Validé") badgeClass = "status-success";
-              if(ret.statut === "Rejeté") badgeClass = "status-danger";
-
-              tbody.innerHTML += `
-                <tr>
-                  <td>${new Date(ret.dateDemande).toLocaleDateString('fr-FR')}</td>
-                  <td><strong>${ret.montant} FCFA</strong></td>
-                  <td>${ret.moyenPaiement}</td>
-                  <td>${ret.numeroReceiver}</td>
-                  <td><span class="status-badge ${badgeClass}">${ret.statut}</span></td>
-                </tr>
-              `;
             }
-          });
-        }
 
-        if (count === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune demande de retrait enregistrée.</td></tr>`;
-        }
-      });
-    }
 
-    // COMMANDES CLIENTS
-    function chargerCommandes(uid) {
-      const cmdRef = ref(database, 'commandes');
-      onValue(cmdRef, (snapshot) => {
-        const tbody = document.getElementById('commandesList');
-        tbody.innerHTML = "";
-        let count = 0;
+            count++;
 
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const cmd = child.val();
-            if (cmd.vendeurUid === uid) {
-              count++;
-              let badgeClass = "status-pending";
-              if(cmd.statut === "Livré") badgeClass = "status-success";
-              if(cmd.statut === "En livraison") badgeClass = "status-info";
 
-              tbody.innerHTML += `
-                <tr>
-                  <td>#${cmd.id ? cmd.id.substring(0, 6) : 'CMD'}</td>
-                  <td><strong>${cmd.nomClient || 'Client'}</strong><br><small>${cmd.phoneClient || ''}</small></td>
-                  <td>${cmd.montantTotal || 0} FCFA</td>
-                  <td><span class="status-badge ${badgeClass}">${cmd.statut || 'En attente'}</span></td>
-                  <td>${new Date(cmd.dateCommande || Date.now()).toLocaleDateString('fr-FR')}</td>
-                </tr>
-              `;
+            let badgeClass =
+              "status-pending";
+
+
+            if (
+              cmd.statut ===
+              "Livré"
+            ) {
+
+              badgeClass =
+                "status-success";
+
             }
-          });
-        }
 
-        if (count === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune commande disponible.</td></tr>`;
-        }
-      });
+
+            if (
+              cmd.statut ===
+              "En livraison"
+            ) {
+
+              badgeClass =
+                "status-info";
+
+            }
+
+
+            const tr =
+              document.createElement(
+                "tr"
+              );
+
+
+            tr.innerHTML = `
+
+              <td>
+
+                #${
+                  cmd.id
+
+                  ?
+
+                  escapeHTML(
+                    String(
+                      cmd.id
+                    ).substring(
+                      0,
+                      6
+                    )
+                  )
+
+                  :
+
+                  "CMD"
+                }
+
+              </td>
+
+
+              <td>
+
+                <strong>
+
+                  ${escapeHTML(
+                    cmd.nomClient ||
+                    "Client"
+                  )}
+
+                </strong>
+
+                <br>
+
+                <small>
+
+                  ${escapeHTML(
+                    cmd.phoneClient ||
+                    ""
+                  )}
+
+                </small>
+
+              </td>
+
+
+              <td>
+
+                ${formatPrix(
+                  cmd.montantTotal
+                )}
+
+                FCFA
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="status-badge ${badgeClass}"
+                >
+
+                  ${escapeHTML(
+                    cmd.statut ||
+                    "En attente"
+                  )}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                ${
+                  cmd.dateCommande
+
+                  ?
+
+                  new Date(
+                    cmd.dateCommande
+                  ).toLocaleDateString(
+                    "fr-FR"
+                  )
+
+                  :
+
+                  ""
+                }
+
+              </td>
+
+            `;
+
+
+            tbody.appendChild(
+              tr
+            );
+
+          }
+        );
+
+      }
+
+
+      if (count === 0) {
+
+        tbody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="5"
+              style="text-align:center;"
+            >
+
+              Aucune commande pour le moment.
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CRÉER COUPON
+   coupons/{uid}/{id}
+   ========================================================= */
+
+window.creerCoupon =
+async function(e) {
+
+  e.preventDefault();
+
+
+  if (!currentVendeurUid) {
+
+    alert(
+      "Vous devez être connecté."
+    );
+
+    return;
+  }
+
+
+  const code =
+    getElement(
+      "cCode"
+    )?.value
+      .trim()
+      .toUpperCase();
+
+
+  const valeur =
+    Number(
+      getElement(
+        "cValeur"
+      )?.value ||
+      0
+    );
+
+
+  const type =
+    getElement(
+      "cType"
+    )?.value ||
+    "";
+
+
+  if (!code || !valeur) {
+
+    alert(
+      "Veuillez remplir tous les champs."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const newRef =
+      push(
+        ref(
+          database,
+          "coupons/" +
+          currentVendeurUid
+        )
+      );
+
+
+    await set(
+      newRef,
+      {
+
+        id:
+          newRef.key,
+
+        code:
+          code,
+
+        valeur:
+          valeur,
+
+        type:
+          type,
+
+        vendeurUid:
+          currentVendeurUid,
+
+        dateCreation:
+          new Date().toISOString()
+
+      }
+    );
+
+
+    alert(
+      "Coupon créé avec succès !"
+    );
+
+
+    if (e.target) {
+
+      e.target.reset();
+
     }
 
-    // CRÉATION DE COUPON PROMO
-    window.creerCoupon = async function(e) {
-      e.preventDefault();
-      const code = document.getElementById('cCode').value.toUpperCase();
-      const valeur = Number(document.getElementById('cValeur').value);
-      const type = document.getElementById('cType').value;
 
-      const newRef = push(ref(database, 'coupons/' + currentVendeurUid));
-      await set(newRef, {
-        code: code,
-        valeur: valeur,
-        type: type,
-        dateCreation: new Date().toISOString()
-      });
+  } catch (error) {
 
-      alert("Code promo créé avec succès !");
-      e.target.reset();
+    console.error(
+      "Erreur coupon :",
+      error
+    );
+
+
+    alert(
+      "Erreur lors de la création du coupon : " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   MISE À JOUR DU PROFIL
+   ========================================================= */
+
+window.mettreAJourProfil =
+async function(e) {
+
+  e.preventDefault();
+
+
+  if (!currentVendeurUid) {
+
+    alert(
+      "Vous devez être connecté."
+    );
+
+    return;
+  }
+
+
+  const nomBoutique =
+    getElement(
+      "profBoutique"
+    )?.value.trim();
+
+
+  const phone =
+    getElement(
+      "profPhone"
+    )?.value.trim();
+
+
+  const avatar60 =
+    getElement(
+      "base64Avatar"
+    )?.value;
+
+
+  if (!nomBoutique) {
+
+    alert(
+      "Veuillez renseigner le nom de votre boutique."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const modifications = {
+
+      nomBoutique:
+        nomBoutique,
+
+      telephone:
+        phone || "",
+
+      role:
+        "vendeur",
+
+      email:
+        auth.currentUser?.email ||
+        "",
+
+      dateModification:
+        new Date().toISOString()
+
     };
 
-    // METTRE À JOUR PROFIL ET ENVOYER LES PIÈCES ADMINISTRATIVES
-    window.mettreAJourProfil = async function(e) {
-      e.preventDefault();
-      const nomBoutique = document.getElementById('profBoutique').value;
-      const phone = document.getElementById('profPhone').value;
-      const avatar60 = document.getElementById('base64Avatar').value;
-      const cni60 = document.getElementById('base64CNI').value;
-      const photoId60 = document.getElementById('base64PhotoId').value;
 
-      await set(ref(database, 'users/' + currentVendeurUid + '/nomBoutique'), nomBoutique);
-      await set(ref(database, 'users/' + currentVendeurUid + '/telephone'), phone);
-      
-      if (avatar60) {
-        await set(ref(database, 'users/' + currentVendeurUid + '/photo60'), avatar60);
-      }
-      if (cni60) {
-        await set(ref(database, 'users/' + currentVendeurUid + '/cniPhoto60'), cni60);
-      }
-      if (photoId60) {
-        await set(ref(database, 'users/' + currentVendeurUid + '/photoId60'), photoId60);
-      }
+    if (avatar60) {
 
-      alert("Profil et documents mis à jour avec succès !");
-      chargerProfilVendeur(currentVendeurUid);
-    };
+      modifications.photo60 =
+        avatar60;
 
-    // DÉCONNEXION
-    window.deconnexionVendeur = function() {
-      signOut(auth).then(() => {
-        window.location.href = "vendeur.html";
-      });
-    };
+    }
 
-    // INITIALISATION DES GRAPHIQUES CHART.JS
-    window.addEventListener('DOMContentLoaded', () => {
-      const ctxPerf = document.getElementById('performanceChart')?.getContext('2d');
-      if (ctxPerf) {
-        new Chart(ctxPerf, {
-          type: 'line',
-          data: {
-            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-            datasets: [{
-              label: 'Ventes & Gains (FCFA)',
-              data: [120000, 190000, 300000, 250000, 420000, 550000],
-              borderColor: '#d4af37',
-              backgroundColor: 'rgba(212, 175, 55, 0.1)',
-              fill: true,
-              tension: 0.3
-            }]
+
+    await update(
+      ref(
+        database,
+        "users/" +
+        currentVendeurUid
+      ),
+      modifications
+    );
+
+
+    alert(
+      "Profil mis à jour avec succès !"
+    );
+
+
+    await chargerProfilVendeur(
+      currentVendeurUid
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Erreur profil :",
+      error
+    );
+
+
+    alert(
+      "Impossible de mettre à jour le profil : " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   DÉCONNEXION
+   ========================================================= */
+
+window.deconnexionVendeur =
+async function() {
+
+  try {
+
+    await signOut(
+      auth
+    );
+
+
+    window.location.replace(
+      "connexion.html"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erreur déconnexion :",
+      error
+    );
+
+
+    alert(
+      "Impossible de vous déconnecter."
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   GRAPHIQUES
+   ========================================================= */
+
+function initialiserGraphiques() {
+
+  /*
+   * Vérification :
+   * Chart.js doit être chargé dans le HTML.
+   */
+
+  if (
+    typeof Chart ===
+    "undefined"
+  ) {
+
+    console.warn(
+      "Chart.js n'est pas chargé."
+    );
+
+    return;
+  }
+
+
+  /* -----------------------------------------------------
+     GRAPHIQUE PERFORMANCE
+     ----------------------------------------------------- */
+
+  const canvasPerf =
+    getElement(
+      "performanceChart"
+    );
+
+
+  if (
+    canvasPerf &&
+    !canvasPerf.dataset.initialized
+  ) {
+
+    const ctxPerf =
+      canvasPerf.getContext(
+        "2d"
+      );
+
+
+    new Chart(
+      ctxPerf,
+      {
+
+        type:
+          "line",
+
+        data:
+          {
+
+            labels:
+              [
+                "Jan",
+                "Fév",
+                "Mar",
+                "Avr",
+                "Mai",
+                "Juin"
+              ],
+
+            datasets:
+              [
+
+                {
+
+                  label:
+                    "Ventes & Gains (FCFA)",
+
+                  data:
+                    [
+                      120000,
+                      190000,
+                      300000,
+                      250000,
+                      420000,
+                      550000
+                    ],
+
+                  borderColor:
+                    "#d4af37",
+
+                  backgroundColor:
+                    "rgba(212,175,55,0.1)",
+
+                  fill:
+                    true,
+
+                  tension:
+                    0.3
+
+                }
+
+              ]
+
           }
-        });
-      }
 
-      const ctxAnalytics = document.getElementById('analyticsChart')?.getContext('2d');
-      if (ctxAnalytics) {
-        new Chart(ctxAnalytics, {
-          type: 'bar',
-          data: {
-            labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-            datasets: [
-              { label: 'Ventes Directes', data: [50000, 75000, 60000, 90000], backgroundColor: '#0f172a' },
-              { label: 'Gains Affiliation', data: [15000, 25000, 20000, 35000], backgroundColor: '#d4af37' }
-            ]
-          }
-        });
       }
-    });
-  </script>
-</body>
-</html>
+    );
+
+
+    canvasPerf.dataset.initialized =
+      "true";
+
+  }
+
+
+  /* -----------------------------------------------------
+     GRAPHIQUE ANALYTICS
+     ----------------------------------------------------- */
+
+  const canvasAnalytics =
+    getElement(
+      "analyticsChart"
+    );
+
+
+  if (
+    canvasAnalytics &&
+    !canvasAnalytics.dataset.initialized
+  ) {
+
+    const ctxAnalytics =
+      canvasAnalytics.getContext(
+        "2d"
+      );
+
+
+    new Chart(
+      ctxAnalytics,
+      {
+
+        type:
+          "bar",
+
+        data:
+          {
+
+            labels:
+              [
+                "Semaine 1",
+                "Semaine 2",
+                "Semaine 3",
+                "Semaine 4"
+              ],
+
+            datasets:
+              [
+
+                {
+
+                  label:
+                    "Ventes Directes",
+
+                  data:
+                    [
+                      50000,
+                      75000,
+                      60000,
+                      90000
+                    ],
+
+                  backgroundColor:
+                    "#0f172a"
+
+                },
+
+
+                {
+
+                  label:
+                    "Gains Affiliation",
+
+                  data:
+                    [
+                      15000,
+                      25000,
+                      20000,
+                      35000
+                    ],
+
+                  backgroundColor:
+                    "#d4af37"
+
+                }
+
+              ]
+
+          }
+
+      }
+    );
+
+
+    canvasAnalytics.dataset.initialized =
+      "true";
+
+  }
+
+}
+
+
+/* =========================================================
+   INITIALISATION PAGE
+   ========================================================= */
+
+if (
+  document.readyState ===
+  "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+      afficherDateActuelle();
+
+      initialiserGraphiques();
+
+    }
+  );
+
+} else {
+
+  afficherDateActuelle();
+
+  initialiserGraphiques();
+
+}
+
+
+</script>

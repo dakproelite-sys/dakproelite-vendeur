@@ -1,269 +1,1438 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full bg-slate-950">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAKPROELITE - Espace Dropshipping</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>DAKPROELITE - Catalogue Dropshipping</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
     .glass-card {
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .35s ease;
+    }
+
+    #pageLoader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
   </style>
+
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl shadow-black/30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-      
-      <!-- Logo DAKPROELITE avec badge Dropshipping -->
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-amber-400 to-emerald-500 p-0.5 shadow-md shadow-blue-500/20">
-          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-extrabold text-white text-xl">
-            D
-          </div>
-        </div>
-        <div>
-          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-white block leading-none">DAKPROELITE</span>
-          <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase flex items-center gap-1 mt-0.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Espace Dropshipper
-          </span>
-        </div>
+
+<body
+  class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950"
+>
+
+
+<!-- =========================================================
+     LOADER
+     ========================================================= -->
+
+<div id="pageLoader">
+
+  <div class="text-center">
+
+    <div
+      class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 via-amber-400 to-emerald-500 p-0.5"
+    >
+
+      <div
+        class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-white font-extrabold text-2xl"
+      >
+        D
       </div>
-      
-      <!-- Actions Header -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
-        
-        <!-- Bouton Copier Mon Lien Affilié -->
-        <button onclick="copierMonLienVendeur()" class="px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95" title="Obtenir mon lien affilié">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 105.656 5.656l-1.1 1.1"/></svg>
-          <span class="hidden sm:inline">Mon Lien Affilié</span>
-        </button>
 
-        <!-- Bouton Copier Tout Le Catalogue -->
-        <button onclick="copierToutLeCatalogue()" class="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span class="hidden md:inline">Copier Catalogue</span>
-        </button>
-
-        <!-- Bouton Connexion (Redirection vers connexion.html) -->
-        <a href="connexion.html" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95 shadow-lg shadow-blue-600/30">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-          </svg>
-          <span>Connexion</span>
-        </a>
-
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
-    
-    <!-- Toast Notification -->
-    <div id="toastNotification" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/40 flex items-center space-x-3 transition-all duration-300">
-      <div class="w-7 h-7 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-      </div>
-      <span id="toastMessage">Texte copié ! Prêt à être collé sur vos réseaux.</span>
     </div>
 
-    <!-- Banner Info Dropshipping -->
-    <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-900 border border-blue-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </div>
-        <div>
-          <h2 class="text-sm sm:text-base font-bold text-white">Centre de Ressources Dropshipping</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Sélectionnez et copiez les textes de vente pré-rédigés pour vos réseaux sociaux.</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 text-xs font-bold">
-        <span class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">✓ Marge Garantie</span>
-      </div>
+    <div class="flex justify-center mb-3">
+
+      <svg
+        class="animate-spin w-6 h-6 text-blue-400"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+        ></path>
+
+      </svg>
+
     </div>
 
-    <!-- En-tête de section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+    <p class="text-sm font-semibold text-slate-400">
+      Chargement du catalogue...
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<header
+  class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl"
+>
+
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3"
+  >
+
+
+    <!-- LOGO -->
+
+    <a
+      href="index.html"
+      class="flex items-center space-x-3 flex-shrink-0"
+    >
+
+      <div
+        class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-amber-400 to-emerald-500 p-0.5"
+      >
+
+        <div
+          class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-extrabold text-white text-xl"
+        >
+          D
+        </div>
+
+      </div>
+
+
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Catalogue Dropshipper</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Exportez vos offres directement vers WhatsApp, Facebook Marketplace, TikTok et Status.</p>
+
+        <span
+          class="text-lg sm:text-xl font-extrabold tracking-tight text-white block leading-none"
+        >
+          DAKPROELITE
+        </span>
+
+        <span
+          class="text-[10px] font-bold text-amber-400 tracking-wider uppercase flex items-center gap-1 mt-0.5"
+        >
+
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
+          ></span>
+
+          Catalogue Dropshipping
+
+        </span>
+
       </div>
+
+    </a>
+
+
+    <!-- ACTIONS -->
+
+    <div class="flex items-center gap-2">
+
+
+      <!-- RECHERCHE -->
+
+      <button
+        onclick="focusRecherche()"
+        class="hidden sm:flex px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold rounded-xl transition-all"
+        title="Rechercher un produit"
+      >
+
+        🔎
+
+        <span class="ml-1">
+          Rechercher
+        </span>
+
+      </button>
+
+
+      <!-- LIEN AFFILIE -->
+
+      <button
+        onclick="copierMonLienVendeur()"
+        class="px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition-all"
+      >
+
+        🔗
+
+        <span class="hidden md:inline ml-1">
+          Mon lien
+        </span>
+
+      </button>
+
+
+      <!-- ESPACE VENDEUR -->
+
+      <a
+        id="boutonEspaceVendeur"
+        href="connexion.html"
+        class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/40 text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/30"
+      >
+
+        <span id="texteEspaceVendeur">
+          Connexion
+        </span>
+
+      </a>
+
     </div>
 
-    <!-- Grille des produits -->
-    <div id="gridProduits" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
-      <!-- Les cartes produits dynamiques s'afficheront ici -->
+  </div>
+
+</header>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div
+  id="toastNotification"
+  class="hidden fixed bottom-6 right-4 left-4 sm:left-auto sm:right-6 z-[100] max-w-md bg-slate-900 text-white text-xs font-semibold px-4 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/40"
+>
+
+  <div class="flex items-center gap-3">
+
+    <div
+      class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0"
+    >
+      ✓
     </div>
-  </main>
 
-  <!-- Script Notification & Actions UI -->
-  <script>
-    function afficherToast(message) {
-      const toast = document.getElementById('toastNotification');
-      document.getElementById('toastMessage').innerText = message;
-      toast.classList.remove('hidden');
-      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+    <span id="toastMessage">
+      Opération effectuée.
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     CONTENU
+     ========================================================= -->
+
+<main
+  class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full"
+>
+
+
+  <!-- BANNER -->
+
+  <div
+    class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-900 border border-blue-500/30"
+  >
+
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-between gap-5"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0"
+        >
+          ⚡
+        </div>
+
+        <div>
+
+          <h1
+            class="text-base sm:text-lg font-bold text-white"
+          >
+            Centre de Ressources Dropshipping
+          </h1>
+
+          <p
+            class="text-xs text-slate-400 mt-1"
+          >
+            Choisissez un produit, copiez votre texte de vente et partagez-le facilement.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="flex items-center gap-2 text-xs font-bold"
+      >
+
+        <span
+          id="nombreProduits"
+          class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+        >
+          0 produit
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TITRE -->
+
+  <div
+    class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6"
+  >
+
+    <div>
+
+      <h2
+        class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight"
+      >
+        Catalogue Dropshipper
+      </h2>
+
+      <p
+        class="text-xs sm:text-sm text-slate-400 mt-1"
+      >
+        Découvrez les produits disponibles à la revente.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECHERCHE + FILTRE -->
+
+  <div
+    class="flex flex-col sm:flex-row gap-3 mb-7"
+  >
+
+    <div class="relative flex-1">
+
+      <input
+        id="rechercheProduit"
+        type="search"
+        placeholder="Rechercher un produit..."
+        class="w-full px-4 py-3 pl-11 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+      >
+
+      <span
+        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+      >
+        🔎
+      </span>
+
+    </div>
+
+
+    <select
+      id="filtreCategorie"
+      class="sm:w-56 px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500"
+    >
+
+      <option value="">
+        Toutes les catégories
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- MESSAGE ERREUR -->
+
+  <div
+    id="messageErreur"
+    class="hidden mb-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-sm"
+  >
+  </div>
+
+
+  <!-- GRILLE -->
+
+  <div
+    id="gridProduits"
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
+  >
+
+  </div>
+
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer
+  class="py-5 text-center text-xs text-slate-500 border-t border-slate-800 bg-slate-950"
+>
+
+  © DAKPROELITE - Plateforme Dropshipping.
+  Tous droits réservés.
+
+</footer>
+
+
+<!-- =========================================================
+     FIREBASE
+     ========================================================= -->
+
+<script type="module">
+
+  import {
+    db,
+    auth
+  } from "./js/firebaseConfig.js";
+
+
+  import {
+    ref,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+
+  /* =========================================================
+     VARIABLES
+     ========================================================= */
+
+  let listeProduits = [];
+
+  let utilisateurConnecte = null;
+
+
+  /*
+   * CHEMIN UNIQUE DU CATALOGUE
+   *
+   * Le vendeur doit publier également dans :
+   *
+   * produits
+   *
+   */
+
+  const produitsRef = ref(
+    db,
+    "produits"
+  );
+
+
+  /* =========================================================
+     UTILITAIRES
+     ========================================================= */
+
+  function echapperHTML(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function afficherToast(message) {
+
+    const toast =
+      document.getElementById(
+        "toastNotification"
+      );
+
+    const text =
+      document.getElementById(
+        "toastMessage"
+      );
+
+
+    if (!toast || !text) return;
+
+
+    text.innerText = message;
+
+    toast.classList.remove(
+      "hidden"
+    );
+
+
+    clearTimeout(
+      window.toastTimer
+    );
+
+
+    window.toastTimer =
+      setTimeout(() => {
+
+        toast.classList.add(
+          "hidden"
+        );
+
+      }, 3000);
+
+  }
+
+
+  function cacherLoader() {
+
+    const loader =
+      document.getElementById(
+        "pageLoader"
+      );
+
+
+    if (!loader) return;
+
+
+    loader.classList.add(
+      "hidden"
+    );
+
+
+    setTimeout(() => {
+
+      loader.style.display = "none";
+
+    }, 400);
+
+  }
+
+
+  /* =========================================================
+     AUTHENTIFICATION
+     ========================================================= */
+
+  onAuthStateChanged(
+    auth,
+    (user) => {
+
+      utilisateurConnecte =
+        user || null;
+
+
+      const bouton =
+        document.getElementById(
+          "boutonEspaceVendeur"
+        );
+
+      const texte =
+        document.getElementById(
+          "texteEspaceVendeur"
+        );
+
+
+      if (!bouton || !texte) return;
+
+
+      if (user) {
+
+        bouton.href =
+          "profil-vendeur.html";
+
+        texte.innerText =
+          "Mon espace vendeur";
+
+      } else {
+
+        bouton.href =
+          "connexion.html";
+
+        texte.innerText =
+          "Connexion";
+
+      }
+
     }
+  );
 
-    function copierMonLienVendeur() {
-      const nomVendeur = prompt("Entrez votre Identifiant Vendeur / Affilié :", "mon_nom");
-      if (!nomVendeur) return;
 
-      const baseDomain = window.location.origin;
-      const slug = nomVendeur.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
-      const lienVendeur = `${baseDomain}/index.html?ref=${slug}`;
+  /* =========================================================
+     CHARGEMENT DES PRODUITS
+     ========================================================= */
 
-      navigator.clipboard.writeText(lienVendeur).then(() => {
-        afficherToast(`Lien généré et copié : ${lienVendeur}`);
-      });
-    }
-  </script>
+  onValue(
 
-  <!-- Intégration Firebase SDK v9+ Module -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    produitsRef,
 
-    // Configuration Firebase du projet DAKPROELITE
-    const firebaseConfig = {
-      apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
-      authDomain: "dakproelite.firebaseapp.com",
-      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
-      projectId: "dakproelite",
-      storageBucket: "dakproelite.appspot.com",
-      messagingSenderId: "580591769206",
-      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
-    };
+    (snapshot) => {
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const produitsRef = ref(db, 'produits_vendeurs');
-
-    let listeProduits = [];
-
-    // Chargement initial
-    window.addEventListener('DOMContentLoaded', () => {
-      afficherProduits(listeProduits);
-    });
-
-    // Écoute dynamique Realtime Database
-    onValue(produitsRef, (snapshot) => {
       listeProduits = [];
-      const data = snapshot.val();
+
+
+      const data =
+        snapshot.val();
+
+
       if (data) {
-        Object.keys(data).forEach(key => {
-          listeProduits.push({ id: key, ...data[key] });
-        });
-      }
-      afficherProduits(listeProduits);
-    });
 
-    window.afficherProduits = function(produits) {
-      const container = document.getElementById('gridProduits');
+        Object.keys(data).forEach(
+          (key) => {
+
+            const produit =
+              data[key];
+
+
+            if (
+              produit &&
+              typeof produit === "object"
+            ) {
+
+              listeProduits.push({
+
+                id: key,
+
+                ...produit
+
+              });
+
+            }
+
+          }
+        );
+
+      }
+
+
+      construireCategories();
+
+      appliquerFiltres();
+
+      mettreAJourCompteur();
+
+      cacherLoader();
+
+    },
+
+    (error) => {
+
+      console.error(
+        "Erreur Firebase :",
+        error
+      );
+
+
+      const erreur =
+        document.getElementById(
+          "messageErreur"
+        );
+
+
+      if (erreur) {
+
+        erreur.innerText =
+          "Impossible de charger le catalogue. Vérifiez votre connexion Internet ou les règles Firebase.";
+
+        erreur.classList.remove(
+          "hidden"
+        );
+
+      }
+
+
+      cacherLoader();
+
+    }
+
+  );
+
+
+  /* =========================================================
+     CATEGORIES
+     ========================================================= */
+
+  function construireCategories() {
+
+    const select =
+      document.getElementById(
+        "filtreCategorie"
+      );
+
+
+    if (!select) return;
+
+
+    const categories =
+      new Set();
+
+
+    listeProduits.forEach(
+      (produit) => {
+
+        const categorie =
+          String(
+            produit.categorie || ""
+          ).trim();
+
+
+        if (categorie) {
+
+          categories.add(
+            categorie
+          );
+
+        }
+
+      }
+    );
+
+
+    select.innerHTML =
+      '<option value="">Toutes les catégories</option>';
+
+
+    Array.from(categories)
+      .sort()
+      .forEach(
+        (categorie) => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            categorie;
+
+          option.textContent =
+            categorie;
+
+          select.appendChild(
+            option
+          );
+
+        }
+      );
+
+  }
+
+
+  /* =========================================================
+     RECHERCHE
+     ========================================================= */
+
+  const recherche =
+    document.getElementById(
+      "rechercheProduit"
+    );
+
+
+  const filtre =
+    document.getElementById(
+      "filtreCategorie"
+    );
+
+
+  if (recherche) {
+
+    recherche.addEventListener(
+      "input",
+      appliquerFiltres
+    );
+
+  }
+
+
+  if (filtre) {
+
+    filtre.addEventListener(
+      "change",
+      appliquerFiltres
+    );
+
+  }
+
+
+  window.focusRecherche =
+    function() {
+
+      if (!recherche) return;
+
+      recherche.focus();
+
+      recherche.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+    };
+
+
+  function appliquerFiltres() {
+
+    const texte =
+      (
+        recherche?.value || ""
+      )
+        .trim()
+        .toLowerCase();
+
+
+    const categorie =
+      filtre?.value || "";
+
+
+    const produitsFiltres =
+      listeProduits.filter(
+        (produit) => {
+
+          const nom =
+            String(
+              produit.nom || ""
+            ).toLowerCase();
+
+
+          const description =
+            String(
+              produit.description || ""
+            ).toLowerCase();
+
+
+          const cat =
+            String(
+              produit.categorie || ""
+            );
+
+
+          const correspondRecherche =
+            !texte ||
+            nom.includes(texte) ||
+            description.includes(texte);
+
+
+          const correspondCategorie =
+            !categorie ||
+            cat === categorie;
+
+
+          return (
+            correspondRecherche &&
+            correspondCategorie
+          );
+
+        }
+      );
+
+
+    afficherProduits(
+      produitsFiltres
+    );
+
+  }
+
+
+  /* =========================================================
+     COMPTEUR
+     ========================================================= */
+
+  function mettreAJourCompteur() {
+
+    const compteur =
+      document.getElementById(
+        "nombreProduits"
+      );
+
+
+    if (!compteur) return;
+
+
+    const nombre =
+      listeProduits.length;
+
+
+    compteur.innerText =
+      `${nombre} produit${nombre > 1 ? "s" : ""}`;
+
+  }
+
+
+  /* =========================================================
+     AFFICHAGE PRODUITS
+     ========================================================= */
+
+  window.afficherProduits =
+    function(produits) {
+
+      const container =
+        document.getElementById(
+          "gridProduits"
+        );
+
+
       if (!container) return;
-      container.innerHTML = '';
 
-      if (!produits || produits.length === 0) {
+
+      container.innerHTML = "";
+
+
+      if (
+        !produits ||
+        produits.length === 0
+      ) {
+
         container.innerHTML = `
-          <div class="col-span-full py-16 text-center glass-card rounded-2xl border border-slate-800">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto mb-3">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-            </div>
-            <p class="text-sm font-semibold text-slate-300">Aucun produit disponible pour le moment.</p>
-            <p class="text-xs text-slate-500 mt-1">Les nouveaux produits publiés apparaîtront automatiquement ici.</p>
-          </div>`;
-        return;
-      }
 
-      produits.forEach(p => {
-        const reduction = (p.prixNormal && p.prixNormal > p.prixPromo) 
-          ? Math.round(((p.prixNormal - p.prixPromo) / p.prixNormal) * 100) 
-          : 0;
-        
-        container.innerHTML += `
-          <div class="glass-card rounded-2xl overflow-hidden hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between group">
-            <div>
-              <div class="relative h-52 bg-slate-950 overflow-hidden">
-                <img src="${p.imageUrl}" alt="${p.nom}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300/0f172a/94a3b8?text=DAKPROELITE'">
-                ${reduction > 0 ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-lg shadow-red-600/30">-${reduction}% OFF</span>` : ''}
-                <span class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg shadow-md">${p.categorie || 'GENERAL'}</span>
-              </div>
+          <div
+            class="col-span-full py-16 px-5 text-center glass-card rounded-2xl border border-slate-800"
+          >
 
-              <div class="p-4">
-                <h2 class="text-base font-bold text-white truncate">${p.nom}</h2>
-                <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${p.description}</p>
-              </div>
+            <div
+              class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto mb-4 text-2xl"
+            >
+              📦
             </div>
 
-            <div class="px-4 pb-4 pt-3 border-t border-slate-800/80">
-              <div class="flex items-baseline justify-between mb-3">
-                <div>
-                  <span class="text-xs text-slate-500 block">Prix Revente :</span>
-                  <span class="text-lg font-extrabold text-amber-400">${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA</span>
-                </div>
-                <div class="text-right">
-                  <span class="text-xs text-slate-500 block">Prix Conseillé :</span>
-                  <span class="text-xs font-semibold text-red-400 line-through">${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA</span>
-                </div>
-              </div>
+            <p
+              class="text-sm font-semibold text-slate-300"
+            >
+              Aucun produit trouvé.
+            </p>
 
-              <button onclick="copierPartageSocial('${p.id}')" class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-md">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span>Copier Texte de Vente</span>
-              </button>
-            </div>
+            <p
+              class="text-xs text-slate-500 mt-1"
+            >
+              Essayez une autre recherche ou une autre catégorie.
+            </p>
+
           </div>
+
         `;
-      });
-    };
 
-    window.copierPartageSocial = function(id) {
-      const p = listeProduits.find(item => item.id === id);
-      if (!p) return;
-
-      const texteSocial = 
-`🔥 *OFFRE SPECIALE - DISPONIBLE EN STOCK* 🔥
-📦 *${p.nom.toUpperCase()}*
-
-📝 ${p.description}
-
-💰 *Prix Promo : ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA*
-❌ Prix Habituel : ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~
-
-📦 *Livraison rapide disponible partout*
-📲 Contactez-nous pour commander !`;
-
-      navigator.clipboard.writeText(texteSocial).then(() => {
-        afficherToast("Texte de revente copié ! Collez-le sur WhatsApp / Facebook.");
-      });
-    };
-
-    window.copierToutLeCatalogue = function() {
-      if (listeProduits.length === 0) {
-        afficherToast("Le catalogue est actuellement vide.");
         return;
+
       }
 
-      let texteCatalogue = `💥 *CATALOGUE OFFRES DROPSHIPPING - DAKPROELITE* 💥\n\n`;
-      
-      listeProduits.forEach((p, idx) => {
-        texteCatalogue += `${idx + 1}. *${p.nom}*\n💰 ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA (au lieu de ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~)\n\n`;
-      });
 
-      texteCatalogue += `📲 *Contactez-moi directement pour passer votre commande !*`;
+      produits.forEach(
+        (p) => {
 
-      navigator.clipboard.writeText(texteCatalogue).then(() => {
-        afficherToast("Catalogue complet copié ! Prêt pour vos canaux de revente.");
-      });
+          const nom =
+            echapperHTML(
+              p.nom ||
+              "Produit DAKPROELITE"
+            );
+
+
+          const description =
+            echapperHTML(
+              p.description ||
+              "Découvrez ce produit."
+            );
+
+
+          const categorie =
+            echapperHTML(
+              p.categorie ||
+              "GENERAL"
+            );
+
+
+          const image =
+            echapperHTML(
+              p.imageUrl ||
+              "https://via.placeholder.com/600x450/0f172a/94a3b8?text=DAKPROELITE"
+            );
+
+
+          const prixPromo =
+            Number(
+              p.prixPromo || 0
+            );
+
+
+          const prixNormal =
+            Number(
+              p.prixNormal || 0
+            );
+
+
+          const reduction =
+            (
+              prixNormal > prixPromo &&
+              prixNormal > 0
+            )
+              ? Math.round(
+                  (
+                    (prixNormal - prixPromo) /
+                    prixNormal
+                  ) * 100
+                )
+              : 0;
+
+
+          const id =
+            echapperHTML(
+              p.id
+            );
+
+
+          container.innerHTML += `
+
+            <article
+              class="glass-card rounded-2xl overflow-hidden hover:border-blue-500/40 transition-all duration-300 flex flex-col justify-between group"
+            >
+
+              <div>
+
+                <div
+                  class="relative h-52 bg-slate-900 overflow-hidden"
+                >
+
+                  <img
+                    src="${image}"
+                    alt="${nom}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onerror="this.onerror=null;this.src='https://via.placeholder.com/600x450/0f172a/94a3b8?text=DAKPROELITE';"
+                  >
+
+                  ${
+                    reduction > 0
+                    ? `
+                      <span
+                        class="absolute top-3 left-3 bg-red-600 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-lg"
+                      >
+                        -${reduction}%
+                      </span>
+                    `
+                    : ""
+                  }
+
+
+                  <span
+                    class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg"
+                  >
+                    ${categorie}
+                  </span>
+
+                </div>
+
+
+                <div class="p-4">
+
+                  <h2
+                    class="text-base font-bold text-white truncate"
+                    title="${nom}"
+                  >
+                    ${nom}
+                  </h2>
+
+
+                  <p
+                    class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed"
+                  >
+                    ${description}
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div
+                class="px-4 pb-4 pt-3 border-t border-slate-800/80"
+              >
+
+                <div
+                  class="flex items-end justify-between mb-3"
+                >
+
+                  <div>
+
+                    <span
+                      class="text-[10px] text-slate-500 block uppercase font-bold"
+                    >
+                      Prix revente
+                    </span>
+
+                    <span
+                      class="text-lg font-extrabold text-amber-400"
+                    >
+                      ${prixPromo.toLocaleString("fr-FR")}
+                      FCFA
+                    </span>
+
+                  </div>
+
+
+                  ${
+                    prixNormal > 0
+                    ? `
+                      <div class="text-right">
+
+                        <span
+                          class="text-[10px] text-slate-500 block uppercase font-bold"
+                        >
+                          Prix normal
+                        </span>
+
+                        <span
+                          class="text-xs font-semibold text-red-400 line-through"
+                        >
+                          ${prixNormal.toLocaleString("fr-FR")}
+                          FCFA
+                        </span>
+
+                      </div>
+                    `
+                    : ""
+                  }
+
+                </div>
+
+
+                <button
+                  onclick="copierPartageSocial('${id}')"
+                  class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+
+                  📋
+
+                  <span>
+                    Copier le texte de vente
+                  </span>
+
+                </button>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      );
+
     };
-  </script>
+
+
+  /* =========================================================
+     COPIER TEXTE DE VENTE
+     ========================================================= */
+
+  window.copierPartageSocial =
+    async function(id) {
+
+      const produit =
+        listeProduits.find(
+          (item) =>
+            item.id === id
+        );
+
+
+      if (!produit) {
+
+        afficherToast(
+          "Produit introuvable."
+        );
+
+        return;
+
+      }
+
+
+      const nom =
+        produit.nom ||
+        "Produit";
+
+
+      const description =
+        produit.description ||
+        "";
+
+
+      const prixPromo =
+        Number(
+          produit.prixPromo || 0
+        );
+
+
+      const prixNormal =
+        Number(
+          produit.prixNormal || 0
+        );
+
+
+      const lienProduit =
+        `${window.location.origin}/produit.html?id=${encodeURIComponent(id)}${
+          utilisateurConnecte
+            ? `&aff=${encodeURIComponent(utilisateurConnecte.uid)}`
+            : ""
+        }`;
+
+
+      const texteSocial =
+
+`🔥 *OFFRE SPÉCIALE DAKPROELITE* 🔥
+
+📦 *${nom.toUpperCase()}*
+
+📝 ${description}
+
+💰 *Prix : ${prixPromo.toLocaleString("fr-FR")} FCFA*
+${
+  prixNormal > 0
+    ? `❌ Prix habituel : ~${prixNormal.toLocaleString("fr-FR")} FCFA~`
+    : ""
+}
+
+🚚 Livraison disponible.
+
+🔗 Commander :
+${lienProduit}
+
+📲 Contactez-moi pour passer votre commande !`;
+
+
+      await copierTexte(
+        texteSocial
+      );
+
+
+      afficherToast(
+        "Texte de vente copié ! Vous pouvez le partager sur WhatsApp, Facebook ou TikTok."
+      );
+
+    };
+
+
+  /* =========================================================
+     COPIER TOUT LE CATALOGUE
+     ========================================================= */
+
+  window.copierToutLeCatalogue =
+    async function() {
+
+      if (
+        listeProduits.length === 0
+      ) {
+
+        afficherToast(
+          "Le catalogue est actuellement vide."
+        );
+
+        return;
+
+      }
+
+
+      let texteCatalogue =
+        `💥 *CATALOGUE DAKPROELITE* 💥\n\n`;
+
+
+      listeProduits.forEach(
+        (p, index) => {
+
+          const nom =
+            p.nom ||
+            "Produit";
+
+
+          const prix =
+            Number(
+              p.prixPromo || 0
+            );
+
+
+          texteCatalogue +=
+
+`${index + 1}. *${nom}*
+💰 ${prix.toLocaleString("fr-FR")} FCFA
+
+`;
+
+        }
+      );
+
+
+      texteCatalogue +=
+
+`📲 *Contactez-moi directement pour passer votre commande !*`;
+
+
+      await copierTexte(
+        texteCatalogue
+      );
+
+
+      afficherToast(
+        "Catalogue complet copié !"
+      );
+
+    };
+
+
+  /* =========================================================
+     LIEN VENDEUR
+     ========================================================= */
+
+  window.copierMonLienVendeur =
+    async function() {
+
+      if (!utilisateurConnecte) {
+
+        afficherToast(
+          "Connectez-vous à votre espace vendeur pour obtenir votre lien affilié."
+        );
+
+
+        setTimeout(() => {
+
+          window.location.href =
+            "connexion.html";
+
+        }, 800);
+
+
+        return;
+
+      }
+
+
+      const lien =
+        `${window.location.origin}/index.html?ref=${encodeURIComponent(
+          utilisateurConnecte.uid
+        )}`;
+
+
+      await copierTexte(
+        lien
+      );
+
+
+      afficherToast(
+        "Votre lien affilié a été copié !"
+      );
+
+    };
+
+
+  /* =========================================================
+     COPIE UNIVERSELLE
+     ========================================================= */
+
+  async function copierTexte(
+    texte
+  ) {
+
+    try {
+
+      await navigator.clipboard.writeText(
+        texte
+      );
+
+      return true;
+
+    } catch (error) {
+
+      console.error(
+        "Erreur presse-papiers :",
+        error
+      );
+
+
+      const textarea =
+        document.createElement(
+          "textarea"
+        );
+
+
+      textarea.value =
+        texte;
+
+
+      textarea.style.position =
+        "fixed";
+
+      textarea.style.opacity =
+        "0";
+
+
+      document.body.appendChild(
+        textarea
+      );
+
+
+      textarea.focus();
+
+      textarea.select();
+
+
+      try {
+
+        document.execCommand(
+          "copy"
+        );
+
+      } catch (e) {
+
+        console.error(e);
+
+      }
+
+
+      document.body.removeChild(
+        textarea
+      );
+
+
+      return true;
+
+    }
+
+  }
+
+</script>
+
 
 </body>
+
 </html>
