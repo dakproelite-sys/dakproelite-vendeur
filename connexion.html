@@ -56,7 +56,7 @@
 
       <form id="authForm" onsubmit="traiterFormulaire(event)" class="space-y-4">
         
-        <!-- Champ Nom complet -->
+        <!-- Champ Nom complet (Inscription uniquement) -->
         <div id="fieldNomComplet" class="hidden">
           <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Nom & Prénom</label>
           <input type="text" id="nomCompletInput" placeholder="Ex: Jean Dupont" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
@@ -68,15 +68,20 @@
           <input type="email" id="emailInput" required placeholder="votre@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
         </div>
 
-        <!-- Champ Téléphone -->
+        <!-- Champ Téléphone (Inscription uniquement) -->
         <div id="fieldTelephone" class="hidden">
           <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Numéro Téléphone / WhatsApp</label>
           <input type="tel" id="telephoneInput" placeholder="+229 01020304" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
         </div>
 
-        <!-- Champ Mot de passe -->
+        <!-- Champ Mot de passe + Lien Mot de passe oublié -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Mot de passe</label>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mot de passe</label>
+            <button type="button" id="forgotPasswordBtn" onclick="reinitialiserMotDePasse()" class="text-xs font-semibold text-blue-600 hover:underline">
+              Mot de passe oublié ?
+            </button>
+          </div>
           <div class="relative">
             <input type="password" id="passwordInput" required minlength="6" placeholder="••••••••" class="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
             <button type="button" onclick="basculerVisibilitePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-blue-600 transition-colors focus:outline-none">
@@ -92,9 +97,9 @@
           </div>
         </div>
 
-        <!-- Case à cocher -->
-        <div class="flex items-start space-x-2 pt-2">
-          <input type="checkbox" id="acceptTerms" required class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer">
+        <!-- Case à cocher Conditions (Inscription uniquement) -->
+        <div id="fieldTerms" class="hidden items-start space-x-2 pt-2">
+          <input type="checkbox" id="acceptTerms" class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-all cursor-pointer">
           <label for="acceptTerms" class="text-xs text-slate-600 leading-tight cursor-pointer">
             J'ai lu et j'accepte les <a href="#" class="text-blue-600 font-bold hover:underline">conditions d'utilisation</a>.
           </label>
@@ -124,7 +129,8 @@
       onAuthStateChanged, 
       signInWithEmailAndPassword, 
       createUserWithEmailAndPassword, 
-      updateProfile 
+      updateProfile,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -143,12 +149,16 @@
 
     let currentMode = 'connexion';
 
-    // 🔄 Redirection automatique si l'utilisateur est déjà authentifié et enregistré
+    // Redirection automatique dès que l'utilisateur est authentifié
     onAuthStateChanged(auth, async (user) => {
-      if (user && !sessionStorage.getItem('isProcessing')) {
-        const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
-        if (snapshot.exists()) {
-          window.location.href = "profil_vendeur.html";
+      if (user) {
+        try {
+          const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
+          if (snapshot.exists()) {
+            window.location.replace("profil_vendeur.html");
+          }
+        } catch (e) {
+          console.error("Erreur lors de la vérification du profil:", e);
         }
       }
     });
@@ -172,6 +182,9 @@
       currentMode = mode;
       const fieldNom = document.getElementById('fieldNomComplet');
       const fieldTel = document.getElementById('fieldTelephone');
+      const fieldTerms = document.getElementById('fieldTerms');
+      const acceptTerms = document.getElementById('acceptTerms');
+      const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
       const tabConnexion = document.getElementById('tabConnexion');
       const tabInscription = document.getElementById('tabInscription');
       const submitBtnText = document.getElementById('submitBtnText');
@@ -179,15 +192,54 @@
       if (mode === 'inscription') {
         fieldNom.classList.remove('hidden');
         fieldTel.classList.remove('hidden');
+        
+        // Afficher les conditions et rendre obligatoire
+        fieldTerms.classList.remove('hidden');
+        fieldTerms.classList.add('flex');
+        acceptTerms.required = true;
+
+        // Masquer "Mot de passe oublié" en mode inscription
+        forgotPasswordBtn.classList.add('hidden');
+
         tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
         tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
         submitBtnText.innerText = "Créer mon compte vendeur";
       } else {
         fieldNom.classList.add('hidden');
         fieldTel.classList.add('hidden');
+
+        // Masquer les conditions et désactiver le required
+        fieldTerms.classList.add('hidden');
+        fieldTerms.classList.remove('flex');
+        acceptTerms.required = false;
+
+        // Afficher "Mot de passe oublié" en mode connexion
+        forgotPasswordBtn.classList.remove('hidden');
+
         tabConnexion.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 transition-all";
         tabInscription.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all";
         submitBtnText.innerText = "Se connecter";
+      }
+    };
+
+    window.reinitialiserMotDePasse = async function() {
+      const email = document.getElementById('emailInput').value.trim();
+      if (!email) {
+        afficherAlerte("Saisissez votre adresse email puis cliquez à nouveau sur 'Mot de passe oublié ?'", "error");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        afficherAlerte("Un email de réinitialisation de mot de passe vous a été envoyé.", "success");
+      } catch (error) {
+        let errText = "Impossible d'envoyer l'email de réinitialisation.";
+        if (error.code === 'auth/user-not-found') {
+          errText = "Aucun compte n'est associé à cette adresse email.";
+        } else if (error.code === 'auth/invalid-email') {
+          errText = "Veuillez entrer une adresse email valide.";
+        }
+        afficherAlerte(errText, "error");
       }
     };
 
@@ -198,15 +250,8 @@
       const password = document.getElementById('passwordInput').value.trim();
       const nomComplet = document.getElementById('nomCompletInput').value.trim();
       const telephone = document.getElementById('telephoneInput').value.trim();
-      const acceptTerms = document.getElementById('acceptTerms').checked;
-
-      if (!acceptTerms) {
-        afficherAlerte("Veuillez cocher la case pour accepter les conditions d'utilisation.", "error");
-        return;
-      }
 
       afficherChargement(true);
-      sessionStorage.setItem('isProcessing', 'true');
 
       try {
         if (currentMode === 'connexion') {
@@ -214,10 +259,9 @@
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
-          // Vérification de présence dans Realtime Database
+          // Vérification / Création en base si absent
           const snapshot = await get(ref(db, 'vendeurs/' + user.uid));
           if (!snapshot.exists()) {
-            // Création automatique du nœud utilisateur s'il manquaient les données dans la base de données
             await set(ref(db, 'vendeurs/' + user.uid), {
               uid: user.uid,
               nomComplet: user.displayName || "Vendeur",
@@ -229,11 +273,17 @@
           }
 
           afficherAlerte("Connexion réussie ! Redirection vers votre profil...", "success");
-          sessionStorage.removeItem('isProcessing');
-          setTimeout(() => { window.location.href = "profil_vendeur.html"; }, 800);
+          window.location.replace("profil_vendeur.html");
 
         } else {
           // --- INSCRIPTION ---
+          const acceptTerms = document.getElementById('acceptTerms').checked;
+          if (!acceptTerms) {
+            afficherAlerte("Veuillez cocher la case pour accepter les conditions d'utilisation.", "error");
+            afficherChargement(false);
+            return;
+          }
+
           if (!nomComplet) {
             throw new Error("Veuillez saisir votre Nom et Prénom.");
           }
@@ -258,11 +308,9 @@
           await set(ref(db, 'vendeurs/' + user.uid), userData);
 
           afficherAlerte("Compte créé avec succès ! Redirection...", "success");
-          sessionStorage.removeItem('isProcessing');
-          setTimeout(() => { window.location.href = "profil_vendeur.html"; }, 1000);
+          window.location.replace("profil_vendeur.html");
         }
       } catch (error) {
-        sessionStorage.removeItem('isProcessing');
         let textErreur = error.message;
 
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -274,7 +322,6 @@
         }
 
         afficherAlerte(textErreur, "error");
-      } finally {
         afficherChargement(false);
       }
     };
