@@ -160,7 +160,6 @@
       font-size: 18px;
       border: 2px solid var(--primary-gold);
       overflow: hidden;
-      object-fit: cover;
     }
 
     .avatar-circle img {
@@ -329,7 +328,7 @@
     .status-danger { background: #fee2e2; color: #991b1b; }
     .status-info { background: #dbeafe; color: #1e40af; }
 
-    /* IMAGE PREVIEW */
+    /* IMAGE PREVIEW & CAMERA CONTAINER */
     .image-preview {
       width: 60px;
       height: 60px;
@@ -338,6 +337,36 @@
       object-fit: cover;
       margin-top: 8px;
       display: none;
+    }
+
+    .camera-box {
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      background: #fafafa;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .camera-box video {
+      width: 100%;
+      max-width: 240px;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .btn-camera {
+      background: var(--info-color);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
     }
 
     @media (max-width: 768px) {
@@ -682,18 +711,28 @@
       </div>
     </section>
 
-    <!-- 10. PROFIL VENDEUR -->
+    <!-- 10. PROFIL VENDEUR & PIÈCES ADMINISTRATIVES (60x60px) -->
     <section id="profil" class="tab-section">
       <div class="content-card">
-        <h3>Modifier Mon Profil & Photo de Profil</h3>
+        <h3>Modifier Mon Profil & Informations Générales</h3>
         <form onsubmit="window.mettreAJourProfil(event)">
           <div class="form-grid">
+            <!-- PHOTO DE PROFIL -->
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo de Profil (Choix galerie - Compression auto à 60x60 px)</label>
-              <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
+              <label>Photo de Profil (Galerie ou Caméra - Compression auto à 60x60 px)</label>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
+                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxAvatar', 'videoAvatar', 'canvasAvatar', 'previewAvatar', 'base64Avatar')"><i class="fa-solid fa-camera"></i> Prendre Photo</button>
+              </div>
+              <div id="cameraBoxAvatar" class="camera-box">
+                <video id="videoAvatar" autoplay playsinline></video>
+                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoAvatar', 'canvasAvatar', 'previewAvatar', 'base64Avatar', 'cameraBoxAvatar')">Capturer</button>
+              </div>
+              <canvas id="canvasAvatar" style="display:none;"></canvas>
               <input type="hidden" id="base64Avatar">
               <img id="previewAvatar" class="image-preview" alt="Aperçu Profil">
             </div>
+
             <div class="form-group">
               <label>Nom de la Boutique / Vendeur</label>
               <input type="text" id="profBoutique" required>
@@ -711,20 +750,58 @@
               <input type="text" id="profRole" value="Vendeur / Affilié Officiel" readonly style="background: #f1f5f9;">
             </div>
           </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Enregistrer les modifications</button>
+
+          <h3 style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">Documents d'Administration & Vérification (KYC)</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Veuillez soumettre vos pièces d'identité officielles. Elles seront compressées à 60x60 px avant enregistrement sécurisé sur Firebase.</p>
+          
+          <div class="form-grid">
+            <!-- CARTE D'IDENTITE (CNI / PASSEPORT) -->
+            <div class="form-group">
+              <label>Carte d'Identité / Passeport</label>
+              <div style="display:flex; gap:6px; flex-direction:column;">
+                <input type="file" id="pInputCNI" accept="image/*" onchange="window.handleImageCompress(event, 'previewCNI', 'base64CNI')">
+                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxCNI', 'videoCNI', 'canvasCNI', 'previewCNI', 'base64CNI')"><i class="fa-solid fa-camera"></i> Prendre avec la caméra</button>
+              </div>
+              <div id="cameraBoxCNI" class="camera-box">
+                <video id="videoCNI" autoplay playsinline></video>
+                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoCNI', 'canvasCNI', 'previewCNI', 'base64CNI', 'cameraBoxCNI')">Capturer CNI</button>
+              </div>
+              <canvas id="canvasCNI" style="display:none;"></canvas>
+              <input type="hidden" id="base64CNI">
+              <img id="previewCNI" class="image-preview" alt="Aperçu CNI">
+            </div>
+
+            <!-- PHOTO D'IDENTITE -->
+            <div class="form-group">
+              <label>Photo d'Identité (Visage)</label>
+              <div style="display:flex; gap:6px; flex-direction:column;">
+                <input type="file" id="pInputPhotoId" accept="image/*" onchange="window.handleImageCompress(event, 'previewPhotoId', 'base64PhotoId')">
+                <button type="button" class="btn-camera" onclick="window.startCamera('cameraBoxPhotoId', 'videoPhotoId', 'canvasPhotoId', 'previewPhotoId', 'base64PhotoId')"><i class="fa-solid fa-camera"></i> Prendre Selfie / Photo</button>
+              </div>
+              <div id="cameraBoxPhotoId" class="camera-box">
+                <video id="videoPhotoId" autoplay playsinline></video>
+                <button type="button" class="btn-camera" onclick="window.takeCameraSnapshot('videoPhotoId', 'canvasPhotoId', 'previewPhotoId', 'base64PhotoId', 'cameraBoxPhotoId')">Capturer Photo</button>
+              </div>
+              <canvas id="canvasPhotoId" style="display:none;"></canvas>
+              <input type="hidden" id="base64PhotoId">
+              <img id="previewPhotoId" class="image-preview" alt="Aperçu Photo Id">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Enregistrer le Profil & Documents</button>
         </form>
       </div>
     </section>
 
   </main>
 
-  <!-- FIREBASE SCRIPTS & LOGIQUE MODULE -->
+  <!-- FIREBASE SCRIPTS & LOGIQUE COMPLÈTE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // REMPLACEZ ICI PAR LA CONFIGURATION DE VOTRE BASE DE DONNÉES FIREBASE
+    // VOS CONFIGURATIONS REALTIME DATABASE ET FIREBASE
     const firebaseConfig = {
       apiKey: "VOTRE_API_KEY_REELLE",
       authDomain: "votre-projet.firebaseapp.com",
@@ -740,11 +817,12 @@
     const database = getDatabase(app);
 
     let currentVendeurUid = null;
+    let activeMediaStream = null;
 
-    // AFFICHER DATE
+    // AFFICHER LA DATE DU JOUR
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // NAVIGATION SESSIONS / ONCLICK AU PERIMETRE GLOBAL
+    // NAVIGATION PAR ONGLETS GLOBALEMENT DISPONIBLE
     window.showTab = function(tabId, element) {
       document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
       document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
@@ -764,39 +842,85 @@
         'coupons': 'Coupons de Réduction',
         'analytics': 'Analytiques & Performance',
         'avis': 'Évaluations Clients',
-        'profil': 'Mon Profil Vendeur'
+        'profil': 'Mon Profil & Documents d\'Administration'
       };
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Espace Profil';
     };
 
-    // COMPRESSION IMAGE 60x60
+    // COMPRESSION IMAGE DEPUIS LA GALERIE À EXACTEMENT 60x60 px
     window.handleImageCompress = function(event, previewId, hiddenInputId) {
       const file = event.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          canvas.width = 60;
-          canvas.height = 60;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, 60, 60);
-          
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
-          const preview = document.getElementById(previewId);
-          preview.src = compressedBase64;
-          preview.style.display = 'block';
-
-          document.getElementById(hiddenInputId).value = compressedBase64;
-        };
-        img.src = e.target.result;
+        compressAndSetImage(e.target.result, previewId, hiddenInputId);
       };
       reader.readAsDataURL(file);
     };
 
-    // AUTHENTIFICATION
+    // FONCTION DE COMPRESSION CANVAS UNIVERSELLE (60x60 px)
+    function compressAndSetImage(sourceUrl, previewId, hiddenInputId) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 60;
+        canvas.height = 60;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, 60, 60);
+        
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+        const preview = document.getElementById(previewId);
+        if(preview) {
+          preview.src = compressedBase64;
+          preview.style.display = 'block';
+        }
+
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if(hiddenInput) {
+          hiddenInput.value = compressedBase64;
+        }
+      };
+      img.src = sourceUrl;
+    }
+
+    // CAPTURE VIA CAMÉRA DIRECTE
+    window.startCamera = async function(boxId, videoId, canvasId, previewId, hiddenInputId) {
+      const box = document.getElementById(boxId);
+      const video = document.getElementById(videoId);
+      box.style.display = 'flex';
+
+      try {
+        if(activeMediaStream) {
+          activeMediaStream.getTracks().forEach(track => track.stop());
+        }
+        activeMediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        video.srcObject = activeMediaStream;
+      } catch (err) {
+        alert("Impossible d'accéder à la caméra : " + err.message);
+        box.style.display = 'none';
+      }
+    };
+
+    window.takeCameraSnapshot = function(videoId, canvasId, previewId, hiddenInputId, boxId) {
+      const video = document.getElementById(videoId);
+      const canvas = document.getElementById(canvasId);
+      
+      canvas.width = video.videoWidth || 300;
+      canvas.height = video.videoHeight || 300;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const rawBase64 = canvas.toDataURL('image/jpeg');
+      compressAndSetImage(rawBase64, previewId, hiddenInputId);
+
+      if (activeMediaStream) {
+        activeMediaStream.getTracks().forEach(track => track.stop());
+      }
+      document.getElementById(boxId).style.display = 'none';
+    };
+
+    // AUTHENTIFICATION & ÉTAT UTILISATEUR
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentVendeurUid = user.uid;
@@ -814,7 +938,7 @@
       }
     });
 
-    // CHARGER PROFIL
+    // CHARGER LE PROFIL ET LES DOCUMENTS DE VÉRIFICATION
     async function chargerProfilVendeur(uid) {
       const snapshot = await get(ref(database, 'users/' + uid));
       if (snapshot.exists()) {
@@ -826,27 +950,42 @@
         const avatarContainer = document.getElementById('vendeurAvatar');
         if(data.photo60) {
           avatarContainer.innerHTML = `<img src="${data.photo60}" alt="Avatar">`;
+          document.getElementById('previewAvatar').src = data.photo60;
+          document.getElementById('previewAvatar').style.display = 'block';
+          document.getElementById('base64Avatar').value = data.photo60;
         } else {
           avatarContainer.innerText = (data.nomBoutique || "V")[0].toUpperCase();
+        }
+
+        if(data.cniPhoto60) {
+          document.getElementById('previewCNI').src = data.cniPhoto60;
+          document.getElementById('previewCNI').style.display = 'block';
+          document.getElementById('base64CNI').value = data.cniPhoto60;
+        }
+
+        if(data.photoId60) {
+          document.getElementById('previewPhotoId').src = data.photoId60;
+          document.getElementById('previewPhotoId').style.display = 'block';
+          document.getElementById('base64PhotoId').value = data.photoId60;
         }
       }
     }
 
-    // TOGGLE TYPE CHAMPS
+    // TOGGLE DES CHAMPS DE PUBLICATION
     window.toggleTypeFields = function() {
       const type = document.getElementById('pType').value;
       const groupLien = document.getElementById('groupLienExt');
       groupLien.style.display = (type === 'lien') ? 'flex' : 'none';
     };
 
-    // PUBLIER PRODUIT
+    // PUBLIER UN PRODUIT / COURS
     window.publierElement = async function(e) {
       e.preventDefault();
       if(!currentVendeurUid) return;
 
       const photoBase64 = document.getElementById('base64Publish').value;
       if(!photoBase64) {
-        alert("Veuillez sélectionner une image.");
+        alert("Veuillez sélectionner une image pour le produit/cours.");
         return;
       }
 
@@ -869,14 +1008,14 @@
       };
 
       await set(newRef, itemData);
-      alert("Élément publié avec succès !");
+      alert("Ressource publiée avec succès !");
       e.target.reset();
       document.getElementById('previewPublish').style.display = 'none';
       chargerMesProduits(currentVendeurUid);
       chargerAffiliationGlobal();
     };
 
-    // MES PRODUITS
+    // CHARGER LES PRODUITS DU VENDEUR CONNECTÉ
     async function chargerMesProduits(uid) {
       const snapshot = await get(ref(database, 'produits'));
       const tbody = document.getElementById('boutiqueProductsList');
@@ -912,7 +1051,7 @@
       }
     }
 
-    // CHARGER AFFILIATION GLOBAL
+    // CHARGER TOUS LES PRODUITS POUR AFFILIATION
     async function chargerAffiliationGlobal() {
       const snapshot = await get(ref(database, 'produits'));
       const tbody = document.getElementById('affiliationProductsList');
@@ -939,14 +1078,14 @@
       }
     }
 
-    // COPIER LIEN
+    // COPIER DANS LE PRESSE-PAPIER
     window.copierLien = function(lien) {
       navigator.clipboard.writeText(lien).then(() => {
-        alert("Lien copié dans le presse-papier !");
+        alert("Lien copié avec succès !");
       });
     };
 
-    // CHARGER STATS REALTIME
+    // CHARGER LES STATISTIQUES EN TEMPS RÉEL
     function chargerStats(uid) {
       const statsRef = ref(database, 'vendeurs_stats/' + uid);
       onValue(statsRef, (snapshot) => {
@@ -961,7 +1100,7 @@
       });
     }
 
-    // DEMANDER RETRAIT
+    // DEMANDER UN RETRAIT
     window.demanderRetrait = async function(e) {
       e.preventDefault();
       const montant = Number(document.getElementById('rMontant').value);
@@ -969,7 +1108,7 @@
       const numero = document.getElementById('rNumero').value;
 
       if(!moyen) {
-        alert("Veuillez sélectionner un réseau Mobile Money !");
+        alert("Veuillez choisir un moyen de paiement Mobile Money !");
         return;
       }
 
@@ -984,11 +1123,11 @@
         dateDemande: new Date().toISOString()
       });
 
-      alert("Demande de retrait transmise avec succès !");
+      alert("Demande de retrait enregistrée !");
       e.target.reset();
     };
 
-    // HISTORIQUE RETRAITS
+    // HISTORIQUE DES RETRAITS
     function chargerRetraits(uid) {
       const retraitsRef = ref(database, 'retraits');
       onValue(retraitsRef, (snapshot) => {
@@ -1019,7 +1158,7 @@
         }
 
         if (count === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune demande de retrait effectuée.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune demande de retrait enregistrée.</td></tr>`;
         }
       });
     }
@@ -1055,12 +1194,12 @@
         }
 
         if (count === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune commande pour le moment.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune commande disponible.</td></tr>`;
         }
       });
     }
 
-    // CREER COUPON PROMO
+    // CRÉATION DE COUPON PROMO
     window.creerCoupon = async function(e) {
       e.preventDefault();
       const code = document.getElementById('cCode').value.toUpperCase();
@@ -1075,24 +1214,33 @@
         dateCreation: new Date().toISOString()
       });
 
-      alert("Coupon créé avec succès !");
+      alert("Code promo créé avec succès !");
       e.target.reset();
     };
 
-    // METTRE À JOUR LE PROFIL
+    // METTRE À JOUR PROFIL ET ENVOYER LES PIÈCES ADMINISTRATIVES
     window.mettreAJourProfil = async function(e) {
       e.preventDefault();
       const nomBoutique = document.getElementById('profBoutique').value;
       const phone = document.getElementById('profPhone').value;
       const avatar60 = document.getElementById('base64Avatar').value;
+      const cni60 = document.getElementById('base64CNI').value;
+      const photoId60 = document.getElementById('base64PhotoId').value;
 
       await set(ref(database, 'users/' + currentVendeurUid + '/nomBoutique'), nomBoutique);
       await set(ref(database, 'users/' + currentVendeurUid + '/telephone'), phone);
+      
       if (avatar60) {
         await set(ref(database, 'users/' + currentVendeurUid + '/photo60'), avatar60);
       }
+      if (cni60) {
+        await set(ref(database, 'users/' + currentVendeurUid + '/cniPhoto60'), cni60);
+      }
+      if (photoId60) {
+        await set(ref(database, 'users/' + currentVendeurUid + '/photoId60'), photoId60);
+      }
 
-      alert("Profil mis à jour avec succès !");
+      alert("Profil et documents mis à jour avec succès !");
       chargerProfilVendeur(currentVendeurUid);
     };
 
@@ -1103,7 +1251,7 @@
       });
     };
 
-    // INITIALISATION DES GRAPHIQUES
+    // INITIALISATION DES GRAPHIQUES CHART.JS
     window.addEventListener('DOMContentLoaded', () => {
       const ctxPerf = document.getElementById('performanceChart')?.getContext('2d');
       if (ctxPerf) {
