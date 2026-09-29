@@ -22,7 +22,7 @@
     </div>
 
     <h2 class="text-lg font-extrabold text-slate-900 mb-1">Connexion en cours...</h2>
-    <p class="text-xs text-slate-500 font-medium">Nous vérifions votre profil vendeur, veuillez patienter un instant.</p>
+    <p class="text-xs text-slate-500 font-medium">Nous préparons votre accès, vous allez être redirigé vers l'accueil...</p>
   </div>
 
   <script type="module">
@@ -47,20 +47,21 @@
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          // Vérification des informations sous le nœud users/{uid}
+          // Définition de l'ID vendeur en session storage pour le catalogue personnalisé
+          sessionStorage.setItem('vendeur_connecte', 'true');
+          sessionStorage.setItem('vendeur_id', user.uid);
+
+          // Vérification des informations de l'utilisateur dans Realtime Database
           const snapshot = await get(ref(db, 'users/' + user.uid));
-          if (snapshot.exists()) {
-            window.location.replace("profil-vendeur.html");
-          } else {
-            // Si le compte existe en Auth mais pas en RTDB, création par défaut puis redirection
-            window.location.replace("profil-vendeur.html");
-          }
+          
+          // Redirection directe vers la page d'accueil (index.html)
+          window.location.replace("index.html");
         } catch (error) {
-          console.error("Erreur de vérification du profil :", error);
-          window.location.replace("profil-vendeur.html");
+          console.error("Erreur lors de la vérification du profil :", error);
+          window.location.replace("index.html");
         }
       } else {
-        // Redirection vers connexion si aucun utilisateur n'est connecté
+        // En cas d'absence de session utilisateur, redirection vers connexion
         window.location.replace("connexion.html");
       }
     });
