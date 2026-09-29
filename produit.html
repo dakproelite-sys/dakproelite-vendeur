@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <a href="index.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all flex items-center space-x-1">
+      <a href="index.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all flex items-center space-x-1 border border-slate-700">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         <span>Catalogue</span>
       </a>
@@ -66,17 +66,29 @@
     </div>
 
     <!-- Grille produit dynamique -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      <!-- Section Visuel Produit (Image / Vidéo / Support de Cours) -->
+      <!-- Section Visuel Produit (Adaptative) -->
       <div class="lg:col-span-7 space-y-6">
         <div class="glass-card rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl space-y-4">
           
-          <!-- Conteneur Média Dynamique -->
-          <div id="mediaContainer" class="relative rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center min-h-[300px] sm:min-h-[420px]">
-            <span id="loaderMedia" class="text-xs text-slate-500 animate-pulse">Chargement du visuel...</span>
-            <img id="produitImage" src="" alt="Photo Produit" class="hidden w-full h-full object-cover max-h-[500px]">
-            <video id="produitVideo" src="" class="hidden w-full h-full object-cover max-h-[500px]" controls autoplay loop muted></video>
+          <!-- Conteneur Média Dynamique et Réactif -->
+          <div id="mediaContainer" class="relative rounded-2xl bg-slate-900 border border-slate-800/80 overflow-hidden flex items-center justify-center min-h-[280px] max-h-[550px] w-full">
+            
+            <!-- Indicateur de Chargement -->
+            <div id="loaderMedia" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 z-10">
+              <div class="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mb-2"></div>
+              <span class="text-xs text-slate-400 font-medium">Chargement du visuel...</span>
+            </div>
+
+            <!-- Arrière-plan flouté pour harmoniser toutes les proportions d'images -->
+            <img id="produitImageBg" src="" alt="" class="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-30 pointer-events-none hidden">
+
+            <!-- Image Principale -->
+            <img id="produitImage" src="" alt="Photo Produit" class="relative z-1 w-full h-full object-contain max-h-[500px] rounded-xl hidden transition-all duration-300">
+            
+            <!-- Vidéo Principale -->
+            <video id="produitVideo" src="" class="relative z-1 w-full h-full object-contain max-h-[500px] rounded-xl hidden" controls autoplay loop muted></video>
           </div>
 
           <!-- Section Documents / Ressources / Cours associés -->
@@ -101,6 +113,22 @@
             </div>
           </div>
 
+          <!-- Badges de réassurance -->
+          <div class="grid grid-cols-3 gap-2 pt-2 text-center text-[10px] text-slate-400 border-t border-slate-800/60">
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Livraison Rapide</span>
+              <span>Domicile & Point Relais</span>
+            </div>
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Paiement Sécurisé</span>
+              <span>MoMo & Cartes</span>
+            </div>
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Garantie Qualité</span>
+              <span>100% Authentique</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -111,7 +139,7 @@
           
           <!-- Titre & Tarification -->
           <div class="space-y-3 border-b border-slate-800 pb-5">
-            <span id="badgePro" class="text-[10px] font-black uppercase text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">Article vérifié DAKPROÉLITE</span>
+            <span id="badgePro" class="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full inline-block">Article vérifié DAKPROÉLITE</span>
             <h1 id="produitNom" class="text-xl sm:text-2xl font-extrabold text-white leading-snug">Chargement de l'article...</h1>
             
             <div class="flex items-baseline gap-3 pt-1">
@@ -123,7 +151,7 @@
 
           <!-- Description complète -->
           <div class="space-y-2">
-            <h3 class="text-xs font-bold uppercase text-slate-300">Description de l'offre</h3>
+            <h3 class="text-xs font-bold uppercase text-slate-300 tracking-wider">Description de l'offre</h3>
             <p id="produitDescription" class="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-pre-line">Chargement de la description du produit...</p>
           </div>
 
@@ -140,7 +168,7 @@
 
           <!-- Formulaire de Livraison & Contact client -->
           <div id="formulaireLivraison" class="space-y-4 pt-2 border-t border-slate-800">
-            <h3 class="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5">
+            <h3 class="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5 tracking-wider">
               <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
               Informations de Livraison
             </h3>
@@ -200,7 +228,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Clé Publique PayDunya intégrée
     const PAYDUNYA_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
 
     const firebaseConfig = {
@@ -240,7 +267,7 @@
           imageUrl: "477912.png",
           mediaType: "image",
           whatsappNumero: "2290197455309",
-          documentUrl: "#"
+          documentUrl: ""
         };
         afficherDonneesProduit(window.produitCourant);
         verifierRetourPaiement(paymentStatus);
@@ -254,7 +281,15 @@
           afficherDonneesProduit(window.produitCourant);
           verifierRetourPaiement(paymentStatus);
         } else {
-          afficherToast("Produit introuvable dans le catalogue.");
+          afficherToast("Produit introuvable. Affichage de l'article par défaut.");
+          window.produitCourant = {
+            nom: "Article DAKPROÉLITE",
+            description: "Description indisponible pour le moment.",
+            prixPromo: 0,
+            prixNormal: 0,
+            imageUrl: "477912.png"
+          };
+          afficherDonneesProduit(window.produitCourant);
         }
       } catch (e) {
         afficherToast("Erreur lors du chargement de l'article.");
@@ -266,29 +301,50 @@
       document.getElementById('produitDescription').innerText = p.description || 'Aucune description fournie.';
       
       const pPromo = p.prixPromo || p.prix || 0;
-      const pNormal = p.prixNormal || (pPromo * 1.3);
+      const pNormal = p.prixNormal || (pPromo ? Math.round(pPromo * 1.3) : 0);
       
       document.getElementById('prixPromo').innerText = `${Number(pPromo).toLocaleString('fr-FR')} FCFA`;
       document.getElementById('prixNormal').innerText = `${Number(pNormal).toLocaleString('fr-FR')} FCFA`;
 
-      // Affichage du média (Image / Vidéo)
+      // Affichage dynamique et propre du média (Image / Vidéo)
       const loader = document.getElementById('loaderMedia');
       const img = document.getElementById('produitImage');
+      const imgBg = document.getElementById('produitImageBg');
       const video = document.getElementById('produitVideo');
 
-      loader.classList.add('hidden');
+      const isVideo = p.mediaType === 'video' || (p.imageUrl && p.imageUrl.match(/\.(mp4|webm|ogg)$/i));
 
-      if (p.mediaType === 'video' || (p.imageUrl && p.imageUrl.includes('.mp4'))) {
+      if (isVideo) {
         video.src = p.imageUrl;
-        video.classList.remove('hidden');
+        video.onloadeddata = () => {
+          loader.classList.add('hidden');
+          video.classList.remove('hidden');
+        };
+        video.onerror = () => {
+          loader.classList.add('hidden');
+          afficherToast("Impossible de charger la vidéo.");
+        };
       } else {
-        img.src = p.imageUrl || '477912.png';
-        img.classList.remove('hidden');
+        const srcImage = p.imageUrl || '477912.png';
+        img.src = srcImage;
+        imgBg.src = srcImage;
+
+        img.onload = () => {
+          loader.classList.add('hidden');
+          img.classList.remove('hidden');
+          imgBg.classList.remove('hidden');
+        };
+
+        img.onerror = () => {
+          loader.classList.add('hidden');
+          img.src = '477912.png';
+          img.classList.remove('hidden');
+        };
       }
 
       // Gestion des documents/cours associés
       const docLink = p.documentUrl || p.coursUrl;
-      if (docLink) {
+      if (docLink && docLink !== '#') {
         const secRes = document.getElementById('sectionRessources');
         const lienRes = document.getElementById('lienRessource');
         const btnDl = document.getElementById('btnTelechargerDocument');
@@ -312,10 +368,11 @@
 
       secRes.classList.remove('hidden');
       zoneDl.classList.remove('hidden');
-      resNotice.innerText = "Accès autorisé ! Cliquez sur le bouton ci-dessous pour télécharger votre ressource ou accéder au cours.";
+      if (resNotice) {
+        resNotice.innerText = "Accès autorisé ! Cliquez sur le bouton ci-dessous pour télécharger votre ressource ou accéder au cours.";
+      }
     }
 
-    // Vérification du statut lors de la redirection après paiement
     function verifierRetourPaiement(status) {
       if (status === 'success' || status === 'completed') {
         afficherToast("Paiement validé avec succès !");
@@ -323,7 +380,6 @@
       }
     }
 
-    // Validation des champs du formulaire
     function validerFormulaire() {
       const nom = document.getElementById('clientNom').value.trim();
       const tel = document.getElementById('clientTelephone').value.trim();
@@ -338,19 +394,18 @@
       return { nom, tel, date, adresse };
     }
 
-    // Commande via WhatsApp direct au numéro publié du vendeur
     window.commanderWhatsApp = function() {
       const client = validerFormulaire();
       if (!client) return;
 
-      const p = window.produitCourant;
+      const p = window.produitCourant || {};
       const numWhatsApp = p.whatsappNumero || p.vendeurTelephone || "2290197455309";
       const numeroPropre = numWhatsApp.replace(/[^0-9]/g, '');
 
       const message = `Bonjour ! Je souhaite commander cet article et être livré à domicile (Option : Paiement à la livraison) :
 
-📌 *Article* : ${p.nom}
-💰 *Prix Promo* : ${p.prixPromo || p.prix} FCFA
+📌 *Article* : ${p.nom || 'Produit DAKPROELITE'}
+💰 *Prix Promo* : ${p.prixPromo || p.prix || 0} FCFA
 
 👤 *Nom & Prénom* : ${client.nom}
 📞 *Téléphone Client* : ${client.tel}
@@ -361,12 +416,11 @@
       window.open(urlWhatsApp, '_blank');
     };
 
-    // Paiement en ligne Sécurisé via PayDunya avec callback de confirmation
     window.procederPaiementPayDunya = function() {
       const client = validerFormulaire();
       if (!client) return;
 
-      const p = window.produitCourant;
+      const p = window.produitCourant || {};
       const montant = p.prixPromo || p.prix || 2000;
       const currentUrl = window.location.href.split('?')[0];
       const urlParams = new URLSearchParams(window.location.search);
@@ -388,10 +442,9 @@
         });
 
         const invoice = new PayDunya.Checkout.Invoice(store);
-        invoice.addItem(p.nom, 1, montant, montant);
+        invoice.addItem(p.nom || 'Produit DAKPROELITE', 1, montant, montant);
         invoice.setTotalAmount(montant);
 
-        // Intégration du Callback SDK si supporté dans l'environnement web
         if (PayDunya.Checkout.onSuccess) {
           PayDunya.Checkout.onSuccess(() => {
             activerAccèsRessourcesPayees();
@@ -403,7 +456,6 @@
             afficherToast("Redirection vers la passerelle de paiement PayDunya...");
           })
           .catch(() => {
-            // En cas d'erreur de redirection directe, simulation pour validation directe des tests
             afficherToast("Paiement initié avec succès...");
             setTimeout(() => {
               activerAccèsRessourcesPayees();

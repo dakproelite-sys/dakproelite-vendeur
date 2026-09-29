@@ -369,13 +369,13 @@
 </head>
 <body>
 
-  <!-- SIDEBAR NAVIGATION ENRICHIE -->
+  <!-- SIDEBAR NAVIGATION -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
-      <!-- 1. Menu Redirection INDEX -->
+      <!-- 1. Menu Redirection INDEX directe -->
       <li>
         <a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">Index / Accueil</span></a>
       </li>
@@ -467,7 +467,7 @@
       </div>
     </section>
 
-    <!-- 2. PUBLIER -->
+    <!-- 2. PUBLIER (Pointe directement vers le nœud global 'publications') -->
     <section id="publier" class="tab-section">
       <div class="content-card">
         <h3>Publier un Produit, un Cours en Ligne ou un Lien Externe</h3>
@@ -546,7 +546,7 @@
       </div>
     </section>
 
-    <!-- 4. LIENS D'AFFILIATION GLOBAUX CORRIGÉS -->
+    <!-- 4. LIENS D'AFFILIATION GLOBAUX DEPUIS 'publications' -->
     <section id="affiliation" class="tab-section">
       <div class="content-card">
         <h3>Produits Éligibles à l'Affiliation sur la Plateforme</h3>
@@ -648,7 +648,7 @@
       </div>
     </section>
 
-    <!-- 7. GESTION DES COUPONS PROMO ADAPTÉE -->
+    <!-- 7. GESTION DES COUPONS PROMO -->
     <section id="coupons" class="tab-section">
       <div class="content-card">
         <h3>Créer un Code Promo / Coupon de Réduction</h3>
@@ -890,7 +890,7 @@
       groupLien.style.display = (type === 'lien') ? 'flex' : 'none';
     };
 
-    // PUBLIER PRODUIT DANS /vendeurs_publications/{vendeurUid}/{idProduit}
+    // PUBLIER PRODUIT DANS /publications DU REALTIME DB
     window.publierElement = async function(e) {
       e.preventDefault();
       if(!currentVendeurUid) return;
@@ -901,8 +901,8 @@
         return;
       }
 
-      // Génération de la référence directement sous le nœud spécifique au vendeur
-      const newRef = push(ref(database, `vendeurs_publications/${currentVendeurUid}`));
+      // Insertion sous le nœud racine 'publications'
+      const newRef = push(ref(database, 'publications'));
       const idProd = newRef.key;
 
       const itemData = {
@@ -921,16 +921,16 @@
       };
 
       await set(newRef, itemData);
-      alert("Élément publié avec succès dans votre espace vendeur !");
+      alert("Élément publié avec succès sous /publications !");
       e.target.reset();
       document.getElementById('previewPublish').style.display = 'none';
       chargerMesProduits(currentVendeurUid);
       chargerAffiliationGlobal();
     };
 
-    // MES PRODUITS DEPUIS /vendeurs_publications/{vendeurUid}
+    // MES PRODUITS DEPUIS /publications (Filtre par vendeurUid)
     async function chargerMesProduits(uid) {
-      const snapshot = await get(ref(database, `vendeurs_publications/${uid}`));
+      const snapshot = await get(ref(database, 'publications'));
       const tbody = document.getElementById('boutiqueProductsList');
       const selectCouponProd = document.getElementById('cProduitId');
       
@@ -941,28 +941,30 @@
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const prod = child.val();
-          count++;
-          
-          // Option coupon
-          selectCouponProd.innerHTML += `<option value="${prod.id}">${prod.nom}</option>`;
+          if (prod.vendeurUid === uid) {
+            count++;
+            
+            // Option coupon
+            selectCouponProd.innerHTML += `<option value="${prod.id}">${prod.nom}</option>`;
 
-          // Gestion de l'image
-          const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
-          const link = `${window.location.origin}/produit.html?id=${prod.id}&aff=${uid}`;
-          
-          tbody.innerHTML += `
-            <tr>
-              <td><img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png'"></td>
-              <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : 'PRODUIT'}</small></td>
-              <td>${prod.auteur || 'Non précisé'}</td>
-              <td>
-                <span class="price-promo">${prod.prixPromo} FCFA</span>
-                ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
-              </td>
-              <td>${prod.stock}</td>
-              <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
-            </tr>
-          `;
+            // Visuel
+            const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
+            const link = `${window.location.origin}/produit.html?id=${prod.id}&aff=${uid}`;
+            
+            tbody.innerHTML += `
+              <tr>
+                <td><img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png'"></td>
+                <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : 'PRODUIT'}</small></td>
+                <td>${prod.auteur || 'Non précisé'}</td>
+                <td>
+                  <span class="price-promo">${prod.prixPromo} FCFA</span>
+                  ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
+                </td>
+                <td>${prod.stock}</td>
+                <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
+              </tr>
+            `;
+          }
         });
         document.getElementById('statProduits').innerText = count;
       }
@@ -972,41 +974,42 @@
       }
     }
 
-    // CHARGER AFFILIATION GLOBAL DEPUIS /vendeurs_publications
+    // CHARGER AFFILIATION GLOBAL DEPUIS /publications (Tous les produits)
     async function chargerAffiliationGlobal() {
-      const snapshot = await get(ref(database, 'vendeurs_publications'));
+      const snapshot = await get(ref(database, 'publications'));
       const tbody = document.getElementById('affiliationProductsList');
       tbody.innerHTML = "";
       let count = 0;
 
       if (snapshot.exists()) {
-        snapshot.forEach((vendeurNode) => {
-          vendeurNode.forEach((prodNode) => {
-            const prod = prodNode.val();
-            count++;
-            const prix = prod.prixPromo || prod.prixNormal || 0;
-            const gainsEstimes = Math.round(prix * 0.10);
-            
-            const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
-            const affLink = `${window.location.origin}/produit.html?id=${prod.id}&aff=${currentVendeurUid}`;
+        snapshot.forEach((child) => {
+          const prod = child.val();
+          count++;
+          const prix = prod.prixPromo || prod.prixNormal || 0;
+          const gainsEstimes = Math.round(prix * 0.10);
+          
+          const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
+          const affLink = `${window.location.origin}/produit.html?id=${prod.id}&aff=${currentVendeurUid}`;
 
-            tbody.innerHTML += `
-              <tr>
-                <td>
-                  <img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png';">
-                </td>
-                <td><strong>${prod.nom}</strong></td>
-                <td>${prix} FCFA</td>
-                <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
-                <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
-              </tr>
-            `;
-          });
+          tbody.innerHTML += `
+            <tr>
+              <td>
+                <img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png';">
+              </td>
+              <td>
+                <strong>${prod.nom}</strong><br>
+                <small style="color:var(--text-muted);">${prod.description ? prod.description.substring(0, 50) + '...' : ''}</small>
+              </td>
+              <td>${prix} FCFA</td>
+              <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
+              <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
+            </tr>
+          `;
         });
       }
       
       if (count === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit disponible pour l'affiliation.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit disponible dans /publications pour l'affiliation.</td></tr>`;
       }
     }
 
@@ -1131,7 +1134,7 @@
       });
     }
 
-    // CREER COUPON PROMO (GLOBALEMENT ADAPTÉ)
+    // CREER COUPON PROMO
     window.creerCoupon = async function(e) {
       e.preventDefault();
       const code = document.getElementById('cCode').value.trim().toUpperCase();
