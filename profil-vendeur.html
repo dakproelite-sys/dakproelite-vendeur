@@ -280,6 +280,16 @@
       color: #fff;
     }
 
+    .btn-danger-sm {
+      background: var(--danger-color);
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
     /* TABLES */
     .table-container {
       overflow-x: auto;
@@ -297,6 +307,7 @@
       text-align: left;
       border-bottom: 1px solid var(--border-color);
       font-size: 13.5px;
+      vertical-align: middle;
     }
 
     .data-table th {
@@ -340,6 +351,15 @@
       display: none;
     }
 
+    .prod-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #e2e8f0;
+      border: 1px solid var(--border-color);
+    }
+
     @media (max-width: 768px) {
       .sidebar { width: 70px; }
       .sidebar-header h2, .menu-text { display: none; }
@@ -355,6 +375,10 @@
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
+      <!-- 1. Menu Redirection INDEX -->
+      <li>
+        <a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">Index / Accueil</span></a>
+      </li>
       <li class="active" onclick="window.showTab('dashboard', this)">
         <a><i class="fa-solid fa-chart-line"></i><span class="menu-text">Tableau de bord</span></a>
       </li>
@@ -506,7 +530,7 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>Image (60px)</th>
+                <th>Visuel</th>
                 <th>Titre</th>
                 <th>Auteur</th>
                 <th>Prix Promo / Normal</th>
@@ -522,7 +546,7 @@
       </div>
     </section>
 
-    <!-- 4. LIENS D'AFFILIATION GLOBAUX -->
+    <!-- 4. LIENS D'AFFILIATION GLOBAUX CORRIGÉS -->
     <section id="affiliation" class="tab-section">
       <div class="content-card">
         <h3>Produits Éligibles à l'Affiliation sur la Plateforme</h3>
@@ -624,7 +648,7 @@
       </div>
     </section>
 
-    <!-- 7. GESTION DES COUPONS PROMO -->
+    <!-- 7. GESTION DES COUPONS PROMO ADAPTÉE -->
     <section id="coupons" class="tab-section">
       <div class="content-card">
         <h3>Créer un Code Promo / Coupon de Réduction</h3>
@@ -632,11 +656,11 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Code Promo (ex: DAKPRO10)</label>
-              <input type="text" id="cCode" required style="text-transform:uppercase;">
+              <input type="text" id="cCode" required style="text-transform:uppercase;" placeholder="Ex: PROMO2026">
             </div>
             <div class="form-group">
-              <label>Réduction en FCFA ou %</label>
-              <input type="number" id="cValeur" required placeholder="Ex: 2000 FCFA ou 10%">
+              <label>Valeur de Réduction</label>
+              <input type="number" id="cValeur" required placeholder="Ex: 2000 ou 10">
             </div>
             <div class="form-group">
               <label>Type de réduction</label>
@@ -645,9 +669,34 @@
                 <option value="pourcentage">Pourcentage (%)</option>
               </select>
             </div>
+            <div class="form-group">
+              <label>Produit applicable</label>
+              <select id="cProduitId">
+                <option value="ALL">Tous mes produits</option>
+              </select>
+            </div>
           </div>
           <button type="submit" class="btn-action"><i class="fa-solid fa-plus"></i> Générer Coupon</button>
         </form>
+      </div>
+
+      <div class="content-card">
+        <h3>Mes Coupons Actifs</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code Promo</th>
+                <th>Réduction</th>
+                <th>Application</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="couponsList">
+              <tr><td colspan="4" style="text-align:center;">Chargement des coupons...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -722,7 +771,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     // CONFIGURATION OFFICIELLE FIREBASE DAKPROELITE
     const firebaseConfig = {
@@ -809,6 +858,7 @@
         chargerStats(user.uid);
         chargerRetraits(user.uid);
         chargerCommandes(user.uid);
+        chargerCoupons();
       } else {
         window.location.replace("connexion.html");
       }
@@ -840,7 +890,7 @@
       groupLien.style.display = (type === 'lien') ? 'flex' : 'none';
     };
 
-    // PUBLIER PRODUIT
+    // PUBLIER PRODUIT DANS /vendeurs_publications/{vendeurUid}/{idProduit}
     window.publierElement = async function(e) {
       e.preventDefault();
       if(!currentVendeurUid) return;
@@ -851,7 +901,8 @@
         return;
       }
 
-      const newRef = push(ref(database, 'publications'));
+      // Génération de la référence directement sous le nœud spécifique au vendeur
+      const newRef = push(ref(database, `vendeurs_publications/${currentVendeurUid}`));
       const idProd = newRef.key;
 
       const itemData = {
@@ -870,40 +921,48 @@
       };
 
       await set(newRef, itemData);
-      alert("Élément publié avec succès !");
+      alert("Élément publié avec succès dans votre espace vendeur !");
       e.target.reset();
       document.getElementById('previewPublish').style.display = 'none';
       chargerMesProduits(currentVendeurUid);
       chargerAffiliationGlobal();
     };
 
-    // MES PRODUITS
+    // MES PRODUITS DEPUIS /vendeurs_publications/{vendeurUid}
     async function chargerMesProduits(uid) {
-      const snapshot = await get(ref(database, 'publications'));
+      const snapshot = await get(ref(database, `vendeurs_publications/${uid}`));
       const tbody = document.getElementById('boutiqueProductsList');
+      const selectCouponProd = document.getElementById('cProduitId');
+      
       tbody.innerHTML = "";
+      selectCouponProd.innerHTML = '<option value="ALL">Tous mes produits</option>';
       let count = 0;
 
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const prod = child.val();
-          if (prod.vendeurUid === uid) {
-            count++;
-            const link = window.location.origin + "/produit.html?id=" + prod.id + "&aff=" + uid;
-            tbody.innerHTML += `
-              <tr>
-                <td><img src="${prod.imageUrl60}" width="60" height="60" style="border-radius:6px; object-fit:cover;"></td>
-                <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : 'PRODUIT'}</small></td>
-                <td>${prod.auteur || 'Non précisé'}</td>
-                <td>
-                  <span class="price-promo">${prod.prixPromo} FCFA</span>
-                  ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
-                </td>
-                <td>${prod.stock}</td>
-                <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
-              </tr>
-            `;
-          }
+          count++;
+          
+          // Option coupon
+          selectCouponProd.innerHTML += `<option value="${prod.id}">${prod.nom}</option>`;
+
+          // Gestion de l'image
+          const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
+          const link = `${window.location.origin}/produit.html?id=${prod.id}&aff=${uid}`;
+          
+          tbody.innerHTML += `
+            <tr>
+              <td><img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png'"></td>
+              <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : 'PRODUIT'}</small></td>
+              <td>${prod.auteur || 'Non précisé'}</td>
+              <td>
+                <span class="price-promo">${prod.prixPromo} FCFA</span>
+                ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
+              </td>
+              <td>${prod.stock}</td>
+              <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
+            </tr>
+          `;
         });
         document.getElementById('statProduits').innerText = count;
       }
@@ -913,37 +972,48 @@
       }
     }
 
-    // CHARGER AFFILIATION GLOBAL
+    // CHARGER AFFILIATION GLOBAL DEPUIS /vendeurs_publications
     async function chargerAffiliationGlobal() {
-      const snapshot = await get(ref(database, 'publications'));
+      const snapshot = await get(ref(database, 'vendeurs_publications'));
       const tbody = document.getElementById('affiliationProductsList');
       tbody.innerHTML = "";
+      let count = 0;
 
       if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          const prod = child.val();
-          const gainsEstimes = Math.round((prod.prixPromo || prod.prixNormal) * 0.10);
-          const affLink = window.location.origin + "/produit.html?id=" + prod.id + "&aff=" + currentVendeurUid;
-          
-          tbody.innerHTML += `
-            <tr>
-              <td><img src="${prod.imageUrl60 || 'https://via.placeholder.com/60'}" width="60" height="60" style="border-radius:6px; object-fit:cover;"></td>
-              <td><strong>${prod.nom}</strong></td>
-              <td>${prod.prixPromo || prod.prixNormal} FCFA</td>
-              <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
-              <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
-            </tr>
-          `;
+        snapshot.forEach((vendeurNode) => {
+          vendeurNode.forEach((prodNode) => {
+            const prod = prodNode.val();
+            count++;
+            const prix = prod.prixPromo || prod.prixNormal || 0;
+            const gainsEstimes = Math.round(prix * 0.10);
+            
+            const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
+            const affLink = `${window.location.origin}/produit.html?id=${prod.id}&aff=${currentVendeurUid}`;
+
+            tbody.innerHTML += `
+              <tr>
+                <td>
+                  <img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png';">
+                </td>
+                <td><strong>${prod.nom}</strong></td>
+                <td>${prix} FCFA</td>
+                <td><strong style="color:var(--success-color);">+${gainsEstimes} FCFA</strong></td>
+                <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien Affilié</button></td>
+              </tr>
+            `;
+          });
         });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit disponible.</td></tr>`;
+      }
+      
+      if (count === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit disponible pour l'affiliation.</td></tr>`;
       }
     }
 
     // COPIER LIEN
     window.copierLien = function(lien) {
       navigator.clipboard.writeText(lien).then(() => {
-        alert("Lien copié dans le presse-papier !");
+        alert("Lien d'affiliation copié dans le presse-papier !");
       });
     };
 
@@ -1061,23 +1131,79 @@
       });
     }
 
-    // CREER COUPON PROMO
+    // CREER COUPON PROMO (GLOBALEMENT ADAPTÉ)
     window.creerCoupon = async function(e) {
       e.preventDefault();
-      const code = document.getElementById('cCode').value.toUpperCase();
+      const code = document.getElementById('cCode').value.trim().toUpperCase();
       const valeur = Number(document.getElementById('cValeur').value);
       const type = document.getElementById('cType').value;
+      const produitId = document.getElementById('cProduitId').value;
 
-      const newRef = push(ref(database, 'coupons/' + currentVendeurUid));
+      if (!code || !valeur) {
+        alert("Veuillez saisir un code promo et sa valeur.");
+        return;
+      }
+
+      const newRef = push(ref(database, 'coupons'));
       await set(newRef, {
+        id: newRef.key,
+        vendeurUid: currentVendeurUid,
         code: code,
         valeur: valeur,
         type: type,
+        produitId: produitId,
         dateCreation: new Date().toISOString()
       });
 
-      alert("Coupon créé avec succès !");
+      alert(`Coupon "${code}" créé avec succès !`);
       e.target.reset();
+      chargerCoupons();
+    };
+
+    // LISTER ET SUPPRIMER MES COUPONS
+    function chargerCoupons() {
+      const couponsRef = ref(database, 'coupons');
+      onValue(couponsRef, (snapshot) => {
+        const tbody = document.getElementById('couponsList');
+        tbody.innerHTML = "";
+        let count = 0;
+
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const coupon = child.val();
+            if (coupon.vendeurUid === currentVendeurUid) {
+              count++;
+              const reduction = coupon.type === 'pourcentage' ? `${coupon.valeur}%` : `${coupon.valeur} FCFA`;
+              const appTarget = coupon.produitId === 'ALL' ? 'Tous mes produits' : `Produit #${coupon.produitId.substring(0, 6)}`;
+
+              tbody.innerHTML += `
+                <tr>
+                  <td><strong>${coupon.code}</strong></td>
+                  <td>${reduction}</td>
+                  <td>${appTarget}</td>
+                  <td>
+                    <button class="btn-danger-sm" onclick="window.supprimerCoupon('${coupon.id}')">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }
+          });
+        }
+
+        if (count === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Aucun coupon promo créé.</td></tr>`;
+        }
+      });
+    }
+
+    // SUPPRIMER UN COUPON
+    window.supprimerCoupon = async function(couponId) {
+      if (confirm("Voulez-vous vraiment supprimer ce coupon ?")) {
+        await remove(ref(database, 'coupons/' + couponId));
+        alert("Coupon supprimé.");
+      }
     };
 
     // METTRE À JOUR LE PROFIL SOUS /users/{uid}
