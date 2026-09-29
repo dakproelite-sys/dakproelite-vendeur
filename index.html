@@ -67,8 +67,8 @@
           <div class="px-4 py-2 bg-slate-900/60 mb-1 border-b border-slate-800">
             <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Lien de votre boutique :</span>
             <div class="flex items-center justify-between text-xs font-mono text-amber-400 truncate">
-              <span id="vendeurUrlDisplay" class="truncate">https://boutique.dakproelite.com</span>
-              <button onclick="copierLienVendeur()" class="ml-2 text-slate-300 hover:text-white shrink-0" title="Copier le lien et catalogue">
+              <span id="vendeurUrlDisplay">https://vendeur.dakproelite.com</span>
+              <button onclick="copierLienVendeur()" class="ml-2 text-slate-300 hover:text-white">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
               </button>
             </div>
@@ -106,7 +106,7 @@
             <span>Abonnement</span>
           </a>
 
-          <!-- Support Rapide (Lien vers support-rapide.html) -->
+          <!-- Support Rapide -->
           <a href="support-rapide.html" class="flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors">
             <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-emerald-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -116,8 +116,16 @@
 
           <hr class="my-1 border-slate-800">
 
-          <!-- Déconnexion -->
-          <button onclick="deconnexion()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors text-left">
+          <!-- Connexion (affiché si déconnecté) -->
+          <a id="btnConnexionMenu" href="connexion.html" class="hidden flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-blue-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            </div>
+            <span>Connexion</span>
+          </a>
+
+          <!-- Déconnexion (affiché si connecté) -->
+          <button id="btnDeconnexionMenu" onclick="deconnexion();" class="hidden w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors text-left">
             <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-red-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </div>
@@ -193,11 +201,9 @@
 
   <!-- Utilitaires UI (Toggle Menu, Toast, WhatsApp & Config URL) -->
   <script>
-    // Récupération dynamique du nom de boutique ou vendeur
-    const rawSellerName = sessionStorage.getItem('vendeur_nom') || sessionStorage.getItem('vendeur_boutique') || 'ma-boutique';
-    const formattedSeller = rawSellerName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+    const sellerName = sessionStorage.getItem('vendeur_nom') || 'monnom';
     const appDomain = "dakproelite.com";
-    const fullSellerUrl = `https://${formattedSeller}.${appDomain}`;
+    const fullSellerUrl = `https://${sellerName.toLowerCase().replace(/\s+/g, '')}.${appDomain}`;
 
     document.addEventListener('DOMContentLoaded', () => {
       const display = document.getElementById('vendeurUrlDisplay');
@@ -206,7 +212,7 @@
 
     function toggleMenuTripode() {
       const menu = document.getElementById('menuTripode');
-      if (menu) menu.classList.toggle('hidden');
+      menu.classList.toggle('hidden');
     }
 
     document.addEventListener('click', (e) => {
@@ -231,22 +237,8 @@
     }
 
     function copierLienVendeur() {
-      let contenuACopier = `🛍️ *BIENVENUE SUR MA BOUTIQUE EN LIGNE*\n🔗 ${fullSellerUrl}\n\n`;
-
-      if (window.listeProduits && window.listeProduits.length > 0) {
-        contenuACopier += `🔥 *DÉCOUVREZ MES PRODUITS EN STOCK :*\n\n`;
-        window.listeProduits.forEach((p, idx) => {
-          contenuACopier += `${idx + 1}. *${(p.nom || '').toUpperCase()}*\n💰 Prix : ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA\n\n`;
-        });
-        contenuACopier += `📲 Visitez le lien ci-dessus ou contactez-moi directement pour passer votre commande !`;
-      } else {
-        contenuACopier += `Retrouvez tous nos articles et nouveautés directement sur notre boutique en ligne !`;
-      }
-
-      navigator.clipboard.writeText(contenuACopier).then(() => {
-        afficherToast("Lien boutique & catalogue copié !");
-      }).catch(err => {
-        console.error("Erreur de copie : ", err);
+      navigator.clipboard.writeText(fullSellerUrl).then(() => {
+        afficherToast("Lien de votre boutique copié !");
       });
     }
 
@@ -257,56 +249,84 @@
       const targetUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
       window.open(targetUrl, '_blank');
     }
-
-    function deconnexion() {
-      // Nettoyage complet pour éviter les bugs d'état
-      sessionStorage.clear();
-      localStorage.removeItem('vendeur_id');
-      localStorage.removeItem('vendeur_token');
-      window.location.replace("login.html");
-    }
   </script>
 
-  <!-- Module Firebase SDK v9+ -->
+  <!-- Module Firebase SDK v10+ & Logique Authentification/Données -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
       databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
       projectId: "dakproelite",
-      storageBucket: "dakproelite.appspot.com",
+      storageBucket: "dakproelite.firebasestorage.app",
       messagingSenderId: "580591769206",
       appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    const publicationsRef = ref(db, 'publications');
-    const currentVendeurId = sessionStorage.getItem('vendeur_id');
+    let listeProduits = [];
 
-    window.listeProduits = [];
+    // Gestion de l'état d'authentification Firebase
+    onAuthStateChanged(auth, (user) => {
+      const btnConnexion = document.getElementById('btnConnexionMenu');
+      const btnDeconnexion = document.getElementById('btnDeconnexionMenu');
 
-    onValue(publicationsRef, (snapshot) => {
-      window.listeProduits = [];
-      const data = snapshot.val();
+      if (user) {
+        // Utilisateur connecté
+        sessionStorage.setItem('vendeur_id', user.uid);
+        if (user.displayName) sessionStorage.setItem('vendeur_nom', user.displayName);
 
-      if (data) {
-        Object.keys(data).forEach(key => {
-          const item = data[key];
-          const ownerUid = item.vendeurUid || item.vendeurId || item.vendeur_id;
+        if (btnConnexion) btnConnexion.classList.add('hidden');
+        if (btnDeconnexion) btnDeconnexion.classList.remove('hidden');
 
-          // Charge UNIQUEMENT les produits propres au vendeur connecté
-          if (currentVendeurId && ownerUid === currentVendeurId) {
-            window.listeProduits.push({ id: key, ...item });
-          }
-        });
+        // Charger les produits propres au vendeur
+        chargerProduits(user.uid);
+      } else {
+        // Utilisateur déconnecté -> Redirection vers connexion.html
+        if (btnConnexion) btnConnexion.classList.remove('hidden');
+        if (btnDeconnexion) btnDeconnexion.classList.add('hidden');
+        
+        window.location.replace("connexion.html");
       }
-      afficherProduits(window.listeProduits);
     });
+
+    // Fonction globale de Déconnexion
+    window.deconnexion = async function() {
+      try {
+        await signOut(auth);
+        sessionStorage.clear();
+        window.location.replace("connexion.html");
+      } catch (error) {
+        console.error("Erreur lors de la déconnexion :", error);
+      }
+    };
+
+    function chargerProduits(currentVendeurId) {
+      const publicationsRef = ref(db, 'publications');
+      onValue(publicationsRef, (snapshot) => {
+        listeProduits = [];
+        const data = snapshot.val();
+
+        if (data) {
+          Object.keys(data).forEach(key => {
+            const item = data[key];
+            const ownerUid = item.vendeurUid || item.vendeurId || item.vendeur_id;
+
+            if (currentVendeurId && ownerUid === currentVendeurId) {
+              listeProduits.push({ id: key, ...item });
+            }
+          });
+        }
+        afficherProduits(listeProduits);
+      });
+    }
 
     window.afficherProduits = function(produits) {
       const container = document.getElementById('gridProduits');
@@ -375,7 +395,7 @@
     };
 
     window.copierPartageSocial = function(id) {
-      const p = window.listeProduits.find(item => item.id === id);
+      const p = listeProduits.find(item => item.id === id);
       if (!p) return;
 
       const texteSocial = 
@@ -396,14 +416,14 @@
     };
 
     window.copierToutLeCatalogue = function() {
-      if (!window.listeProduits || window.listeProduits.length === 0) {
+      if (listeProduits.length === 0) {
         afficherToast("Votre catalogue est actuellement vide.");
         return;
       }
 
       let texteCatalogue = `💥 *CATALOGUE OFFRES - DAKPROÉLITE* 💥\n\n`;
       
-      window.listeProduits.forEach((p, idx) => {
+      listeProduits.forEach((p, idx) => {
         texteCatalogue += `${idx + 1}. *${p.nom}*\n💰 ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA (au lieu de ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~)\n\n`;
       });
 
