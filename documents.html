@@ -68,14 +68,14 @@
       </div>
     </div>
 
-    <!-- Formulaire KYC (S'affiche ou se verrouille selon le statut) -->
+    <!-- Formulaire KYC -->
     <div id="formSection" class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 border border-slate-800">
       <h2 class="text-base font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         Renseignez vos Informations Légales
       </h2>
 
-      <form id="formKYC" onsubmit="soumettreDocuments(event)" class="space-y-5">
+      <form id="formKYC" class="space-y-5">
         
         <!-- Nom complet -->
         <div>
@@ -104,7 +104,7 @@
           </select>
         </div>
 
-        <!-- Fichiers Images depuis Galerie HD -->
+        <!-- Fichiers Images -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
           
           <!-- Document d'Identité -->
@@ -122,7 +122,7 @@
             <input type="hidden" id="base64Piece">
           </div>
 
-          <!-- Photo Personnel -->
+          <!-- Photo Personnelle -->
           <div class="space-y-2">
             <label class="block text-xs font-bold uppercase text-slate-300">2. Photo d'Identité Personnelle *</label>
             <div class="border-2 border-dashed border-slate-700 hover:border-amber-400/50 rounded-2xl p-4 text-center cursor-pointer bg-slate-900/50 transition-all relative min-h-[140px] flex flex-col items-center justify-center">
@@ -142,7 +142,7 @@
         <!-- Bouton de Soumission -->
         <button type="submit" id="btnSoumettre" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Envoyer & Valider les Documents KYC</span>
+          <span id="btnLabel">Envoyer & Valider les Documents KYC</span>
         </button>
 
       </form>
@@ -150,7 +150,7 @@
 
   </main>
 
-  <!-- Script Firebase v9+ & Contrôle de Qualité/Verrouillage -->
+  <!-- Script Firebase Realtime Database Direct -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -168,7 +168,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const vendeurId = sessionStorage.getItem('vendeur_id') || 'vendeur_defaut';
+    const vendeurId = sessionStorage.getItem('vendeur_id') || ('vendeur_' + Date.now());
     const docRef = ref(db, `documents_administratifs/${vendeurId}`);
 
     function afficherToast(msg, error = false) {
@@ -185,29 +185,25 @@
       }
 
       toast.classList.remove('hidden');
-      setTimeout(() => { toast.classList.add('hidden'); }, 5000);
+      setTimeout(() => { toast.classList.add('hidden'); }, 6000);
     }
 
-    // Calcul de la netteté de l'image (Laplacian Variance)
     function evaluerNetteteImage(ctx, width, height) {
       const imgData = ctx.getImageData(0, 0, width, height);
       const data = imgData.data;
       let score = 0;
       let totalPx = 0;
 
-      // Parcours en niveaux de gris
       for (let i = 0; i < data.length; i += 16) {
         let gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
         let grayNext = (data[i + 4] + data[i + 5] + data[i + 6]) / 3 || gray;
-        let diff = Math.abs(gray - grayNext);
-        score += diff;
+        score += Math.abs(gray - grayNext);
         totalPx++;
       }
 
       return totalPx > 0 ? (score / totalPx) : 0;
     }
 
-    // Traitement et vérification immédiate du flou de l'image
     window.traiterEtVerifierImageHD = function(input, previewId, hiddenInputId, holderId) {
       const file = input.files[0];
       if (!file) return;
@@ -218,7 +214,7 @@
         img.src = e.target.result;
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const maxDimension = 1200;
+          const maxDimension = 800; // Dimension optimale pour Realtime Database
           let width = img.width;
           let height = img.height;
 
@@ -237,11 +233,10 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Contrôle automatique de la netteté / flou
           const netteteScore = evaluerNetteteImage(ctx, width, height);
           
-          if (netteteScore < 3) { // Seuil de flou
-            afficherToast("⚠️ Photo rejetée : La photo ou le visage est trop flou. Veuillez choisir une image parfaitement nette !", true);
+          if (netteteScore < 2) {
+            afficherToast("⚠️ Photo rejetée : L'image est trop floue. Veuillez choisir une image plus nette.", true);
             input.value = "";
             document.getElementById(hiddenInputId).value = "";
             document.getElementById(previewId).classList.add('hidden');
@@ -249,7 +244,8 @@
             return;
           }
 
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          // Compression à 0.65 pour garantir une écriture rapide dans RTDB
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
           document.getElementById(hiddenInputId).value = compressedDataUrl;
 
           const imgPreview = document.getElementById(previewId);
@@ -261,10 +257,13 @@
       reader.readAsDataURL(file);
     };
 
-    // Soumission des données
-    window.soumettreDocuments = function(e) {
+    // Soumission du formulaire
+    document.getElementById('formKYC').addEventListener('submit', function(e) {
       e.preventDefault();
 
+      const btn = document.getElementById('btnSoumettre');
+      const btnLabel = document.getElementById('btnLabel');
+      
       const nomComplet = document.getElementById('nomComplet').value.trim();
       const telephone = document.getElementById('telephone').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -273,9 +272,12 @@
       const base64Photo = document.getElementById('base64Photo').value;
 
       if (!base64Piece || !base64Photo) {
-        afficherToast("Veuillez sélectionner deux photos nettes et valides !", true);
+        afficherToast("Veuillez charger les deux photos requises.", true);
         return;
       }
+
+      btn.disabled = true;
+      btnLabel.innerText = "Publication en cours...";
 
       const kycData = {
         nomComplet: nomComplet,
@@ -290,21 +292,25 @@
 
       set(docRef, kycData)
         .then(() => {
-          afficherToast("✅ Documents envoyés avec succès pour vérification !");
+          afficherToast("✅ Documents enregistrés avec succès dans Realtime Database !");
+          btn.disabled = false;
+          btnLabel.innerText = "Envoyer & Valider les Documents KYC";
         })
         .catch((err) => {
-          afficherToast("Erreur lors de l'envoi : " + err.message, true);
+          console.error("Erreur d'écriture Firebase:", err);
+          afficherToast("Erreur d'écriture : " + err.message, true);
+          btn.disabled = false;
+          btnLabel.innerText = "Réessayer l'envoi";
         });
-    };
+    });
 
-    // Synchronisation en temps réel : Gestion du statut et verrouillage/déverrouillage du formulaire
+    // Écouteur de statut temps réel
     onValue(docRef, (snapshot) => {
       const data = snapshot.val();
       const badgeContainer = document.getElementById('statusBadgeContainer');
       const formSection = document.getElementById('formSection');
 
       if (!data) {
-        // Aucun document transmis : Formulaire actif
         formSection.classList.remove('hidden');
         badgeContainer.innerHTML = `
           <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">
@@ -314,7 +320,6 @@
       }
 
       if (data.statut === 'en_attente') {
-        // Verrouille et masque le formulaire après envoi
         formSection.classList.add('hidden');
         badgeContainer.innerHTML = `
           <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
@@ -322,11 +327,10 @@
               <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Document en attente de traitement
             </span>
             <p class="text-[11px] text-slate-300 font-medium">
-              Vos documents sont actuellement en cours d'examen par notre équipe. Vous pouvez patienter jusqu'à 72 heures à une semaine pour la validation complète.
+              Vos documents ont été publiés dans la base et sont en cours de validation.
             </p>
           </div>`;
       } else if (data.statut === 'approuve') {
-        // Verrouille définitivement le formulaire
         formSection.classList.add('hidden');
         badgeContainer.innerHTML = `
           <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
@@ -334,17 +338,16 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
               Félicitations ! Vendeur Vérifié
             </span>
-            <p class="text-[11px] text-slate-300">Votre identité est confirmée. Vos demandes de retraits de gains sont désormais débloquées.</p>
+            <p class="text-[11px] text-slate-300">Votre identité est confirmée.</p>
           </div>`;
       } else if (data.statut === 'rejete') {
-        // Déverrouille le formulaire pour autoriser une nouvelle soumission
         formSection.classList.remove('hidden');
         badgeContainer.innerHTML = `
           <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-1">
             <span class="inline-flex items-center gap-1.5 text-xs font-extrabold text-rose-400">
               <span class="w-2 h-2 rounded-full bg-rose-400"></span> Documents Rejetés
             </span>
-            <p class="text-[11px] text-slate-300">Vos anciens documents ont été refusés (image floue ou illisible). Veuillez soumettre de nouveaux documents de meilleure qualité ci-dessous.</p>
+            <p class="text-[11px] text-slate-300">Veuillez soumettre à nouveau des documents lisibles.</p>
           </div>`;
       }
     });

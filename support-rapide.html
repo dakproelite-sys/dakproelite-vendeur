@@ -13,12 +13,14 @@
         }
 
         body {
-            background-color: #090c13;
+            background-color: #0b0e14;
             color: #f5f5f7;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            padding: 20px;
+            padding: 20px 15px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
 
         /* SUPPORT MODULE WRAPPER */
@@ -26,36 +28,39 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: #f5f5f7;
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         .support-header {
+            background: #121622;
+            border: 1px solid #232838;
+            border-radius: 12px;
+            padding: 16px 20px;
             color: #d4af37;
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 15px;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .emergency-bar {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 0, 0, 0.4));
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(18, 22, 34, 0.8));
             border: 1px solid #d4af37;
-            border-radius: 10px;
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 14px 20px;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            font-size: 13px;
+            font-size: 13.5px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -67,27 +72,28 @@
 
         .info-card {
             background: #121622;
-            border: 1px solid #282e3e;
+            border: 1px solid #232838;
             border-radius: 12px;
-            padding: 15px;
+            padding: 18px 20px;
             margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
         }
 
         .field-group {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .field-group label {
-            font-size: 11px;
-            color: #aaa;
+            font-size: 11.5px;
+            color: #d4af37;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -95,37 +101,42 @@
 
         .form-input {
             background: #090c13;
-            border: 1px solid #31374a;
+            border: 1px solid #2a3143;
             border-radius: 8px;
-            padding: 10px 12px;
+            padding: 12px 14px;
             color: #fff;
-            font-size: 13px;
+            font-size: 13.5px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         .form-input:focus {
             border-color: #d4af37;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
         }
 
+        /* TCHAT-BOX AGRANDIE ET HARMONISÉE */
         .chat-box {
-            background: #080a10;
-            border: 1px solid #1f2433;
-            border-radius: 12px;
-            height: 420px;
+            background: #0d111a;
+            border: 1px solid #232838;
+            border-radius: 14px;
+            min-height: 520px;
+            max-height: 650px;
+            height: 60vh;
             overflow-y: auto;
-            padding: 16px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             margin-bottom: 15px;
             scroll-behavior: smooth;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .msg-bubble-container {
             display: flex;
             flex-direction: column;
-            max-width: 85%;
+            max-width: 80%;
         }
 
         .msg-user-container {
@@ -139,33 +150,34 @@
         }
 
         .msg-bubble {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13.5px;
-            line-height: 1.55;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.6;
             white-space: pre-wrap;
             word-break: break-word;
             position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .msg-user {
             background: linear-gradient(135deg, #d4af37, #b8952b);
-            color: #000;
-            font-weight: 500;
-            border-bottom-right-radius: 2px;
+            color: #0d111a;
+            font-weight: 600;
+            border-bottom-right-radius: 3px;
         }
 
         .msg-admin {
             background: #171c2b;
             color: #f0f0f5;
-            border: 1px solid #2d354a;
-            border-bottom-left-radius: 2px;
+            border: 1px solid #2c3448;
+            border-bottom-left-radius: 3px;
         }
 
         .msg-meta {
-            font-size: 10px;
-            opacity: 0.75;
-            margin-top: 4px;
+            font-size: 11px;
+            color: #717c96;
+            margin-top: 5px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -173,21 +185,21 @@
 
         .msg-actions {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         .btn-msg-action {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ddd;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ccc;
             border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 5px 10px;
+            font-size: 11.5px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             transition: all 0.2s;
         }
 
@@ -199,36 +211,41 @@
 
         .chat-input-area {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
-            flex-wrap: wrap;
+            background: #121622;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #232838;
         }
 
         .btn-send {
             background: linear-gradient(135deg, #d4af37, #b8952b);
             color: #000;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
             transition: transform 0.1s, background 0.2s;
+            white-space: nowrap;
         }
 
         .btn-send:hover {
-            filter: brightness(1.1);
+            filter: brightness(1.15);
         }
 
         .btn-send:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .btn-mic {
             background: #1a2130;
-            border: 1px solid #31374a;
+            border: 1px solid #2a3143;
             color: #d4af37;
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
@@ -239,7 +256,7 @@
 
         .btn-mic:hover {
             border-color: #d4af37;
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(212, 175, 55, 0.15);
         }
 
         .btn-mic.listening {
@@ -259,14 +276,14 @@
             background: #25D366;
             color: #fff;
             border: none;
-            padding: 8px 14px;
+            padding: 9px 16px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
+            font-size: 12.5px;
             text-decoration: none;
             transition: background 0.2s;
         }
@@ -279,14 +296,14 @@
             background: #ea4335;
             color: #fff;
             border: none;
-            padding: 8px 14px;
+            padding: 9px 16px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
+            font-size: 12.5px;
             text-decoration: none;
             transition: background 0.2s;
         }
@@ -307,7 +324,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { ref, push, onValue, set, get, serverTimestamp, remove, getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // ⚠️ REMPLACEZ CETTE CONFIGURATION PAR CELLE DE VOTRE PROJET FIREBASE
+        // Config Firebase
         const firebaseConfig = {
             apiKey: "VOTRE_API_KEY",
             authDomain: "votre-projet.firebaseapp.com",
@@ -322,9 +339,6 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        /**
-         * Nettoyage anti-XSS des entrées utilisateur
-         */
         function escapeHTML(str) {
             return String(str ?? "")
                 .replace(/&/g, "&amp;")
@@ -334,9 +348,6 @@
                 .replace(/'/g, "&#039;");
         }
 
-        /**
-         * Nettoyage du formatting Markdown/Émojis pour une lecture ou copie propre
-         */
         function nettoyerTexteBrut(str) {
             return String(str ?? "")
                 .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -347,13 +358,9 @@
                 .trim();
         }
 
-        /**
-         * Base de connaissances complète et sécurisée pour le Bot DAKPROELITE
-         */
         function obtenirReponseAutomatique(texteMessage) {
             const text = texteMessage.toLowerCase();
 
-            // 1. FONDATEUR, DÉVELOPPEUR & HISTOIRE DAKPROELITE
             if (text.includes("fondateur") || text.includes("createur") || text.includes("créateur") || text.includes("développeur") || text.includes("developpeur") || text.includes("qui a crée") || text.includes("qui a créé") || text.includes("qui est le patron") || text.includes("qui a inventé")) {
                 return `👨‍💻 **FONDATEUR & DÉVELOPPEUR DE DAKPROELITE**\n\n` +
                        `La plateforme DAKPROELITE a été conçue, développée et fondée par **AGLIGNAMOU DAVID**.\n\n` +
@@ -363,7 +370,6 @@
                        `Grâce à son leadership, DAKPROELITE s'impose aujourd'hui comme un acteur majeur de la vente en ligne, garantissant transparence, rapidité et fiabilité.`;
             }
 
-            // 2. PRESENTATION, INTENTION & VISION GLOBALE
             if (text.includes("intention") || text.includes("but") || text.includes("pourquoi") || text.includes("projet") || text.includes("c'est quoi dakproelite") || text.includes("presentation") || text.includes("présentation")) {
                 return `🌍 **DAKPROELITE : LE MARCHÉ MONDIAL SÉCURISÉ** 🚀\n\n` +
                        `DAKPROELITE est une marketplace internationale conçue pour connecter les acheteurs, vendeurs, livreurs, transitaires et ambassadeurs du monde entier sur une interface unique et hautement sécurisée.\n\n` +
@@ -374,7 +380,6 @@
                        `• **Opportunités Économiques :** Une infrastructure pensée pour faire croître les boutiques et offrir des revenus complémentaires aux affiliés et ambassadeurs.`;
             }
 
-            // 3. PROGRAMME AMBASSADEUR & AFFILIATION COMPLET
             if (text.includes("ambassadeur") || text.includes("affilié") || text.includes("affiliation") || text.includes("parrainage") || text.includes("lien d'affiliation") || text.includes("gagner de l'argent") || text.includes("commission parrainage") || text.includes("programme ambassadeur")) {
                 return `🏆 **PROGRAMME AMBASSADEUR & AFFILIATION DAKPROELITE** 💰\n\n` +
                        `Le programme Ambassadeur DAKPROELITE vous permet de monetiser votre audience et d'obtenir des commissions récurrentes sur chaque vente générée.\n\n` +
@@ -389,7 +394,6 @@
                        `• **Accompagnement :** Accès à des visuels de promotion et au support prioritaire.`;
             }
 
-            // 4. RÈGLEMENT INTÉRIEUR & STATUT LÉGAL COMPLET
             if (text.includes("règlement") || text.includes("reglement") || text.includes("cgu") || text.includes("condition") || text.includes("regles") || text.includes("règles") || text.includes("statut") || text.includes("charte")) {
                 return `⚖️ **RÈGLEMENT INTÉRIEUR ET CONDITIONS D'UTILISATION (CGU)** 📜\n\n` +
                        `Afin de maintenir un environnement commercial sain et sécurisé, tous les utilisateurs de DAKPROELITE s'engagent à respecter les règles suivantes :\n\n` +
@@ -400,7 +404,6 @@
                        `5. **Sanctions :** DAKPROELITE se réserve le droit de restreindre ou supprimer tout compte en cas de suspicion de fraude, d'escroquerie ou de violation de la présente charte.`;
             }
 
-            // 5. POLITIQUE DE CONFIDENTIALITÉ COMPLÈTE
             if (text.includes("confidentialité") || text.includes("confidentialite") || text.includes("donnée") || text.includes("donnees") || text.includes("rgpd") || text.includes("vie privée") || text.includes("sécurité données")) {
                 return `🔒 **POLITIQUE DE CONFIDENTIALITÉ ET DE PROTECTION DES DONNÉES** 🛡️\n\n` +
                        `DAKPROELITE accorde une importance capitale à la protection de vos données personnelles et au respect de votre vie privée.\n\n` +
@@ -411,7 +414,6 @@
                        `• **Droit d'Accès et de Suppression :** Conformément aux lois sur la protection des données numériques, vous pouvez à tout moment demander la modification ou la suppression définitive de votre profil et de votre historique depuis votre espace client ou via le support direct.`;
             }
 
-            // 6. SECTION VENDEURS, BOUTIQUES & BOOST
             if (text.includes("vendeur") || text.includes("devenir vendeur") || text.includes("boutique") || text.includes("vendre") || text.includes("creer boutique")) {
                 return `🛍️ **ESPACE VENDEUR DAKPROELITE**\n\n` +
                        `Devenez un vendeur partenaire sur DAKPROELITE :\n` +
@@ -442,7 +444,6 @@
                        `- Une commission minimale est appliquée sur chaque transaction réussie afin d'assurer le fonctionnement de la garantie séquestre et le développement de la plateforme.`;
             }
 
-            // 7. ACHETEURS, PAIEMENTS & LIVRAISON
             if (text.includes("payer") || text.includes("paiement") || text.includes("moyen") || text.includes("momo") || text.includes("mtn") || text.includes("moov") || text.includes("wave") || text.includes("celtis") || text.includes("visa") || text.includes("mastercard") || text.includes("sécurité") || text.includes("securite") || text.includes("garantie")) {
                 return `💳 **PAIEMENTS SÉCURISÉS & GARANTIS** 🛒\n\n` +
                        `Modes de paiement acceptés :\n` +
@@ -453,7 +454,7 @@
 
             if (text.includes("livreur") || text.includes("livraison") || text.includes("transitaire") || text.includes("dhl") || text.includes("colis")) {
                 return `🚚 **LIVRAISONS ET EXPÉDITIONS**\n\n` +
-                       `- **Livraison Locale :** Assurée par notre réseau de coursier certifiés contre QR Code.\n` +
+                       `- **Livraison Locale :** Assurée par notre réseau de coursiers certifiés contre QR Code.\n` +
                        `- **Livraison Internationale :** Prise en charge via transitaires agréés et partenaires logistiques internationaux (ex: DHL).\n` +
                        `- **Suivi :** Indiquez votre numéro de commande dans ce tchat pour obtenir un suivi en temps réel.`;
             }
@@ -466,7 +467,6 @@
                        `3. Après examen, l'équipe valide le remboursement de votre commande.`;
             }
 
-            // 8. SALUTATIONS & CONTACT
             if (text.includes("bonjour") || text.includes("salut") || text.includes("hello") || text.includes("coucou") || text.includes("bonsoir")) {
                 return `👋 **Bienvenue sur DAKPROELITE !**\n\n` +
                        `Comment pouvons-nous vous aider aujourd'hui ? Vous pouvez me poser des questions sur nos produits, la vente, les paiements sécurisés, les livraisons, le programme ambassadeur ou notre règlement.`;
@@ -480,11 +480,10 @@
                        `- **Disponibilité :** Service assistance disponible 24h/24 & 7j/7.`;
             }
 
-            // RÉPONSE PAR DÉFAUT ENRICHIE
             return `Merci pour votre message ! 💬\n\n` +
                    `Bienvenue sur **DAKPROELITE**, le marché mondial sécurisé pour acheter, vendre et faire fructifier vos activités.\n\n` +
                    `Vous pouvez m'interroger sur :\n` +
-                   `- 🛍️ **Vendeurs :** Boutique, boost de produits, retrait des gains\n` +
+                   `- 🛍️️ **Vendeurs :** Boutique, boost de produits, retrait des gains\n` +
                    `- 📦 **Acheteurs :** Modes de paiement, garantie séquestre, suivi de colis\n` +
                    `- 🏆 **Ambassadeurs & Affiliation :** Générer des commissions de parrainage\n` +
                    `- ⚖️ **Règlement, CGU & Confidentialité :** Statut et protection des données\n\n` +
@@ -492,9 +491,6 @@
                    `📧 contact@dakproelite.com | 📲 WhatsApp : +229 01 97 45 53 09`;
         }
 
-        /**
-         * Nettoyage automatique des messages de plus de 24 heures
-         */
         async function nettoyerAnciensMessages(dbInstance, currentUid) {
             try {
                 const messagesRef = ref(dbInstance, `messages_support/${currentUid}`);
@@ -516,24 +512,18 @@
             }
         }
 
-        /**
-         * Initialisation du module Support Rapide
-         */
         export function init(container, dbInstance, authInstance, userId) {
             if (!container || !dbInstance) return;
 
-            const currentUid = userId || (authInstance && authInstance.currentUser ? authInstance.currentUser.uid : null);
+            let guestId = localStorage.getItem("dakpro_guest_id");
+            if (!guestId) {
+                guestId = "guest_" + Math.random().toString(36).substring(2, 11);
+                localStorage.setItem("dakpro_guest_id", guestId);
+            }
+
+            const currentUid = userId || (authInstance && authInstance.currentUser ? authInstance.currentUser.uid : guestId);
             const ADMIN_WHATSAPP = "2290197455309";
             const ADMIN_EMAIL = "contact@dakproelite.com";
-
-            if (!currentUid) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #ff8585; font-family: 'Segoe UI', sans-serif; background: #0e121a; border-radius: 12px; border: 1px solid #2a2a32;">
-                        🔒 Veuillez vous connecter pour accéder à l'Assistance DAKPROELITE.
-                    </div>
-                `;
-                return;
-            }
 
             nettoyerAnciensMessages(dbInstance, currentUid);
 
@@ -541,7 +531,7 @@
                 <div class="support-wrapper">
                     <div class="support-header">
                         <span>💬 Assistance Instantanée DAKPROELITE</span>
-                        <span style="font-size: 12px; color: #aaa; font-weight: normal;">Marché Mondial Sécurisé</span>
+                        <span style="font-size: 13px; color: #8a96a8; font-weight: 500;">Marché Mondial Sécurisé</span>
                     </div>
 
                     <div class="emergency-bar">
@@ -557,8 +547,8 @@
                     </div>
 
                     <div class="info-card">
-                        <div style="font-size: 12px; color: #d4af37; font-weight: bold; margin-bottom: 10px;">
-                            👤 Votre Profil Client
+                        <div style="font-size: 13px; color: #d4af37; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                            👤 Profil Client / Vos Coordonnées
                         </div>
                         <div class="form-grid">
                             <div class="field-group">
@@ -567,7 +557,7 @@
                             </div>
                             <div class="field-group">
                                 <label>Téléphone / WhatsApp</label>
-                                <input type="tel" id="suppPhone" class="form-input" placeholder="Ex: +229..." />
+                                <input type="tel" id="suppPhone" class="form-input" placeholder="Ex: +229 01 97 45 53 09" />
                             </div>
                             <div class="field-group">
                                 <label>E-mail</label>
@@ -577,7 +567,7 @@
                     </div>
 
                     <div class="chat-box" id="chatBox">
-                        <div style="color: #888; text-align: center; margin: auto; font-size: 13px;">Chargement de l'assistance DAKPROELITE...</div>
+                        <div style="color: #888; text-align: center; margin: auto; font-size: 14px;">Chargement de l'assistance DAKPROELITE...</div>
                     </div>
 
                     <div class="chat-input-area">
@@ -741,8 +731,8 @@ ${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
 
                 if (!snapshot.exists()) {
                     chatBox.innerHTML = `
-                        <div style="color: #aaa; text-align: center; margin: auto; font-size: 13px; line-height: 1.7; max-width: 550px;">
-                            👋 **Bienvenue sur l'assistance DAKPROELITE !**<br><br>
+                        <div style="color: #a0aec0; text-align: center; margin: auto; font-size: 14px; line-height: 1.8; max-width: 600px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 12px; border: 1px dashed #2c3448;">
+                            👋 <strong style="color: #d4af37;">Bienvenue sur l'assistance DAKPROELITE !</strong><br><br>
                             Notre plateforme est conçue pour sécuriser toutes vos ventes et achats à l'échelle internationale.<br><br>
                             Posez une question sur la marketplace, les boutiques, la garantie séquestre, le programme ambassadeur, nos CGU ou notre politique de confidentialité.
                         </div>
@@ -763,7 +753,7 @@ ${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
 
                     let htmlContent = `
                         <div class="msg-bubble ${isUser ? 'msg-user' : 'msg-admin'}">
-                            <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px; opacity: 0.85;">
+                            <div style="font-size: 11.5px; font-weight: bold; margin-bottom: 5px; opacity: 0.85;">
                                 ${isUser ? '👤 Vous' : '🤖 Assistant DAKPROELITE'}
                             </div>
                             <div>${texteEchappe}</div>
@@ -817,7 +807,7 @@ ${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
                         nom,
                         telephone: phone,
                         email
-                    });
+                    }).catch(() => {});
 
                     await push(ref(dbInstance, `messages_support/${currentUid}`), {
                         sender: "user",
@@ -842,7 +832,6 @@ ${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
 
                 } catch (e) {
                     console.error("Erreur Envoi Support :", e);
-                    alert("Une erreur s'est produite lors de l'envoi de votre message.");
                 }
             }
 
@@ -852,7 +841,6 @@ ${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
             });
         }
 
-        // Lancement automatique à la connexion de l'utilisateur
         const container = document.getElementById("supportContainer");
         onAuthStateChanged(auth, (user) => {
             if (user) {
