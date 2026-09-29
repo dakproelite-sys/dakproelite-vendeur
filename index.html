@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAKPROELITE - Espace Dropshipping</title>
+  <title>DAKPROELITE - Espace Vendeur Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -14,59 +14,84 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
   </style>
+
+  <!-- Script de contrôle d'accès Vendeur -->
+  <script>
+    (function CheckAuth() {
+      const isConnected = sessionStorage.getItem('vendeur_connecte');
+      if (!isConnected || isConnected !== 'true') {
+        window.location.href = 'connexion.html';
+      }
+    })();
+  </script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
 
-  <!-- Header -->
+  <!-- Header principal avec Logo et Navigation -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl shadow-black/30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Logo DAKPROELITE encerclé en jaune -->
+      <!-- Logo DAKPROELITE Dynamique encerclé en jaune -->
       <div class="flex items-center space-x-3">
-        <div class="relative w-12 h-12 rounded-full border-2 border-amber-400 bg-slate-900 flex items-center justify-center p-1 shadow-lg shadow-amber-500/20 ring-2 ring-amber-400/20 overflow-hidden flex-shrink-0">
+        <div class="relative w-12 h-12 rounded-full border-2 border-amber-400 bg-slate-900 flex items-center justify-center shadow-lg shadow-amber-500/20 ring-2 ring-amber-400/20 overflow-hidden flex-shrink-0">
           <img 
             id="logoApp" 
             src="477912.png" 
             alt="DAKPROÉLITE Logo" 
-            class="w-full h-full object-contain filter drop-shadow"
-            onerror="this.src='https://via.placeholder.com/150/0f172a/f59e0b?text=D'"
+            class="w-full h-full object-contain filter drop-shadow hidden"
+            onload="this.classList.remove('hidden')"
+            onerror="document.getElementById('logoFallback').classList.remove('hidden'); this.remove();"
           >
+          <!-- Fallback Visuel Dynamique si image absente -->
+          <div id="logoFallback" class="hidden font-black text-amber-400 text-lg tracking-tighter">
+            D<span class="text-xs text-white">E</span>
+          </div>
         </div>
         <div>
-          <span class="text-lg sm:text-xl font-extrabold tracking-tight text-white block leading-none">DAKPROÉLITE</span>
+          <span id="nomApp" class="text-lg sm:text-xl font-extrabold tracking-tight text-white block leading-none">DAKPROÉLITE</span>
           <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase flex items-center gap-1 mt-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Espace Dropshipper
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Tableau de bord Vendeur
           </span>
         </div>
       </div>
       
-      <!-- Actions Header -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
+      <!-- Barre de Navigation Pro -->
+      <nav class="flex items-center space-x-2 sm:space-x-3 overflow-x-auto py-1">
         
-        <!-- Bouton Copier Mon Lien Affilié -->
-        <button onclick="copierMonLienVendeur()" class="px-3.5 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95 shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 105.656 5.656l-1.1 1.1"/></svg>
-          <span class="hidden sm:inline">Mon Lien Affilié</span>
-        </button>
-
-        <!-- Bouton Copier Tout Le Catalogue -->
-        <button onclick="copierToutLeCatalogue()" class="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95 shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span class="hidden md:inline">Copier Catalogue</span>
-        </button>
-
-        <!-- Bouton Connexion -->
-        <a href="connexion.html" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2 active:scale-95 shadow-lg shadow-blue-600/30">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-          </svg>
-          <span>Connexion</span>
+        <!-- Menu Booster -->
+        <a href="booster.html" class="px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95 shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Booster</span>
         </a>
 
-      </div>
+        <!-- Menu Abonnement -->
+        <a href="abonnement.html" class="px-3 py-2 bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 border border-purple-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95 shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span>Abonnement</span>
+        </a>
+
+        <!-- Menu Documents Administratifs -->
+        <a href="documents.html" class="px-3 py-2 bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 border border-blue-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95 shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Documents</span>
+        </a>
+
+        <!-- Copier Mon Lien Affilié -->
+        <button onclick="copierMonLienVendeur()" class="px-3 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1.5 active:scale-95 shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 105.656 5.656l-1.1 1.1"/></svg>
+          <span class="hidden sm:inline">Mon Lien</span>
+        </button>
+
+        <!-- Déconnexion -->
+        <button onclick="deconnexion()" class="px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-1 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </button>
+
+      </nav>
     </div>
   </header>
 
+  <!-- Contenu Principal -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
     
     <!-- Toast Notification -->
@@ -74,40 +99,47 @@
       <div class="w-7 h-7 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
       </div>
-      <span id="toastMessage">Texte copié ! Prêt à être collé.</span>
+      <span id="toastMessage">Action effectuée avec succès !</span>
     </div>
 
-    <!-- Banner Info Dropshipping -->
-    <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-900 border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <!-- Banner Bienvenue Vendeur -->
+    <div class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950/40 to-slate-900 border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z"/></svg>
         </div>
         <div>
-          <h2 class="text-sm sm:text-base font-bold text-white">Centre de Ressources Dropshipping</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Sélectionnez et copiez les textes de vente pré-rédigés pour WhatsApp, Facebook et TikTok.</p>
+          <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            Espace Vendeur Pro DAKPROÉLITE
+            <span id="badgeStatut" class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">Actif</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Gérez vos articles, boostez vos ventes et accédez à vos documents officiels.</p>
         </div>
       </div>
-      <div class="flex items-center gap-2 text-xs font-bold">
-        <span class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">✓ Marge Garantie</span>
+
+      <div class="flex items-center gap-2">
+        <button onclick="copierToutLeCatalogue()" class="px-4 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-xl transition-all flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span>Exporter Mon Catalogue</span>
+        </button>
       </div>
     </div>
 
-    <!-- En-tête de section -->
+    <!-- En-tête de section Catalogue -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Catalogue Produit</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Exportez directement les offres vers vos réseaux sociaux.</p>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Vos Articles Publiés</h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">Seuls les produits que vous avez créés et publiés sont affichés ici.</p>
       </div>
     </div>
 
-    <!-- Grille des produits -->
+    <!-- Grille dynamique des produits -->
     <div id="gridProduits" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
-      <!-- Chargement dynamique via Firebase -->
+      <!-- Chargement Firebase Realtime -->
     </div>
   </main>
 
-  <!-- Script Notification & Actions UI -->
+  <!-- Script UI Fonctions -->
   <script>
     function afficherToast(message) {
       const toast = document.getElementById('toastNotification');
@@ -117,20 +149,23 @@
     }
 
     function copierMonLienVendeur() {
-      const nomVendeur = prompt("Entrez votre Identifiant Vendeur / Affilié :", "mon_nom");
-      if (!nomVendeur) return;
-
+      const vendeurId = sessionStorage.getItem('vendeur_id') || 'vendeur_pro';
       const baseDomain = window.location.origin;
-      const slug = nomVendeur.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
-      const lienVendeur = `${baseDomain}/index.html?ref=${slug}`;
+      const lienVendeur = `${baseDomain}/index.html?ref=${vendeurId}`;
 
       navigator.clipboard.writeText(lienVendeur).then(() => {
-        afficherToast(`Lien généré et copié : ${lienVendeur}`);
+        afficherToast(`Votre lien affilié est copié : ${lienVendeur}`);
       });
+    }
+
+    function deconnexion() {
+      sessionStorage.removeItem('vendeur_connecte');
+      sessionStorage.removeItem('vendeur_id');
+      window.location.href = 'connexion.html';
     }
   </script>
 
-  <!-- Intégration Firebase SDK v9+ Module -->
+  <!-- Module Firebase SDK v9+ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -149,15 +184,26 @@
     const db = getDatabase(app);
     const produitsRef = ref(db, 'produits_vendeurs');
 
+    // Récupération de l'identifiant du vendeur connecté
+    const currentVendeurId = sessionStorage.getItem('vendeur_id');
+
     let listeProduits = [];
 
-    // Écoute dynamique Realtime Database
+    // Chargement dynamique & filtré des produits Vendeur
     onValue(produitsRef, (snapshot) => {
       listeProduits = [];
       const data = snapshot.val();
       if (data) {
         Object.keys(data).forEach(key => {
-          listeProduits.push({ id: key, ...data[key] });
+          const item = data[key];
+          // FILTRAGE ROBUSTE : On vérifie si l'article appartient à l'ID vendeur en session
+          const ownerId = item.vendeurId || item.idVendeur || item.vendeur_id;
+          if (currentVendeurId && ownerId === currentVendeurId) {
+            listeProduits.push({ id: key, ...item });
+          } else if (!currentVendeurId) {
+            // Option de repli si aucun ID n'est configuré
+            listeProduits.push({ id: key, ...item });
+          }
         });
       }
       afficherProduits(listeProduits);
@@ -174,8 +220,8 @@
             <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
             </div>
-            <p class="text-sm font-semibold text-slate-300">Aucun produit disponible dans le catalogue.</p>
-            <p class="text-xs text-slate-500 mt-1">Les produits ajoutés depuis l'espace vendeur s'afficheront instantanément ici.</p>
+            <p class="text-sm font-semibold text-slate-300">Vous n'avez publié aucun produit pour le moment.</p>
+            <p class="text-xs text-slate-500 mt-1">Vos articles ajoutés s'afficheront ici en temps réel.</p>
           </div>`;
         return;
       }
@@ -186,17 +232,22 @@
           : 0;
         
         container.innerHTML += `
-          <div class="glass-card rounded-2xl overflow-hidden hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between group">
+          <div class="glass-card rounded-2xl overflow-hidden hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between group">
             <div>
-              <div class="relative h-52 bg-slate-950 overflow-hidden">
-                <img src="${p.imageUrl || '477912.png'}" alt="${p.nom}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='477912.png'">
+              <div class="relative h-52 bg-slate-950 overflow-hidden flex items-center justify-center">
+                <img 
+                  src="${p.imageUrl || '477912.png'}" 
+                  alt="${p.nom || 'Produit Vendeur'}" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/0f172a/f59e0b?text=DAKPROELITE';"
+                >
                 ${reduction > 0 ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-lg shadow-red-600/30">-${reduction}% OFF</span>` : ''}
                 <span class="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg shadow-md">${p.categorie || 'GENERAL'}</span>
               </div>
 
               <div class="p-4">
-                <h2 class="text-base font-bold text-white truncate">${p.nom}</h2>
-                <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${p.description}</p>
+                <h2 class="text-base font-bold text-white truncate">${p.nom || 'Sans Titre'}</h2>
+                <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${p.description || ''}</p>
               </div>
             </div>
 
@@ -228,24 +279,24 @@
 
       const texteSocial = 
 `🔥 *OFFRE SPÉCIALE - DISPONIBLE EN STOCK* 🔥
-📦 *${p.nom.toUpperCase()}*
+📦 *${(p.nom || '').toUpperCase()}*
 
-📝 ${p.description}
+📝 ${p.description || ''}
 
 💰 *Prix Promo : ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA*
 ❌ Prix Habituel : ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~
 
 📦 *Livraison rapide disponible partout*
-📲 Contactez-nous directement pour commander !`;
+📲 Contactez-moi directement pour passer votre commande !`;
 
       navigator.clipboard.writeText(texteSocial).then(() => {
-        afficherToast("Texte de revente copié ! Collez-le sur WhatsApp / Facebook.");
+        afficherToast("Texte de revente copié !");
       });
     };
 
     window.copierToutLeCatalogue = function() {
       if (listeProduits.length === 0) {
-        afficherToast("Le catalogue est actuellement vide.");
+        afficherToast("Votre catalogue est actuellement vide.");
         return;
       }
 
@@ -258,7 +309,7 @@
       texteCatalogue += `📲 *Contactez-moi directement pour passer votre commande !*`;
 
       navigator.clipboard.writeText(texteCatalogue).then(() => {
-        afficherToast("Catalogue complet copié ! Prêt pour vos canaux de revente.");
+        afficherToast("Catalogue complet copié dans le presse-papier !");
       });
     };
   </script>
