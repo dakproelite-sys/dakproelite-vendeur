@@ -160,7 +160,6 @@
       font-size: 18px;
       border: 2px solid var(--primary-gold);
       overflow: hidden;
-      object-fit: cover;
     }
 
     .avatar-circle img {
@@ -342,8 +341,8 @@
 
     /* IMAGE PREVIEW */
     .image-preview {
-      width: 60px;
-      height: 60px;
+      max-width: 120px;
+      max-height: 120px;
       border-radius: 8px;
       border: 1px dashed var(--primary-gold);
       object-fit: cover;
@@ -375,7 +374,6 @@
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
-      <!-- 1. Menu Redirection INDEX directe -->
       <li>
         <a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">Index / Accueil</span></a>
       </li>
@@ -467,7 +465,7 @@
       </div>
     </section>
 
-    <!-- 2. PUBLIER (Pointe directement vers le nœud global 'publications') -->
+    <!-- 2. PUBLIER -->
     <section id="publier" class="tab-section">
       <div class="content-card">
         <h3>Publier un Produit, un Cours en Ligne ou un Lien Externe</h3>
@@ -507,7 +505,7 @@
               <input type="url" id="pLienExterne" placeholder="https://exemple.com/mon-produit">
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo du Produit/Cours (Choix depuis la galerie - Compresse à 60x60 px)</label>
+              <label>Photo du Produit/Cours (Choix depuis la galerie)</label>
               <input type="file" id="pInputImage" accept="image/*" required onchange="window.handleImageCompress(event, 'previewPublish', 'base64Publish')">
               <input type="hidden" id="base64Publish">
               <img id="previewPublish" class="image-preview" alt="Aperçu">
@@ -546,7 +544,7 @@
       </div>
     </section>
 
-    <!-- 4. LIENS D'AFFILIATION GLOBAUX DEPUIS 'publications' -->
+    <!-- 4. LIENS D'AFFILIATION -->
     <section id="affiliation" class="tab-section">
       <div class="content-card">
         <h3>Produits Éligibles à l'Affiliation sur la Plateforme</h3>
@@ -605,22 +603,22 @@
               <input type="number" id="rMontant" required min="1000" placeholder="Ex: 10000">
             </div>
             <div class="form-group">
-              <label>Réseau Mobile Money / Moyen de Paiement Afrique</label>
+              <label>Moyen de Paiement</label>
               <select id="rMoyen" required>
                 <option value="">-- Sélectionnez le réseau --</option>
-                <option value="MTN MoMo">MTN Mobile Money (Bénin, CI, GH, CM)</option>
+                <option value="MTN MoMo">MTN Mobile Money</option>
                 <option value="Moov Money">Moov Money / Flooz</option>
-                <option value="Wave">Wave Côte d'Ivoire / Sénégal</option>
+                <option value="Wave">Wave</option>
                 <option value="Orange Money">Orange Money</option>
-                <option value="Celtiis Cash">Celtiis Cash Bénin</option>
-                <option value="Free Money">Free Money Sénégal</option>
+                <option value="Celtiis Cash">Celtiis Cash</option>
+                <option value="Free Money">Free Money</option>
                 <option value="Airtel Money">Airtel Money</option>
                 <option value="Virement Bancaire">Virement Bancaire (RIB)</option>
               </select>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>Numéro de Téléphone avec Indicatif Pays (ou RIB)</label>
-              <input type="text" id="rNumero" required placeholder="Ex: +229 01 97 00 00 00">
+              <input type="text" id="rNumero" required placeholder="Ex: +2290197000000">
             </div>
           </div>
           <button type="submit" class="btn-action"><i class="fa-solid fa-paper-plane"></i> Lancer la demande de retrait</button>
@@ -738,7 +736,7 @@
         <form onsubmit="window.mettreAJourProfil(event)">
           <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo de Profil (Choix galerie - Compression auto à 60x60 px)</label>
+              <label>Photo de Profil (Choix depuis la galerie)</label>
               <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
               <input type="hidden" id="base64Avatar">
               <img id="previewAvatar" class="image-preview" alt="Aperçu Profil">
@@ -818,7 +816,7 @@
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Espace Profil';
     };
 
-    // COMPRESSION IMAGE 60x60
+    // TRANSFORMATION D'IMAGE EN URL BASE64 (AVEC OPTIMISATION DE TAILLE)
     window.handleImageCompress = function(event, previewId, hiddenInputId) {
       const file = event.target.files[0];
       if (!file) return;
@@ -828,17 +826,34 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          canvas.width = 60;
-          canvas.height = 60;
+          let width = img.width;
+          let height = img.height;
+
+          // Redimensionnement fluide si l'image dépasse 800px pour optimiser la taille
+          const maxDimension = 800;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, 60, 60);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Génération de l'URL Data Base64
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.80);
           
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
           const preview = document.getElementById(previewId);
-          preview.src = compressedBase64;
+          preview.src = dataUrl;
           preview.style.display = 'block';
 
-          document.getElementById(hiddenInputId).value = compressedBase64;
+          document.getElementById(hiddenInputId).value = dataUrl;
         };
         img.src = e.target.result;
       };
@@ -875,8 +890,9 @@
         document.getElementById('profPhone').value = data.telephone || "";
 
         const avatarContainer = document.getElementById('vendeurAvatar');
-        if(data.photo60) {
-          avatarContainer.innerHTML = `<img src="${data.photo60}" alt="Avatar">`;
+        const photoUrl = data.imageUrl || data.photo60;
+        if(photoUrl) {
+          avatarContainer.innerHTML = `<img src="${photoUrl}" alt="Avatar">`;
         } else {
           avatarContainer.innerText = nomAffiche[0].toUpperCase();
         }
@@ -895,28 +911,31 @@
       e.preventDefault();
       if(!currentVendeurUid) return;
 
-      const photoBase64 = document.getElementById('base64Publish').value;
-      if(!photoBase64) {
+      const photoUrl = document.getElementById('base64Publish').value;
+      if(!photoUrl) {
         alert("Veuillez sélectionner une image.");
         return;
       }
 
-      // Insertion sous le nœud racine 'publications'
       const newRef = push(ref(database, 'publications'));
       const idProd = newRef.key;
 
       const itemData = {
         id: idProd,
+        createdBy: currentVendeurUid,
         vendeurUid: currentVendeurUid,
         type: document.getElementById('pType').value,
         nom: document.getElementById('pNom').value,
         auteur: document.getElementById('pAuteur').value,
+        prix: Number(document.getElementById('pPrixNormal').value),
         prixNormal: Number(document.getElementById('pPrixNormal').value),
         prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
         stock: Number(document.getElementById('pStock').value),
         lienExterne: document.getElementById('pLienExterne').value || "",
-        imageUrl60: photoBase64,
+        image: photoUrl,
+        imageUrl: photoUrl,
         description: document.getElementById('pDescription').value,
+        createdAt: Date.now(),
         datePublication: new Date().toISOString()
       };
 
@@ -928,7 +947,7 @@
       chargerAffiliationGlobal();
     };
 
-    // MES PRODUITS DEPUIS /publications (Filtre par vendeurUid)
+    // MES PRODUITS DEPUIS /publications (Filtre par vendeurUid / createdBy)
     async function chargerMesProduits(uid) {
       const snapshot = await get(ref(database, 'publications'));
       const tbody = document.getElementById('boutiqueProductsList');
@@ -941,26 +960,29 @@
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const prod = child.val();
-          if (prod.vendeurUid === uid) {
+          const prodKey = prod.id || child.key;
+          const ownerUid = prod.vendeurUid || prod.createdBy;
+
+          if (ownerUid === uid) {
             count++;
             
-            // Option coupon
-            selectCouponProd.innerHTML += `<option value="${prod.id}">${prod.nom}</option>`;
+            selectCouponProd.innerHTML += `<option value="${prodKey}">${prod.nom || 'Sans nom'}</option>`;
 
-            // Visuel
-            const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
-            const link = `${window.location.origin}/produit.html?id=${prod.id}&aff=${uid}`;
+            const imgSrc = prod.image || prod.imageUrl || prod.imageUrl60 || '477912.png';
+            const prixNormal = prod.prixNormal || prod.prix || 0;
+            const prixPromo = prod.prixPromo || prixNormal;
+            const link = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
             
             tbody.innerHTML += `
               <tr>
                 <td><img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png'"></td>
-                <td><strong>${prod.nom}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : 'PRODUIT'}</small></td>
+                <td><strong>${prod.nom || 'Produit'}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : (prod.categorie || 'PRODUIT')}</small></td>
                 <td>${prod.auteur || 'Non précisé'}</td>
                 <td>
-                  <span class="price-promo">${prod.prixPromo} FCFA</span>
-                  ${prod.prixNormal > prod.prixPromo ? `<span class="price-old">${prod.prixNormal} FCFA</span>` : ''}
+                  <span class="price-promo">${prixPromo} FCFA</span>
+                  ${prixNormal > prixPromo ? `<span class="price-old">${prixNormal} FCFA</span>` : ''}
                 </td>
-                <td>${prod.stock}</td>
+                <td>${prod.stock !== undefined ? prod.stock : 'N/A'}</td>
                 <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
               </tr>
             `;
@@ -974,7 +996,7 @@
       }
     }
 
-    // CHARGER AFFILIATION GLOBAL DEPUIS /publications (Tous les produits)
+    // CHARGER AFFILIATION GLOBAL DEPUIS /publications
     async function chargerAffiliationGlobal() {
       const snapshot = await get(ref(database, 'publications'));
       const tbody = document.getElementById('affiliationProductsList');
@@ -984,12 +1006,14 @@
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const prod = child.val();
+          const prodKey = prod.id || child.key;
           count++;
-          const prix = prod.prixPromo || prod.prixNormal || 0;
+
+          const prix = prod.prixPromo || prod.prixNormal || prod.prix || 0;
           const gainsEstimes = Math.round(prix * 0.10);
           
-          const imgSrc = prod.imageUrl60 || prod.imageUrl || '477912.png';
-          const affLink = `${window.location.origin}/produit.html?id=${prod.id}&aff=${currentVendeurUid}`;
+          const imgSrc = prod.image || prod.imageUrl || prod.imageUrl60 || '477912.png';
+          const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid}`;
 
           tbody.innerHTML += `
             <tr>
@@ -997,7 +1021,7 @@
                 <img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png';">
               </td>
               <td>
-                <strong>${prod.nom}</strong><br>
+                <strong>${prod.nom || 'Produit'}</strong><br>
                 <small style="color:var(--text-muted);">${prod.description ? prod.description.substring(0, 50) + '...' : ''}</small>
               </td>
               <td>${prix} FCFA</td>
@@ -1214,14 +1238,14 @@
       e.preventDefault();
       const nomBoutique = document.getElementById('profBoutique').value;
       const phone = document.getElementById('profPhone').value;
-      const avatar60 = document.getElementById('base64Avatar').value;
+      const photoUrl = document.getElementById('base64Avatar').value;
 
       const updates = {
         nomComplet: nomBoutique,
         telephone: phone
       };
-      if (avatar60) {
-        updates.photo60 = avatar60;
+      if (photoUrl) {
+        updates.imageUrl = photoUrl;
       }
 
       await update(ref(database, 'users/' + currentVendeurUid), updates);

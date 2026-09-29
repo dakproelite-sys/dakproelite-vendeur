@@ -39,7 +39,7 @@
   <header class="sticky top-0 z-40 glass-nav px-4 py-3 shadow-2xl">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       
-      <!-- Nom de l'application uniquement (Pas de logo) -->
+      <!-- Nom de l'application -->
       <div class="flex items-center space-x-2">
         <span class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-white via-slate-200 to-amber-400 bg-clip-text text-transparent uppercase">
           DAKPROÉLITE
@@ -67,8 +67,8 @@
           <div class="px-4 py-2 bg-slate-900/60 mb-1 border-b border-slate-800">
             <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Lien de votre boutique :</span>
             <div class="flex items-center justify-between text-xs font-mono text-amber-400 truncate">
-              <span id="vendeurUrlDisplay">https://vendeur.dakproelite.com</span>
-              <button onclick="copierLienVendeur()" class="ml-2 text-slate-300 hover:text-white">
+              <span id="vendeurUrlDisplay" class="truncate">https://boutique.dakproelite.com</span>
+              <button onclick="copierLienVendeur()" class="ml-2 text-slate-300 hover:text-white shrink-0" title="Copier le lien et catalogue">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
               </button>
             </div>
@@ -106,18 +106,18 @@
             <span>Abonnement</span>
           </a>
 
-          <!-- Support Rapide (support-rapide.js) -->
-          <button onclick="if(window.ouvrirSupportRapide){ ouvrirSupportRapide(); } else { alert('Support indisponible'); } toggleMenuTripode();" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors text-left">
+          <!-- Support Rapide (Lien vers support-rapide.html) -->
+          <a href="support-rapide.html" class="flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors">
             <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-emerald-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
             </div>
             <span>Support Rapide</span>
-          </button>
+          </a>
 
           <hr class="my-1 border-slate-800">
 
           <!-- Déconnexion -->
-          <button onclick="deconnexion();" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors text-left">
+          <button onclick="deconnexion()" class="w-full flex items-center space-x-3 px-4 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors text-left">
             <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-red-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             </div>
@@ -151,7 +151,7 @@
       <!-- Les cartes produits s'afficheront ici via JS -->
     </div>
 
-    <!-- Section Contact / Aide WhatsApp (Inspirée de la capture) -->
+    <!-- Section Contact / Aide WhatsApp -->
     <section class="mt-12 max-w-2xl mx-auto glass-card rounded-2xl p-6 border border-slate-800 text-center">
       <span class="text-xs font-extrabold text-amber-400 tracking-wider uppercase block mb-1">NOUS CONTACTER</span>
       <h2 class="text-2xl font-black text-white mb-4">Contact DAKPRO ÉLITE</h2>
@@ -191,14 +191,13 @@
     <span id="toastMsg">Action effectuée avec succès</span>
   </div>
 
-  <!-- Ingestion du fichier support-rapide.js -->
-  <script src="support-rapide.js"></script>
-
   <!-- Utilitaires UI (Toggle Menu, Toast, WhatsApp & Config URL) -->
   <script>
-    const sellerName = sessionStorage.getItem('vendeur_nom') || 'monnom';
+    // Récupération dynamique du nom de boutique ou vendeur
+    const rawSellerName = sessionStorage.getItem('vendeur_nom') || sessionStorage.getItem('vendeur_boutique') || 'ma-boutique';
+    const formattedSeller = rawSellerName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
     const appDomain = "dakproelite.com";
-    const fullSellerUrl = `https://${sellerName.toLowerCase().replace(/\s+/g, '')}.${appDomain}`;
+    const fullSellerUrl = `https://${formattedSeller}.${appDomain}`;
 
     document.addEventListener('DOMContentLoaded', () => {
       const display = document.getElementById('vendeurUrlDisplay');
@@ -207,7 +206,7 @@
 
     function toggleMenuTripode() {
       const menu = document.getElementById('menuTripode');
-      menu.classList.toggle('hidden');
+      if (menu) menu.classList.toggle('hidden');
     }
 
     document.addEventListener('click', (e) => {
@@ -232,8 +231,22 @@
     }
 
     function copierLienVendeur() {
-      navigator.clipboard.writeText(fullSellerUrl).then(() => {
-        afficherToast("Lien de votre boutique copié !");
+      let contenuACopier = `🛍️ *BIENVENUE SUR MA BOUTIQUE EN LIGNE*\n🔗 ${fullSellerUrl}\n\n`;
+
+      if (window.listeProduits && window.listeProduits.length > 0) {
+        contenuACopier += `🔥 *DÉCOUVREZ MES PRODUITS EN STOCK :*\n\n`;
+        window.listeProduits.forEach((p, idx) => {
+          contenuACopier += `${idx + 1}. *${(p.nom || '').toUpperCase()}*\n💰 Prix : ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA\n\n`;
+        });
+        contenuACopier += `📲 Visitez le lien ci-dessus ou contactez-moi directement pour passer votre commande !`;
+      } else {
+        contenuACopier += `Retrouvez tous nos articles et nouveautés directement sur notre boutique en ligne !`;
+      }
+
+      navigator.clipboard.writeText(contenuACopier).then(() => {
+        afficherToast("Lien boutique & catalogue copié !");
+      }).catch(err => {
+        console.error("Erreur de copie : ", err);
       });
     }
 
@@ -246,8 +259,11 @@
     }
 
     function deconnexion() {
+      // Nettoyage complet pour éviter les bugs d'état
       sessionStorage.clear();
-      window.location.href = "login.html";
+      localStorage.removeItem('vendeur_id');
+      localStorage.removeItem('vendeur_token');
+      window.location.replace("login.html");
     }
   </script>
 
@@ -272,10 +288,10 @@
     const publicationsRef = ref(db, 'publications');
     const currentVendeurId = sessionStorage.getItem('vendeur_id');
 
-    let listeProduits = [];
+    window.listeProduits = [];
 
     onValue(publicationsRef, (snapshot) => {
-      listeProduits = [];
+      window.listeProduits = [];
       const data = snapshot.val();
 
       if (data) {
@@ -285,11 +301,11 @@
 
           // Charge UNIQUEMENT les produits propres au vendeur connecté
           if (currentVendeurId && ownerUid === currentVendeurId) {
-            listeProduits.push({ id: key, ...item });
+            window.listeProduits.push({ id: key, ...item });
           }
         });
       }
-      afficherProduits(listeProduits);
+      afficherProduits(window.listeProduits);
     });
 
     window.afficherProduits = function(produits) {
@@ -359,7 +375,7 @@
     };
 
     window.copierPartageSocial = function(id) {
-      const p = listeProduits.find(item => item.id === id);
+      const p = window.listeProduits.find(item => item.id === id);
       if (!p) return;
 
       const texteSocial = 
@@ -380,14 +396,14 @@
     };
 
     window.copierToutLeCatalogue = function() {
-      if (listeProduits.length === 0) {
+      if (!window.listeProduits || window.listeProduits.length === 0) {
         afficherToast("Votre catalogue est actuellement vide.");
         return;
       }
 
       let texteCatalogue = `💥 *CATALOGUE OFFRES - DAKPROÉLITE* 💥\n\n`;
       
-      listeProduits.forEach((p, idx) => {
+      window.listeProduits.forEach((p, idx) => {
         texteCatalogue += `${idx + 1}. *${p.nom}*\n💰 ${Number(p.prixPromo || 0).toLocaleString('fr-FR')} FCFA (au lieu de ~${Number(p.prixNormal || 0).toLocaleString('fr-FR')} FCFA~)\n\n`;
       });
 
