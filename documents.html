@@ -3,15 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAKPROELITE - Vérification des Documents KYC</title>
+  <title>DAKPROELITE - Vérification KYC & Badge Vendeur</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Librairie QR Code CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card {
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    /* Format Carte Badge VIP ID-1 (Ratio 85.6mm x 53.98mm) */
+    .badge-card {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1.586 / 1;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      border: 2px solid #f59e0b;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(245, 158, 11, 0.2);
     }
   </style>
 
@@ -32,12 +44,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       <div>
         <span class="text-lg font-black text-white tracking-wider block leading-none">DAKPROÉLITE</span>
-        <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Centre de Sécurité KYC</span>
+        <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">E-Commerce & Validation Vendeur</span>
       </div>
 
       <a href="index.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all flex items-center space-x-1">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        <span>Retour</span>
+        <span>Tableau de Bord</span>
       </a>
     </div>
   </header>
@@ -53,22 +65,99 @@
       <span id="toastMessage">Message...</span>
     </div>
 
-    <!-- Bannière d'Information KYC -->
-    <div class="mb-8 p-6 rounded-3xl bg-slate-900 border border-amber-500/30 shadow-2xl space-y-2">
+    <!-- Bannière Statut Dynamique -->
+    <div class="mb-8 p-6 rounded-3xl bg-slate-900 border border-amber-500/30 shadow-2xl space-y-3">
       <div class="flex items-center space-x-2 text-amber-400">
-        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        <h1 class="text-lg font-extrabold text-white">Vérification Obligatoire de votre Identité</h1>
+        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <h1 class="text-lg font-extrabold text-white">Vérification d'Identité & Badge Officiel</h1>
       </div>
       <p class="text-xs text-slate-400 leading-relaxed">
-        Conformément aux normes financières de DAKPROELITE, vos gains restent enregistrés en toute sécurité. <span class="text-amber-400 font-bold">Les demandes de retraits nécessitent la validation préalable de vos pièces officielles.</span>
+        Suivez l'état de validation de votre dossier. Dès l'obtention du statut de <b>Vendeur Certifié</b>, votre Badge d'Accréditation DAKPROÉLITE sera automatiquement généré.
       </p>
       
       <div id="statusBadgeContainer" class="pt-2">
-        <!-- Statut injecté dynamiquement via Firebase RTDB -->
+        <!-- Statut temps réel injecté dynamiquement -->
       </div>
     </div>
 
-    <!-- Formulaire KYC -->
+    <!-- ZONE BADGE VIP CERTIFIÉ (Affichée uniquement en cas de validation) -->
+    <div id="badgeCertifieSection" class="hidden mb-10 space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-xl font-black text-amber-400 uppercase tracking-wide">Carte Professionnelle Vendeur Certifié</h2>
+        <p class="text-xs text-slate-400">Aperçu en direct de votre macaron d'accréditation officiel DAKPROÉLITE</p>
+      </div>
+
+      <!-- Badge Visualizer HTML -->
+      <div class="flex justify-center">
+        <div id="badgeCard" class="badge-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
+          <!-- Motifs décoratifs arrière-plan -->
+          <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl"></div>
+          <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
+
+          <!-- Header Badge -->
+          <div class="flex items-center justify-between border-b border-amber-500/30 pb-2 relative z-10">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 bg-amber-500 rounded-lg flex items-center justify-center text-slate-950 font-black text-xs">D</div>
+              <div>
+                <h3 class="text-xs font-black text-white tracking-wider leading-none">DAKPROÉLITE</h3>
+                <span class="text-[8px] font-extrabold text-amber-400 uppercase tracking-widest block">OFFICIAL CERTIFIED SELLER</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-400 text-[9px] font-black uppercase tracking-wider">
+              VERIFIED
+            </span>
+          </div>
+
+          <!-- Corps du Badge -->
+          <div class="grid grid-cols-12 gap-3 items-center my-auto relative z-10">
+            <!-- Photo Vendeur -->
+            <div class="col-span-4 flex justify-center">
+              <div class="w-20 h-20 rounded-xl border-2 border-amber-400 p-0.5 bg-slate-900 shadow-xl overflow-hidden">
+                <img id="badgeImgPhoto" src="" alt="Vendeur" class="w-full h-full object-cover rounded-lg">
+              </div>
+            </div>
+
+            <!-- Détails Vendeur -->
+            <div class="col-span-5 space-y-1 text-left">
+              <div>
+                <span class="text-[8px] text-slate-400 uppercase block font-bold">Nom & Prénoms</span>
+                <p id="badgeTxtNom" class="text-xs font-black text-white truncate uppercase">------------------</p>
+              </div>
+              <div>
+                <span class="text-[8px] text-slate-400 uppercase block font-bold">Contact Officiel</span>
+                <p id="badgeTxtTel" class="text-[11px] font-bold text-amber-400 truncate">+229 00 00 00 00</p>
+              </div>
+              <div>
+                <span class="text-[8px] text-slate-400 uppercase block font-bold">Matricule Vendeur</span>
+                <p id="badgeTxtID" class="text-[9px] font-mono font-semibold text-slate-300 truncate">ID: ------</p>
+              </div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="col-span-3 flex flex-col items-center justify-center">
+              <div id="qrcode" class="p-1.5 bg-white rounded-lg shadow-lg border border-amber-400"></div>
+              <span class="text-[7px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">SCAN TO VERIFY</span>
+            </div>
+          </div>
+
+          <!-- Footer Badge -->
+          <div class="border-t border-slate-800 pt-1.5 flex justify-between items-center relative z-10 text-[8px] text-slate-400">
+            <span>DAKPROÉLITE PAYMENT & E-COMMERCE NETWORK</span>
+            <span class="font-bold text-amber-400">SÉCURISÉ PKI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bouton Téléchargement PNG HD -->
+      <div class="max-w-md mx-auto">
+        <button id="btnDownloadBadge" onclick="telechargerBadgePNG()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Télécharger la Carte Professionnelle PNG (Format HD Imprimable)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulaire KYC (Géré dynamiquement) -->
     <div id="formSection" class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 border border-slate-800">
       <h2 class="text-base font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -76,14 +165,11 @@
       </h2>
 
       <form id="formKYC" class="space-y-5">
-        
-        <!-- Nom complet -->
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Nom Complet (Tel qu'inscrit sur votre pièce d'identité) *</label>
-          <input type="text" id="nomComplet" required placeholder="Ex: SOSSOU Koffi Jean" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
+          <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Nom Complet (Tel qu'inscrit sur votre pièce) *</label>
+          <input type="text" id="nomComplet" required placeholder="Ex: AGLIGNAMOU DAVID" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
         </div>
 
-        <!-- Téléphone & Email -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Numéro de Téléphone MoMo / WhatsApp *</label>
@@ -95,7 +181,6 @@
           </div>
         </div>
 
-        <!-- Type de document -->
         <div>
           <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Type de Document Fourni *</label>
           <select id="typeDocument" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-semibold">
@@ -104,9 +189,7 @@
           </select>
         </div>
 
-        <!-- Fichiers Images -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-          
           <!-- Document d'Identité -->
           <div class="space-y-2">
             <label class="block text-xs font-bold uppercase text-slate-300">1. Photo de la Pièce d'Identité *</label>
@@ -115,8 +198,7 @@
               <img id="previewPiece" src="" class="hidden w-28 h-28 object-cover rounded-xl border border-amber-400 mb-1 shadow-lg">
               <div id="holderPiece" class="space-y-1">
                 <svg class="w-8 h-8 text-amber-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <p class="text-xs font-semibold text-slate-300">Choisir dans la Galerie</p>
-                <p class="text-[9px] text-slate-500">Image haute clarté exigée</p>
+                <p class="text-xs font-semibold text-slate-300">Choisir la pièce d'identité</p>
               </div>
             </div>
             <input type="hidden" id="base64Piece">
@@ -124,33 +206,32 @@
 
           <!-- Photo Personnelle -->
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase text-slate-300">2. Photo d'Identité Personnelle *</label>
+            <label class="block text-xs font-bold uppercase text-slate-300">2. Photo d'Identité Personnelle (Visage) *</label>
             <div class="border-2 border-dashed border-slate-700 hover:border-amber-400/50 rounded-2xl p-4 text-center cursor-pointer bg-slate-900/50 transition-all relative min-h-[140px] flex flex-col items-center justify-center">
               <input type="file" id="filePhoto" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="traiterEtVerifierImageHD(this, 'previewPhoto', 'base64Photo', 'holderPhoto')">
               <img id="previewPhoto" src="" class="hidden w-28 h-28 object-cover rounded-xl border border-amber-400 mb-1 shadow-lg">
               <div id="holderPhoto" class="space-y-1">
                 <svg class="w-8 h-8 text-amber-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                <p class="text-xs font-semibold text-slate-300">Choisir dans la Galerie</p>
-                <p class="text-[9px] text-slate-500">Visage bien visible et net</p>
+                <p class="text-xs font-semibold text-slate-300">Choisir la photo personnelle</p>
               </div>
             </div>
             <input type="hidden" id="base64Photo">
           </div>
-
         </div>
 
-        <!-- Bouton de Soumission -->
         <button type="submit" id="btnSoumettre" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span id="btnLabel">Envoyer & Valider les Documents KYC</span>
+          <span id="btnLabel">Soumettre le Dossier de Vérification</span>
         </button>
-
       </form>
     </div>
 
+    <!-- Canvas Caché pour Rendu PNG HD Haute Qualité (Dimensions 1000x631 pixels pour impression nette 8.5x5.4cm) -->
+    <canvas id="canvasHD" width="1000" height="631" class="hidden"></canvas>
+
   </main>
 
-  <!-- Script Firebase Realtime Database Direct -->
+  <!-- Module Script Firebase & Générateur HD -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -168,8 +249,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const vendeurId = sessionStorage.getItem('vendeur_id') || ('vendeur_' + Date.now());
+    const vendeurId = sessionStorage.getItem('vendeur_id') || 'bi7zhxqoYfY3TyZ7dMJuj2yhsx82';
     const docRef = ref(db, `documents_administratifs/${vendeurId}`);
+
+    let globalVendeurData = null;
 
     function afficherToast(msg, error = false) {
       const toast = document.getElementById('toastNotification');
@@ -200,7 +283,6 @@
         score += Math.abs(gray - grayNext);
         totalPx++;
       }
-
       return totalPx > 0 ? (score / totalPx) : 0;
     }
 
@@ -214,7 +296,7 @@
         img.src = e.target.result;
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const maxDimension = 800; // Dimension optimale pour Realtime Database
+          const maxDimension = 900;
           let width = img.width;
           let height = img.height;
 
@@ -233,10 +315,8 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          const netteteScore = evaluerNetteteImage(ctx, width, height);
-          
-          if (netteteScore < 2) {
-            afficherToast("⚠️ Photo rejetée : L'image est trop floue. Veuillez choisir une image plus nette.", true);
+          if (evaluerNetteteImage(ctx, width, height) < 2) {
+            afficherToast("⚠️ Image floue : Veuillez charger une photo d'identité bien nette.", true);
             input.value = "";
             document.getElementById(hiddenInputId).value = "";
             document.getElementById(previewId).classList.add('hidden');
@@ -244,8 +324,7 @@
             return;
           }
 
-          // Compression à 0.65 pour garantir une écriture rapide dans RTDB
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
           document.getElementById(hiddenInputId).value = compressedDataUrl;
 
           const imgPreview = document.getElementById(previewId);
@@ -277,7 +356,7 @@
       }
 
       btn.disabled = true;
-      btnLabel.innerText = "Publication en cours...";
+      btnLabel.innerText = "Soumission en cours...";
 
       const kycData = {
         nomComplet: nomComplet,
@@ -292,65 +371,220 @@
 
       set(docRef, kycData)
         .then(() => {
-          afficherToast("✅ Documents enregistrés avec succès dans Realtime Database !");
+          afficherToast("✅ Documents enregistrés ! Vérification en cours par l'admin.");
           btn.disabled = false;
-          btnLabel.innerText = "Envoyer & Valider les Documents KYC";
+          btnLabel.innerText = "Soumettre le Dossier de Vérification";
         })
         .catch((err) => {
-          console.error("Erreur d'écriture Firebase:", err);
-          afficherToast("Erreur d'écriture : " + err.message, true);
+          afficherToast("Erreur lors de l'enregistrement : " + err.message, true);
           btn.disabled = false;
           btnLabel.innerText = "Réessayer l'envoi";
         });
     });
 
-    // Écouteur de statut temps réel
+    // ÉCOUTEUR ET RENDER TEMPS RÉEL
     onValue(docRef, (snapshot) => {
       const data = snapshot.val();
       const badgeContainer = document.getElementById('statusBadgeContainer');
       const formSection = document.getElementById('formSection');
+      const badgeCertifieSection = document.getElementById('badgeCertifieSection');
 
       if (!data) {
         formSection.classList.remove('hidden');
+        badgeCertifieSection.classList.add('hidden');
         badgeContainer.innerHTML = `
-          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Statut : Aucun document soumis
           </span>`;
         return;
       }
 
-      if (data.statut === 'en_attente') {
+      globalVendeurData = data;
+      const statut = (data.statut || "").toLowerCase();
+
+      // SI STATUT VALIDÉ / APPROUVÉ -> FERMETURE FORMULAIRE & AFFICHAGE CARTE BADGE HD + BOUTON TÉLÉCHARGER
+      if (statut === 'valide' || statut === 'validé' || statut === 'approuve') {
         formSection.classList.add('hidden');
+        badgeCertifieSection.classList.remove('hidden');
+
         badgeContainer.innerHTML = `
-          <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-            <span class="inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-400">
-              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Document en attente de traitement
+          <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-emerald-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-sm font-black text-white">STATUT : VALIDÉ & ACCRÉDITÉ</h4>
+                <p class="text-[11px] text-emerald-400 font-semibold">Votre badge Vendeur Officiel est prêt au téléchargement.</p>
+              </div>
+            </div>
+          </div>`;
+
+        // Injection des métadonnées dans le badge HTML
+        document.getElementById('badgeTxtNom').innerText = data.nomComplet || 'VENDEUR CERTIFIÉ';
+        document.getElementById('badgeTxtTel').innerText = data.telephone || 'Non renseigné';
+        document.getElementById('badgeTxtID').innerText = 'ID: ' + vendeurId.substring(0, 12).toUpperCase();
+        document.getElementById('badgeImgPhoto').src = data.photoIdentite || data.photoPiece;
+
+        // Génération du QR Code
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: `DAKPROELITE-VERIFIED:${vendeurId}:${data.nomComplet}`,
+          width: 55,
+          height: 55,
+          colorDark : "#0f172a",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+
+      } else if (statut === 'en_attente') {
+        formSection.classList.add('hidden');
+        badgeCertifieSection.classList.add('hidden');
+        badgeContainer.innerHTML = `
+          <div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+            <span class="inline-flex items-center gap-2 text-xs font-black text-amber-400 uppercase tracking-wide">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span> Document en cours d'examen
             </span>
-            <p class="text-[11px] text-slate-300 font-medium">
-              Vos documents ont été publiés dans la base et sont en cours de validation.
+            <p class="text-xs text-slate-300">
+              L'administration examine vos pièces. La carte professionnelle sera débloquée automatiquement dès validation.
             </p>
           </div>`;
-      } else if (data.statut === 'approuve') {
-        formSection.classList.add('hidden');
-        badgeContainer.innerHTML = `
-          <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
-            <span class="inline-flex items-center gap-1.5 text-xs font-black text-emerald-400 uppercase tracking-wide">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              Félicitations ! Vendeur Vérifié
-            </span>
-            <p class="text-[11px] text-slate-300">Votre identité est confirmée.</p>
-          </div>`;
-      } else if (data.statut === 'rejete') {
+
+      } else if (statut === 'refuse' || statut === 'refusé' || statut === 'rejete') {
         formSection.classList.remove('hidden');
+        badgeCertifieSection.classList.add('hidden');
         badgeContainer.innerHTML = `
-          <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-1">
-            <span class="inline-flex items-center gap-1.5 text-xs font-extrabold text-rose-400">
-              <span class="w-2 h-2 rounded-full bg-rose-400"></span> Documents Rejetés
+          <div class="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-2">
+            <span class="inline-flex items-center gap-2 text-xs font-black text-rose-400 uppercase tracking-wide">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Documents Rejetés
             </span>
-            <p class="text-[11px] text-slate-300">Veuillez soumettre à nouveau des documents lisibles.</p>
+            <p class="text-xs text-slate-300"><b>Motif :</b> ${data.motifRefus || "Photos non conformes ou illisibles."}</p>
+            <p class="text-xs text-amber-400 font-semibold">Veuillez soumettre à nouveau vos documents ci-dessous.</p>
           </div>`;
       }
     });
+
+    // RENDER CANVAS & GENERATION DE LA CARTE PROFESSIONNELLE PNG HD
+    window.telechargerBadgePNG = function() {
+      if (!globalVendeurData) return;
+
+      const canvas = document.getElementById('canvasHD');
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;  // 1000px
+      const height = canvas.height; // 631px
+
+      // 1. Fond Dégradé Luxueux
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(0.5, '#1e1b4b');
+      grad.addColorStop(1, '#020617');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // 2. Bordure Dorée Professionnelle
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 12;
+      ctx.strokeRect(6, 6, width - 12, height - 12);
+
+      // 3. En-tête
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('DAKPROÉLITE', 50, 70);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('CARTE PROFESSIONNELLE VENDEUR CERTIFIÉ', 50, 100);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('✓ VERIFIED OFFICIAL', width - 240, 70);
+
+      // Ligne de séparation
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(50, 125);
+      ctx.lineTo(width - 50, 125);
+      ctx.stroke();
+
+      // Load Foto Vendeur sur Canvas
+      const imgPhoto = new Image();
+      imgPhoto.crossOrigin = "anonymous";
+      imgPhoto.onload = function() {
+        // Dessin Photo Vendeur avec Contour Or
+        ctx.save();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(50, 160, 220, 260);
+        ctx.drawImage(imgPhoto, 50, 160, 220, 260);
+        ctx.restore();
+
+        // TEXTES METADONNEES
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('TITULAIRE DU COMPTE', 310, 180);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'black 28px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText((globalVendeurData.nomComplet || 'VENDEUR DAKPROELITE').toUpperCase(), 310, 215);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('TÉLÉPHONE / MOMO', 310, 260);
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(globalVendeurData.telephone || '+229 00000000', 310, 290);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('MATRICULE UNIQUE', 310, 335);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '20px monospace';
+        ctx.fillText('ID: ' + vendeurId.toUpperCase(), 310, 365);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('STATUT DU COMPTE', 310, 410);
+
+        ctx.fillStyle = '#10b981';
+        ctx.font = 'extrabold 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('AGRÉÉ & ACCRÉDITÉ PAR LA DIRECTION', 310, 440);
+
+        // Intégration QR Code dans le Canvas
+        const qrCanvas = document.querySelector('#qrcode canvas');
+        if (qrCanvas) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(width - 220, 160, 170, 170);
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(width - 220, 160, 170, 170);
+          ctx.drawImage(qrCanvas, width - 210, 170, 150, 150);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 12px "Plus Jakarta Sans", sans-serif';
+          ctx.fillText('SCAN POUR VÉRIFIER', width - 210, 350);
+        }
+
+        // Bas de carte
+        ctx.fillStyle = '#64748b';
+        ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Ce badge officiel certifie la légitimité du vendeur sur le réseau international DAKPROÉLITE.', 50, 560);
+        ctx.fillText('Document numérique sécurisé. Délivré par le centre de contrôle KYC.', 50, 585);
+
+        // Exportation et Téléchargement Automatique
+        const link = document.createElement('a');
+        link.download = `Carte_Professionnelle_DAKPROELITE_${globalVendeurData.nomComplet.replace(/\s+/g, '_')}.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+
+        afficherToast("✅ Téléchargement de votre Carte Professionnelle PNG réussi !");
+      };
+
+      imgPhoto.src = globalVendeurData.photoIdentite || globalVendeurData.photoPiece;
+    };
   </script>
 
 </body>
