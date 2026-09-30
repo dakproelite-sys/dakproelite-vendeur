@@ -257,10 +257,30 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      text-decoration: none;
     }
 
     .btn-action:hover {
       background-color: #000;
+    }
+
+    .btn-whatsapp {
+      background-color: #25D366;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #128C7E;
     }
 
     .btn-copy {
@@ -339,15 +359,25 @@
     .status-danger { background: #fee2e2; color: #991b1b; }
     .status-info { background: #dbeafe; color: #1e40af; }
 
-    /* IMAGE PREVIEW */
-    .image-preview {
-      max-width: 120px;
-      max-height: 120px;
+    /* PREVIEW MEDIA */
+    .preview-container {
+      margin-top: 10px;
+    }
+    .image-preview, .video-preview {
+      max-width: 200px;
+      max-height: 150px;
       border-radius: 8px;
       border: 1px dashed var(--primary-gold);
       object-fit: cover;
-      margin-top: 8px;
       display: none;
+    }
+    .doc-preview {
+      display: none;
+      font-weight: 600;
+      color: var(--info-color);
+      padding: 8px;
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
     }
 
     .prod-thumb {
@@ -468,7 +498,7 @@
     <!-- 2. PUBLIER -->
     <section id="publier" class="tab-section">
       <div class="content-card">
-        <h3>Publier un Produit, un Cours en Ligne ou un Lien Externe</h3>
+        <h3>Publier un Produit, un Cours, une Vidéo ou un Document</h3>
         <form onsubmit="window.publierElement(event)">
           <div class="form-grid">
             <div class="form-group">
@@ -479,6 +509,10 @@
                 <option value="epreuve">Épreuve / Document d'étude</option>
                 <option value="lien">Lien Externe / Produit Copié</option>
               </select>
+            </div>
+            <div class="form-group">
+              <label>Catégorie de la Ressource</label>
+              <input type="text" id="pCategorie" placeholder="Ex: Mode, Informatique, Mathématiques..." required>
             </div>
             <div class="form-group">
               <label>Nom ou Titre de la publication</label>
@@ -504,12 +538,21 @@
               <label>Lien du produit / de la ressource externe (Optionnel)</label>
               <input type="url" id="pLienExterne" placeholder="https://exemple.com/mon-produit">
             </div>
+            
+            <!-- GALERIE MEDIA MULTI-FORMAT -->
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo du Produit/Cours (Choix depuis la galerie)</label>
-              <input type="file" id="pInputImage" accept="image/*" required onchange="window.handleImageCompress(event, 'previewPublish', 'base64Publish')">
+              <label>Fichier Média (Image, Vidéo ou Document depuis Galerie)</label>
+              <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx,.txt" required onchange="window.handleMediaUpload(event)">
               <input type="hidden" id="base64Publish">
-              <img id="previewPublish" class="image-preview" alt="Aperçu">
+              <input type="hidden" id="mediaTypePublish" value="image">
+              
+              <div class="preview-container">
+                <img id="previewImage" class="image-preview" alt="Aperçu Image">
+                <video id="previewVideo" class="video-preview" controls></video>
+                <div id="previewDoc" class="doc-preview"><i class="fa-solid fa-file-lines"></i> <span id="docName">Document chargé</span></div>
+              </div>
             </div>
+
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>Description détaillée</label>
               <textarea id="pDescription" rows="4" required placeholder="Décrivez en détail votre produit, cours ou épreuve..."></textarea>
@@ -528,16 +571,15 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>Visuel</th>
-                <th>Titre</th>
-                <th>Auteur</th>
-                <th>Prix Promo / Normal</th>
+                <th>Visuel / Média</th>
+                <th>Titre & Catégorie</th>
+                <th>Prix</th>
                 <th>Stock</th>
-                <th>Lien direct</th>
+                <th>Action & Commandes Directes</th>
               </tr>
             </thead>
             <tbody id="boutiqueProductsList">
-              <tr><td colspan="6" style="text-align:center;">Chargement des éléments...</td></tr>
+              <tr><td colspan="5" style="text-align:center;">Chargement des éléments...</td></tr>
             </tbody>
           </table>
         </div>
@@ -599,6 +641,10 @@
         <form onsubmit="window.demanderRetrait(event)">
           <div class="form-grid">
             <div class="form-group">
+              <label>Nom & Prénom Exacts (Tel sur la carte ID)</label>
+              <input type="text" id="rNomPrenom" required placeholder="Ex: AGLIGNAMOU Marc">
+            </div>
+            <div class="form-group">
               <label>Montant à retirer (FCFA)</label>
               <input type="number" id="rMontant" required min="1000" placeholder="Ex: 10000">
             </div>
@@ -626,20 +672,21 @@
       </div>
 
       <div class="content-card">
-        <h3>Historique des Demandes de Retrait</h3>
+        <h3>Historique des Demandes de Retrait (Realtime DB)</h3>
         <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
                 <th>Date</th>
+                <th>Vendeur (Nom & Prénom)</th>
                 <th>Montant</th>
                 <th>Réseau</th>
                 <th>Numéro</th>
-                <th>Statut Realtime DB</th>
+                <th>Statut</th>
               </tr>
             </thead>
             <tbody id="retraitsList">
-              <tr><td colspan="5" style="text-align:center;">Aucune demande enregistrée.</td></tr>
+              <tr><td colspan="6" style="text-align:center;">Aucune demande enregistrée.</td></tr>
             </tbody>
           </table>
         </div>
@@ -787,6 +834,8 @@
     const database = getDatabase(app);
 
     let currentVendeurUid = null;
+    let currentVendeurPhone = "";
+    let currentVendeurNom = "";
 
     // AFFICHER DATE
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -816,7 +865,46 @@
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Espace Profil';
     };
 
-    // TRANSFORMATION D'IMAGE EN URL BASE64 (AVEC OPTIMISATION DE TAILLE)
+    // GESTION DU CHARGEMENT DES MEDIAS DEPUIS LA GALERIE
+    window.handleMediaUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const imgPreview = document.getElementById('previewImage');
+      const videoPreview = document.getElementById('previewVideo');
+      const docPreview = document.getElementById('previewDoc');
+      
+      imgPreview.style.display = 'none';
+      videoPreview.style.display = 'none';
+      docPreview.style.display = 'none';
+
+      const fileType = file.type;
+      
+      if (fileType.startsWith('image/')) {
+        document.getElementById('mediaTypePublish').value = 'image';
+        window.handleImageCompress(event, 'previewImage', 'base64Publish');
+      } else if (fileType.startsWith('video/')) {
+        document.getElementById('mediaTypePublish').value = 'video';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          videoPreview.src = e.target.result;
+          videoPreview.style.display = 'block';
+          document.getElementById('base64Publish').value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.getElementById('mediaTypePublish').value = 'document';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('docName').innerText = file.name;
+          docPreview.style.display = 'block';
+          document.getElementById('base64Publish').value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // TRANSFORMATION D'IMAGE EN URL BASE64 (AVEC CANVAS OPTIMISÉ)
     window.handleImageCompress = function(event, previewId, hiddenInputId) {
       const file = event.target.files[0];
       if (!file) return;
@@ -829,7 +917,6 @@
           let width = img.width;
           let height = img.height;
 
-          // Redimensionnement fluide si l'image dépasse 800px pour optimiser la taille
           const maxDimension = 800;
           if (width > maxDimension || height > maxDimension) {
             if (width > height) {
@@ -846,7 +933,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Génération de l'URL Data Base64
           const dataUrl = canvas.toDataURL('image/jpeg', 0.80);
           
           const preview = document.getElementById(previewId);
@@ -860,22 +946,20 @@
       reader.readAsDataURL(file);
     };
 
-    // AUTHENTIFICATION
+    // AUTHENTIFICATION SANS REDIRECTION
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentVendeurUid = user.uid;
         document.getElementById('profEmail').value = user.email;
         document.getElementById('headerEmail').innerText = user.email;
         
-        chargerProfilVendeur(user.uid);
+        await chargerProfilVendeur(user.uid);
         chargerMesProduits(user.uid);
         chargerAffiliationGlobal();
         chargerStats(user.uid);
         chargerRetraits(user.uid);
         chargerCommandes(user.uid);
         chargerCoupons();
-      } else {
-        window.location.replace("connexion.html");
       }
     });
 
@@ -884,17 +968,21 @@
       const snapshot = await get(ref(database, 'users/' + uid));
       if (snapshot.exists()) {
         const data = snapshot.val();
-        const nomAffiche = data.nomComplet || data.nomBoutique || "Vendeur";
-        document.getElementById('headerBoutiqueName').innerText = nomAffiche;
-        document.getElementById('profBoutique').value = nomAffiche;
-        document.getElementById('profPhone').value = data.telephone || "";
+        currentVendeurNom = data.nomComplet || data.nomBoutique || "Vendeur";
+        currentVendeurPhone = data.telephone || "";
+
+        document.getElementById('headerBoutiqueName').innerText = currentVendeurNom;
+        document.getElementById('profBoutique').value = currentVendeurNom;
+        document.getElementById('profPhone').value = currentVendeurPhone;
+        document.getElementById('rNomPrenom').value = currentVendeurNom;
+        document.getElementById('rNumero').value = currentVendeurPhone;
 
         const avatarContainer = document.getElementById('vendeurAvatar');
         const photoUrl = data.imageUrl || data.photo60;
         if(photoUrl) {
           avatarContainer.innerHTML = `<img src="${photoUrl}" alt="Avatar">`;
         } else {
-          avatarContainer.innerText = nomAffiche[0].toUpperCase();
+          avatarContainer.innerText = currentVendeurNom[0].toUpperCase();
         }
       }
     }
@@ -909,11 +997,14 @@
     // PUBLIER PRODUIT DANS /publications DU REALTIME DB
     window.publierElement = async function(e) {
       e.preventDefault();
-      if(!currentVendeurUid) return;
+      if(!currentVendeurUid) {
+        alert("Veuillez vous connecter pour publier.");
+        return;
+      }
 
-      const photoUrl = document.getElementById('base64Publish').value;
-      if(!photoUrl) {
-        alert("Veuillez sélectionner une image.");
+      const mediaUrl = document.getElementById('base64Publish').value;
+      if(!mediaUrl) {
+        alert("Veuillez sélectionner un fichier média (Image, Vidéo ou Document).");
         return;
       }
 
@@ -925,6 +1016,7 @@
         createdBy: currentVendeurUid,
         vendeurUid: currentVendeurUid,
         type: document.getElementById('pType').value,
+        categorie: document.getElementById('pCategorie').value,
         nom: document.getElementById('pNom').value,
         auteur: document.getElementById('pAuteur').value,
         prix: Number(document.getElementById('pPrixNormal').value),
@@ -932,22 +1024,27 @@
         prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
         stock: Number(document.getElementById('pStock').value),
         lienExterne: document.getElementById('pLienExterne').value || "",
-        image: photoUrl,
-        imageUrl: photoUrl,
+        mediaType: document.getElementById('mediaTypePublish').value,
+        image: mediaUrl,
+        imageUrl: mediaUrl,
         description: document.getElementById('pDescription').value,
+        vendeurPhone: currentVendeurPhone,
+        vendeurNom: currentVendeurNom,
         createdAt: Date.now(),
         datePublication: new Date().toISOString()
       };
 
       await set(newRef, itemData);
-      alert("Élément publié avec succès sous /publications !");
+      alert("Élément publié avec succès dans la boutique !");
       e.target.reset();
-      document.getElementById('previewPublish').style.display = 'none';
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('previewVideo').style.display = 'none';
+      document.getElementById('previewDoc').style.display = 'none';
       chargerMesProduits(currentVendeurUid);
       chargerAffiliationGlobal();
     };
 
-    // MES PRODUITS DEPUIS /publications (Filtre par vendeurUid / createdBy)
+    // MES PRODUITS DEPUIS /publications
     async function chargerMesProduits(uid) {
       const snapshot = await get(ref(database, 'publications'));
       const tbody = document.getElementById('boutiqueProductsList');
@@ -965,25 +1062,43 @@
 
           if (ownerUid === uid) {
             count++;
-            
             selectCouponProd.innerHTML += `<option value="${prodKey}">${prod.nom || 'Sans nom'}</option>`;
 
-            const imgSrc = prod.image || prod.imageUrl || prod.imageUrl60 || '477912.png';
+            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+            const mType = prod.mediaType || 'image';
             const prixNormal = prod.prixNormal || prod.prix || 0;
             const prixPromo = prod.prixPromo || prixNormal;
             const link = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
             
+            let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
+            if(mType === 'video') {
+              mediaHtml = `<video src="${mediaSrc}" class="prod-thumb" controls></video>`;
+            } else if(mType === 'document') {
+              mediaHtml = `<a href="${mediaSrc}" download class="prod-thumb" style="display:inline-flex;align-items:center;justify-content:center;background:#e2e8f0;text-decoration:none;"><i class="fa-solid fa-file-pdf" style="font-size:24px;"></i></a>`;
+            }
+
+            const cleanPhone = currentVendeurPhone.replace(/[^0-9]/g, '');
+            const msgWa = encodeURIComponent(`Bonjour, je souhaite commander le produit "${prod.nom}" au prix de ${prixPromo} FCFA. Lien: ${link}`);
+            const waLink = `https://wa.me/${cleanPhone}?text=${msgWa}`;
+
             tbody.innerHTML += `
               <tr>
-                <td><img src="${imgSrc}" class="prod-thumb" onerror="this.src='477912.png'"></td>
-                <td><strong>${prod.nom || 'Produit'}</strong><br><small style="color:var(--text-muted);">${prod.type ? prod.type.toUpperCase() : (prod.categorie || 'PRODUIT')}</small></td>
-                <td>${prod.auteur || 'Non précisé'}</td>
+                <td>${mediaHtml}</td>
+                <td>
+                  <strong>${prod.nom || 'Produit'}</strong><br>
+                  <small style="color:var(--text-muted);">${prod.categorie || prod.type || 'GÉNÉRAL'}</small>
+                </td>
                 <td>
                   <span class="price-promo">${prixPromo} FCFA</span>
                   ${prixNormal > prixPromo ? `<span class="price-old">${prixNormal} FCFA</span>` : ''}
                 </td>
                 <td>${prod.stock !== undefined ? prod.stock : 'N/A'}</td>
-                <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
+                <td>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button>
+                    ${cleanPhone ? `<a href="${waLink}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Commander WhatsApp</a>` : ''}
+                  </div>
+                </td>
               </tr>
             `;
           }
@@ -992,7 +1107,7 @@
       }
       
       if(count === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun élément publié.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun élément publié dans votre boutique.</td></tr>`;
       }
     }
 
@@ -1012,7 +1127,7 @@
           const prix = prod.prixPromo || prod.prixNormal || prod.prix || 0;
           const gainsEstimes = Math.round(prix * 0.10);
           
-          const imgSrc = prod.image || prod.imageUrl || prod.imageUrl60 || '477912.png';
+          const imgSrc = prod.image || prod.imageUrl || '477912.png';
           const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid}`;
 
           tbody.innerHTML += `
@@ -1059,15 +1174,16 @@
       });
     }
 
-    // DEMANDER RETRAIT
+    // DEMANDER RETRAIT AVEC NOM ET PRÉNOM EXACTS
     window.demanderRetrait = async function(e) {
       e.preventDefault();
+      const nomPrenom = document.getElementById('rNomPrenom').value.trim();
       const montant = Number(document.getElementById('rMontant').value);
       const moyen = document.getElementById('rMoyen').value;
-      const numero = document.getElementById('rNumero').value;
+      const numero = document.getElementById('rNumero').value.trim();
 
-      if(!moyen) {
-        alert("Veuillez sélectionner un réseau Mobile Money !");
+      if(!nomPrenom || !moyen || !numero) {
+        alert("Veuillez remplir toutes les informations (Nom/Prénom, Réseau, Numéro).");
         return;
       }
 
@@ -1075,14 +1191,16 @@
       await set(newRetraitRef, {
         id: newRetraitRef.key,
         vendeurUid: currentVendeurUid,
+        vendeurNomPrenom: nomPrenom,
         montant: montant,
         moyenPaiement: moyen,
         numeroReceiver: numero,
         statut: "En attente",
+        type: "retrait_vendeur",
         dateDemande: new Date().toISOString()
       });
 
-      alert("Demande de retrait transmise avec succès !");
+      alert("Demande de retrait enregistrée sous /paiements dans Realtime Database !");
       e.target.reset();
     };
 
@@ -1097,7 +1215,7 @@
         if (snapshot.exists()) {
           snapshot.forEach((child) => {
             const ret = child.val();
-            if (ret.vendeurUid === uid) {
+            if (ret.vendeurUid === uid || ret.vendeurUid === "vendeur") {
               count++;
               let badgeClass = "status-pending";
               if(ret.statut === "Validé") badgeClass = "status-success";
@@ -1105,7 +1223,8 @@
 
               tbody.innerHTML += `
                 <tr>
-                  <td>${new Date(ret.dateDemande).toLocaleDateString('fr-FR')}</td>
+                  <td>${new Date(ret.dateDemande || Date.now()).toLocaleDateString('fr-FR')}</td>
+                  <td><strong>${ret.vendeurNomPrenom || 'Non spécifié'}</strong></td>
                   <td><strong>${ret.montant} FCFA</strong></td>
                   <td>${ret.moyenPaiement}</td>
                   <td>${ret.numeroReceiver}</td>
@@ -1117,7 +1236,7 @@
         }
 
         if (count === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune demande de retrait effectuée.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucune demande de retrait effectuée.</td></tr>`;
         }
       });
     }
@@ -1257,7 +1376,7 @@
     // DÉCONNEXION
     window.deconnexionVendeur = function() {
       signOut(auth).then(() => {
-        window.location.replace("connexion.html");
+        alert("Vous êtes déconnecté.");
       });
     };
 

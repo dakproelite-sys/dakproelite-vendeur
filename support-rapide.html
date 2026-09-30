@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistance Rapide - DAKPROELITE</title>
     <style>
-        /* RESET & BASE */
+        /* RESET & BASE STYLES */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,7 +15,7 @@
         body {
             background-color: #0b0e14;
             color: #f5f5f7;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 20px 15px;
             display: flex;
             justify-content: center;
@@ -23,12 +23,9 @@
             min-height: 100vh;
         }
 
-        /* SUPPORT MODULE WRAPPER */
         .support-wrapper {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: #f5f5f7;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1050px;
             margin: 0 auto;
         }
 
@@ -38,7 +35,7 @@
             border-radius: 12px;
             padding: 16px 20px;
             color: #d4af37;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 700;
             margin-bottom: 15px;
             display: flex;
@@ -46,11 +43,11 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
         }
 
         .emergency-bar {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(18, 22, 34, 0.8));
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(18, 22, 34, 0.85));
             border: 1px solid #d4af37;
             border-radius: 12px;
             padding: 14px 20px;
@@ -81,7 +78,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
         }
 
@@ -92,7 +89,7 @@
         }
 
         .field-group label {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #d4af37;
             font-weight: 600;
             text-transform: uppercase;
@@ -115,19 +112,19 @@
             box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
         }
 
-        /* CHAT-BOX */
+        /* CHAT-BOX ARCHITECTURE (ChatGPT / Gemini Style) */
         .chat-box {
-            background: #0d111a;
+            background: #080a10;
             border: 1px solid #232838;
             border-radius: 14px;
-            min-height: 520px;
-            max-height: 650px;
+            min-height: 480px;
+            max-height: 600px;
             height: 60vh;
             overflow-y: auto;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
             margin-bottom: 15px;
             scroll-behavior: smooth;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -136,7 +133,7 @@
         .msg-bubble-container {
             display: flex;
             flex-direction: column;
-            max-width: 80%;
+            max-width: 82%;
         }
 
         .msg-user-container {
@@ -157,25 +154,25 @@
             white-space: pre-wrap;
             word-break: break-word;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
         }
 
         .msg-user {
             background: linear-gradient(135deg, #d4af37, #b8952b);
-            color: #0d111a;
+            color: #0b0e14;
             font-weight: 600;
             border-bottom-right-radius: 3px;
         }
 
         .msg-admin {
-            background: #171c2b;
+            background: #151a28;
             color: #f0f0f5;
-            border: 1px solid #2c3448;
+            border: 1px solid #283044;
             border-bottom-left-radius: 3px;
         }
 
         .msg-meta {
-            font-size: 11px;
+            font-size: 10.5px;
             color: #717c96;
             margin-top: 5px;
             display: flex;
@@ -187,12 +184,13 @@
             display: flex;
             gap: 8px;
             margin-top: 8px;
+            flex-wrap: wrap;
         }
 
         .btn-msg-action {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #ccc;
+            color: #d0d0d5;
             border-radius: 6px;
             padding: 5px 10px;
             font-size: 11.5px;
@@ -200,7 +198,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .btn-msg-action:hover {
@@ -211,7 +209,7 @@
 
         .chat-input-area {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             background: #121622;
             padding: 12px;
@@ -223,12 +221,12 @@
             background: linear-gradient(135deg, #d4af37, #b8952b);
             color: #000;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 22px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
+            transition: transform 0.1s, filter 0.2s;
             white-space: nowrap;
         }
 
@@ -245,8 +243,8 @@
             border: 1px solid #2a3143;
             color: #d4af37;
             border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 16px;
+            padding: 12px 15px;
+            font-size: 15px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -276,7 +274,7 @@
             background: #25D366;
             color: #fff;
             border: none;
-            padding: 9px 16px;
+            padding: 9px 15px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -296,7 +294,7 @@
             background: #ea4335;
             color: #fff;
             border: none;
-            padding: 9px 16px;
+            padding: 9px 15px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -322,7 +320,7 @@
         import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { ref, push, onValue, set, get, serverTimestamp, remove, getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Configuration Firebase (Mettre à jour vos clés réelles ici)
+        // Configuration Firebase (Mettre à jour avec vos clés réelles)
         const firebaseConfig = {
             apiKey: "VOTRE_API_KEY_REELLE",
             authDomain: "dakproelite-default-rtdb.firebaseapp.com",
@@ -337,6 +335,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // Nettoyage anti-XSS
         function escapeHTML(str) {
             return String(str ?? "")
                 .replace(/&/g, "&amp;")
@@ -346,6 +345,16 @@
                 .replace(/'/g, "&#039;");
         }
 
+        // Formatage markdown léger pour l'affichage dans le tchat
+        function formaterMarkdownHtml(str) {
+            let escaped = escapeHTML(str);
+            return escaped
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Nettoyage texte brut pour la synthèse vocale
         function nettoyerTexteBrut(str) {
             return String(str ?? "")
                 .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -356,18 +365,98 @@
                 .trim();
         }
 
+        // FONCTIONNALITÉ SYNTÈSE VOCALE & COPIE (Globale pour accès inline)
+        window.lireTexteAudio = function(texteBrut) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const textePropre = nettoyerTexteBrut(texteBrut);
+                const utterance = new SpeechSynthesisUtterance(textePropre);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("La synthèse vocale n'est pas supportée sur ce navigateur.");
+            }
+        };
+
+        window.copierTexteMessage = function(texteBrut, btnElement) {
+            const textePropre = nettoyerTexteBrut(texteBrut);
+            navigator.clipboard.writeText(textePropre).then(() => {
+                const originalText = btnElement.innerText;
+                btnElement.innerText = "✅ Copié !";
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error("Erreur de copie :", err);
+            });
+        };
+
+        /**
+         * Base de connaissances complète DAKPROELITE
+         */
         function obtenirReponseAutomatique(texteMessage) {
             const text = texteMessage.toLowerCase();
 
+            // 1. FONDATEUR, DÉVELOPPEUR & HISTOIRE DAKPROELITE
             if (text.includes("fondateur") || text.includes("createur") || text.includes("créateur") || text.includes("développeur") || text.includes("developpeur") || text.includes("qui a crée") || text.includes("qui a créé") || text.includes("qui est le patron") || text.includes("qui a inventé")) {
-                return `👨‍‍💻 **FONDATEUR & DÉVELOPPEUR DE DAKPROELITE**\n\n` +
+                return `👨‍💻 **FONDATEUR & DÉVELOPPEUR DE DAKPROELITE**\n\n` +
                        `La plateforme DAKPROELITE a été conçue, développée et fondée par **AGLIGNAMOU DAVID**.\n\n` +
                        `📌 **Biographie & Parcours :**\n` +
                        `• **Date & Lieu de Naissance :** Né le 13 septembre 1989 à Cotonou (Bénin).\n` +
-                       `• **Vision :** Passionné par l'innovation technologique et le commerce international, AGLIGNAMOU DAVID a pensé DAKPROELITE comme un écosystème numérique complet.\n\n` +
-                       `Grâce à son leadership, DAKPROELITE s'impose aujourd'hui comme un acteur majeur de la vente en ligne.`;
+                       `• **Vision :** Passionné par l'innovation technologique et le commerce international, AGLIGNAMOU DAVID a pensé DAKPROELITE comme un écosystème numérique complet capable de briser les frontières commerciales, d'interconnecter les marchés africains et mondiaux, et de garantir une sécurité financière absolue pour chaque utilisateur grâce au système de paiement sous séquestre.\n\n` +
+                       `Grâce à son leadership, DAKPROELITE s'impose aujourd'hui comme un acteur majeur de la vente en ligne, garantissant transparence, rapidité et fiabilité.`;
             }
 
+            // 2. PRESENTATION, INTENTION & VISION GLOBALE
+            if (text.includes("intention") || text.includes("but") || text.includes("pourquoi") || text.includes("projet") || text.includes("c'est quoi dakproelite") || text.includes("presentation") || text.includes("présentation")) {
+                return `🌍 **DAKPROELITE : LE MARCHÉ MONDIAL SÉCURISÉ** 🚀\n\n` +
+                       `DAKPROELITE est une marketplace internationale conçue pour connecter les acheteurs, vendeurs, livreurs, transitaires et ambassadeurs du monde entier sur une interface unique et hautement sécurisée.\n\n` +
+                       `✨ **Les piliers fondamentaux de DAKPROELITE :**\n` +
+                       `• **Commerce International Sans Frontières :** Achetez et vendez vos articles en toute liberté.\n` +
+                       `• **Sécurité Séquestre :** Les fonds de l'acheteur sont conservés en sécurité et ne sont versés au vendeur que lorsque l'acheteur confirme la réception conforme du colis.\n` +
+                       `• **Authentification par QR Code :** Chaque transaction est validée de façon unique via un reçu électronique à scanner lors de la livraison.\n` +
+                       `• **Opportunités Économiques :** Une infrastructure pensée pour faire croître les boutiques et offrir des revenus complémentaires aux affiliés et ambassadeurs.`;
+            }
+
+            // 3. PROGRAMME AMBASSADEUR & AFFILIATION COMPLET
+            if (text.includes("ambassadeur") || text.includes("affilié") || text.includes("affiliation") || text.includes("parrainage") || text.includes("lien d'affiliation") || text.includes("gagner de l'argent") || text.includes("commission parrainage") || text.includes("programme ambassadeur")) {
+                return `🏆 **PROGRAMME AMBASSADEUR & AFFILIATION DAKPROELITE** 💰\n\n` +
+                       `Le programme Ambassadeur DAKPROELITE vous permet de monetiser votre audience et d'obtenir des commissions récurrentes sur chaque vente générée.\n\n` +
+                       `👑 **Comment devenir Ambassadeur / Affilié ?**\n` +
+                       `1. Connectez-vous à votre espace membre et générez votre **Lien Unique d'Affiliation** ou vos liens produits.\n` +
+                       `2. Partagez vos liens sur vos réseaux sociaux (WhatsApp, TikTok, Facebook, Instagram, YouTube, blogs, etc.).\n` +
+                       `3. Lorsqu'un utilisateur effectue un achat via votre lien, votre commission est immédiatement créditée sur votre solde d'affiliation.\n\n` +
+                       `💎 **Avantages du statut Ambassadeur :**\n` +
+                       `• **Commissions Attractives :** Pourcentage direct sur chaque vente réalisée.\n` +
+                       `• **Tableau de Bord Détaillé :** Suivi en temps réel de vos clics, conversions et gains.\n` +
+                       `• **Retraits Rapides :** Demandez le retrait de vos gains à tout moment vers Mobile Money (MTN, Moov, Wave, Celtis) ou Virement bancaire.\n` +
+                       `• **Accompagnement :** Accès à des visuels de promotion et au support prioritaire.`;
+            }
+
+            // 4. RÈGLEMENT INTÉRIEUR & STATUT LÉGAL COMPLET
+            if (text.includes("règlement") || text.includes("reglement") || text.includes("cgu") || text.includes("condition") || text.includes("regles") || text.includes("règles") || text.includes("statut") || text.includes("charte")) {
+                return `⚖️ **RÈGLEMENT INTÉRIEUR ET CONDITIONS D'UTILISATION (CGU)** 📜\n\n` +
+                       `Afin de maintenir un environnement commercial sain et sécurisé, tous les utilisateurs de DAKPROELITE s'engagent à respecter les règles suivantes :\n\n` +
+                       `1. **Interdiction des Transactions Hors-Plateforme :** Toute tentative de détournement de transaction en dehors du système DAKPROELITE est formellement interdite. En cas de non-respect, la garantie séquestre saute et le compte est sujet à suspension.\n` +
+                       `2. **Authenticité des Produits :** Les vendeurs s'engagent à ne publier que des articles conformes, légaux et non contrefaits. Toute fraude entraîne le blocage immédiat du solde vendeur.\n` +
+                       `3. **Respect du Processus de Livraison :** La remise de l'article s'effectue uniquement contre validation du **Reçu QR Code** officiel.\n` +
+                       `4. **Courtoisie & Professionnalisme :** Les échanges entre acheteurs, vendeurs et livreurs doivent demeurer respectueux.\n` +
+                       `5. **Sanctions :** DAKPROELITE se réserve le droit de restreindre ou supprimer tout compte en cas de suspicion de fraude, d'escroquerie ou de violation de la présente charte.`;
+            }
+
+            // 5. POLITIQUE DE CONFIDENTIALITÉ COMPLÈTE
+            if (text.includes("confidentialité") || text.includes("confidentialite") || text.includes("donnée") || text.includes("donnees") || text.includes("rgpd") || text.includes("vie privée") || text.includes("sécurité données")) {
+                return `🔒 **POLITIQUE DE CONFIDENTIALITÉ ET DE PROTECTION DES DONNÉES** 🛡️\n\n` +
+                       `DAKPROELITE accorde une importance capitale à la protection de vos données personnelles et au respect de votre vie privée.\n\n` +
+                       `📋 **Engagements de Confidentialité :**\n` +
+                       `• **Collecte Restreinte :** Nous ne collectons que les informations strictement nécessaires au traitement de vos commandes et retraits (Nom, Prénom, Adresse, Téléphone, E-mail).\n` +
+                       `• **Chiffrement & Sécurité :** Vos données d'identification et d'authentification sont entièrement chiffrées selon les standards de sécurité internationaux Web & Firebase.\n` +
+                       `• **Non-Cession des Données :** Vos informations ne seront **jamais vendues, louées ou cédées** à des tiers à des fins publicitaires sans votre accord explicite.\n` +
+                       `• **Droit d'Accès et de Suppression :** Conformément aux lois sur la protection des données numériques, vous pouvez à tout moment demander la modification ou la suppression définitive de votre profil et de votre historique depuis votre espace client ou via le support direct.`;
+            }
+
+            // 6. SECTION VENDEURS, BOUTIQUES & BOOST
             if (text.includes("vendeur") || text.includes("devenir vendeur") || text.includes("boutique") || text.includes("vendre") || text.includes("creer boutique")) {
                 return `🛍️ **ESPACE VENDEUR DAKPROELITE**\n\n` +
                        `Devenez un vendeur partenaire sur DAKPROELITE :\n` +
@@ -377,12 +466,100 @@
                        `4. Recevez vos paiements en toute sécurité sur votre solde dès validation par l'acheteur.`;
             }
 
+            if (text.includes("boost") || text.includes("mise en avant") || text.includes("publicité") || text.includes("sponsoriser") || text.includes("visibilité")) {
+                return `🚀 **BOOST & PUBLICITÉ PRODUITS** 📈\n\n` +
+                       `Augmentez vos ventes sur DAKPROELITE :\n` +
+                       `- Rendez-vous dans votre espace Vendeur, rubrique **Boosts & Publicité**.\n` +
+                       `- Choisissez votre formule de mise en avant.\n` +
+                       `- Vos articles seront positionnés en tête des recherches et sur la bannière principale.`;
+            }
+
+            if (text.includes("retrait") || text.includes("virement") || text.includes("récupérer mon argent") || text.includes("mes gains") || text.includes("solde")) {
+                return `💰 **RETRAIT DE GAINS (VENDEURS & AFFILIÉS)** 💳\n\n` +
+                       `- Allez dans la section **Retraits** de votre tableau de bord.\n` +
+                       `- Choix des canaux : Mobile Money (MTN, Moov, Wave, Celtis) ou Virement bancaire.\n` +
+                       `- Traitement sécurisé sous 24h à 48h par le service financier.`;
+            }
+
+            if (text.includes("commission") || text.includes("frais de vente") || text.includes("pourcentage") || text.includes("tarif vendeur")) {
+                return `📊 **FRAIS DE VENTE & TRANSPARENCE** 💸\n\n` +
+                       `- L'inscription et la création de boutique sont gratuites.\n` +
+                       `- Une commission minimale est appliquée sur chaque transaction réussie afin d'assurer le fonctionnement de la garantie séquestre et le développement de la plateforme.`;
+            }
+
+            // 7. ACHETEURS, PAIEMENTS & LIVRAISON
+            if (text.includes("payer") || text.includes("paiement") || text.includes("moyen") || text.includes("momo") || text.includes("mtn") || text.includes("moov") || text.includes("wave") || text.includes("celtis") || text.includes("visa") || text.includes("mastercard") || text.includes("sécurité") || text.includes("securite") || text.includes("garantie")) {
+                return `💳 **PAIEMENTS SÉCURISÉS & GARANTIS** 🛒\n\n` +
+                       `Modes de paiement acceptés :\n` +
+                       `- 📱 Mobile Money : MTN, Moov, Wave, Celtis Cash.\n` +
+                       `- 💳 Cartes bancaires : Visa, Mastercard.\n\n` +
+                       `🛡️️ **Garantie Séquestre :** Votre argent demeure bloqué en sécurité jusqu'à la réception et la confirmation de votre commande.`;
+            }
+
+            if (text.includes("livreur") || text.includes("livraison") || text.includes("transitaire") || text.includes("dhl") || text.includes("colis")) {
+                return `🚚 **LIVRAISONS ET EXPÉDITIONS**\n\n` +
+                       `- **Livraison Locale :** Assurée par notre réseau de coursier certifiés contre QR Code.\n` +
+                       `- **Livraison Internationale :** Prise en charge via transitaires agréés et partenaires logistiques internationaux (ex: DHL).\n` +
+                       `- **Suivi :** Indiquez votre numéro de commande dans ce tchat pour obtenir un suivi en temps réel.`;
+            }
+
+            if (text.includes("remboursement") || text.includes("annuler") || text.includes("litige")) {
+                return `🔄 **GESTION DES LITIGES ET REMBOURSEMENT**\n\n` +
+                       `Si votre article n'est pas conforme ou n'a pas été livré :\n` +
+                       `1. Ne scannez pas le QR Code de confirmation.\n` +
+                       `2. Soumettez une réclamation au support avec photos/vidéos.\n` +
+                       `3. Après examen, l'équipe valide le remboursement de votre commande.`;
+            }
+
+            // 8. SALUTATIONS & CONTACT
+            if (text.includes("bonjour") || text.includes("salut") || text.includes("hello") || text.includes("coucou") || text.includes("bonsoir")) {
+                return `👋 **Bienvenue sur DAKPROELITE !**\n\n` +
+                       `Comment pouvons-nous vous aider aujourd'hui ? Vous pouvez me poser des questions sur nos produits, la vente, les paiements sécurisés, les livraisons, le programme ambassadeur ou notre règlement.`;
+            }
+
+            if (text.includes("contact") || text.includes("adresse") || text.includes("bureau") || text.includes("telephone") || text.includes("téléphone") || text.includes("email") || text.includes("support")) {
+                return `📞 **CONTACT & SUPPORT OFFICIEL DAKPROELITE** 🏢\n\n` +
+                       `- **Plateforme :** DAKPROELITE Marketplace\n` +
+                       `- **E-mail Support :** contact@dakproelite.com\n` +
+                       `- **WhatsApp Direct :** +229 01 97 45 53 09\n` +
+                       `- **Disponibilité :** Service assistance disponible 24h/24 & 7j/7.`;
+            }
+
+            // RÉPONSE PAR DÉFAUT ENRICHIE
             return `Merci pour votre message ! 💬\n\n` +
                    `Bienvenue sur **DAKPROELITE**, le marché mondial sécurisé pour acheter, vendre et faire fructifier vos activités.\n\n` +
+                   `Vous pouvez m'interroger sur :\n` +
+                   `- 🛍️ **Vendeurs :** Boutique, boost de produits, retrait des gains\n` +
+                   `- 📦 **Acheteurs :** Modes de paiement, garantie séquestre, suivi de colis\n` +
+                   `- 🏆 **Ambassadeurs & Affiliation :** Générer des commissions de parrainage\n` +
+                   `- ⚖️ **Règlement, CGU & Confidentialité :** Statut et protection des données\n\n` +
                    `📞 **Support Direct :**\n` +
                    `📧 contact@dakproelite.com | 📲 WhatsApp : +229 01 97 45 53 09`;
         }
 
+        // Nettoyage automatique des messages de plus de 24 heures
+        async function nettoyerAnciensMessages(dbInstance, currentUid) {
+            try {
+                const messagesRef = ref(dbInstance, `messages_support/${currentUid}`);
+                const snapshot = await get(messagesRef);
+                
+                if (snapshot.exists()) {
+                    const now = Date.now();
+                    const VINGT_QUATRE_HEURES_MS = 24 * 60 * 60 * 1000;
+
+                    snapshot.forEach((childSnapshot) => {
+                        const msg = childSnapshot.val();
+                        if (msg.timestamp && (now - msg.timestamp > VINGT_QUATRE_HEURES_MS)) {
+                            remove(ref(dbInstance, `messages_support/${currentUid}/${childSnapshot.key}`));
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn("Nettoyage messages ignoré :", err);
+            }
+        }
+
+        // INITIALISATION DU MODULE SUPPORT
         export function init(container, dbInstance, authInstance, user) {
             if (!container || !dbInstance) return;
 
@@ -390,11 +567,14 @@
             const ADMIN_WHATSAPP = "2290197455309";
             const ADMIN_EMAIL = "contact@dakproelite.com";
 
+            // Nettoyage des vieux messages (> 24h)
+            nettoyerAnciensMessages(dbInstance, currentUid);
+
             container.innerHTML = `
                 <div class="support-wrapper">
                     <div class="support-header">
                         <span>💬 Assistance Instantanée DAKPROELITE</span>
-                        <span style="font-size: 13px; color: #8a96a8; font-weight: 500;">Marché Mondial Sécurisé</span>
+                        <span style="font-size: 12px; color: #8a96a8; font-weight: 500;">Marché Mondial Sécurisé</span>
                     </div>
 
                     <div class="emergency-bar">
@@ -406,7 +586,7 @@
                     </div>
 
                     <div class="info-card">
-                        <div style="font-size: 13px; color: #d4af37; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <div style="font-size: 12px; color: #d4af37; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                             👤 Profil Client / Vos Coordonnées
                         </div>
                         <div class="form-grid">
@@ -426,11 +606,11 @@
                     </div>
 
                     <div class="chat-box" id="chatBox">
-                        <div style="color: #888; text-align: center; margin: auto; font-size: 14px;">Chargement du tchat...</div>
+                        <div style="color: #888; text-align: center; margin: auto; font-size: 13.5px;">Chargement de l'assistance DAKPROELITE...</div>
                     </div>
 
                     <div class="chat-input-area">
-                        <input type="text" id="inputSupportMsg" class="form-input" style="flex:1; min-width: 200px;" placeholder="Posez votre question..." />
+                        <input type="text" id="inputSupportMsg" class="form-input" style="flex:1; min-width: 200px;" placeholder="Posez une question (Boutiques, paiements, ambassadeur, CGU, créateur...)" />
                         <button id="btnMic" class="btn-mic" title="Dictée vocale">🎙️</button>
                         <button id="btnSendMsg" class="btn-send">Envoyer</button>
                     </div>
@@ -443,8 +623,65 @@
             const chatBox = document.getElementById("chatBox");
             const inputMsg = document.getElementById("inputSupportMsg");
             const btnSend = document.getElementById("btnSendMsg");
+            const btnMic = document.getElementById("btnMic");
+            const linkWhatsappDirect = document.getElementById("linkWhatsappDirect");
 
-            // Charger le profil utilisateur s'il existe
+            // Mettre à jour le lien WhatsApp avec le nom et la question
+            function mettreAJourLienWhatsapp(dernierTexte = "") {
+                const nom = suppNom?.value.trim() || "";
+                const phone = suppPhone?.value.trim() || "";
+
+                const messageWhatsApp = 
+`*--- ASSISTANCE DAKPROELITE ---*
+👤 *Client :* ${nom}
+📞 *Tél :* ${phone}
+
+💬 *Demande :*
+${dernierTexte || "Bonjour, je souhaite obtenir de l'aide sur DAKPROELITE."}`;
+
+                if (linkWhatsappDirect) {
+                    linkWhatsappDirect.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(messageWhatsApp)}`;
+                }
+            }
+
+            suppNom?.addEventListener("input", () => mettreAJourLienWhatsapp(inputMsg?.value));
+            suppPhone?.addEventListener("input", () => mettreAJourLienWhatsapp(inputMsg?.value));
+
+            // Reconnaissance vocale (Dictée)
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'fr-FR';
+                recognition.continuous = false;
+
+                recognition.onstart = () => {
+                    btnMic?.classList.add("listening");
+                };
+
+                recognition.onend = () => {
+                    btnMic?.classList.remove("listening");
+                };
+
+                recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    if (inputMsg) {
+                        inputMsg.value = (inputMsg.value + " " + transcript).trim();
+                        mettreAJourLienWhatsapp(inputMsg.value);
+                    }
+                };
+
+                btnMic?.addEventListener("click", () => {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        recognition.stop();
+                    }
+                });
+            } else {
+                if (btnMic) btnMic.style.display = 'none';
+            }
+
+            // Charger les coordonnées utilisateur depuis Firebase
             const userRef = ref(dbInstance, `users/${currentUid}`);
             get(userRef).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -455,18 +692,19 @@
                 } else if (user?.email && suppEmail) {
                     suppEmail.value = user.email;
                 }
+                mettreAJourLienWhatsapp();
             }).catch(console.error);
 
-            // Écouter les messages en temps réel dans la nœud exact de la capture d'écran
+            // Écouteur en temps réel sur la sous-branche Firebase exacte
             const messagesRef = ref(dbInstance, `messages_support/${currentUid}`);
             onValue(messagesRef, (snapshot) => {
                 if (!chatBox) return;
 
                 if (!snapshot.exists()) {
                     chatBox.innerHTML = `
-                        <div style="color: #a0aec0; text-align: center; margin: auto; font-size: 14px; max-width: 600px; padding: 25px;">
+                        <div style="color: #a0aec0; text-align: center; margin: auto; font-size: 13.5px; line-height: 1.7; max-width: 600px; padding: 20px;">
                             👋 <strong style="color: #d4af37;">Bienvenue sur l'assistance DAKPROELITE !</strong><br><br>
-                            Posez-nous une question ci-dessous.
+                            Posez votre question ci-dessous sur notre marché mondial, la garantie séquestre, nos boutiques, ou le programme ambassadeur.
                         </div>
                     `;
                     return;
@@ -481,19 +719,37 @@
                     containerDiv.className = `msg-bubble-container ${isUser ? 'msg-user-container' : 'msg-admin-container'}`;
 
                     const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' }) : '';
-                    const texteEchappe = escapeHTML(msg.texte);
+                    const texteFormatted = formaterMarkdownHtml(msg.texte);
 
                     containerDiv.innerHTML = `
                         <div class="msg-bubble ${isUser ? 'msg-user' : 'msg-admin'}">
-                            <div style="font-size: 11.5px; font-weight: bold; margin-bottom: 5px; opacity: 0.85;">
+                            <div style="font-size: 11px; font-weight: bold; margin-bottom: 5px; opacity: 0.85;">
                                 ${isUser ? (msg.nomClient || '👤 Vous') : '🤖 Assistant DAKPROELITE'}
                             </div>
-                            <div>${texteEchappe}</div>
+                            <div>${texteFormatted}</div>
                         </div>
                         <div class="msg-meta">
                             <span>${timeStr}</span>
                         </div>
                     `;
+
+                    // Si c'est le Bot ou Admin, on ajoute les boutons "Copier" et "Écouter"
+                    if (!isUser) {
+                        const actionsDiv = document.createElement("div");
+                        actionsDiv.className = "msg-actions";
+                        
+                        const texteEscapedJson = JSON.stringify(msg.texte || "");
+
+                        actionsDiv.innerHTML = `
+                            <button class="btn-msg-action" onclick='window.copierTexteMessage(${texteEscapedJson}, this)'>
+                                📋 Copier
+                            </button>
+                            <button class="btn-msg-action" onclick='window.lireTexteAudio(${texteEscapedJson})'>
+                                🔊 Écouter
+                            </button>
+                        `;
+                        containerDiv.appendChild(actionsDiv);
+                    }
 
                     chatBox.appendChild(containerDiv);
                 });
@@ -501,7 +757,7 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             });
 
-            // Fonction pour envoyer le message
+            // Envoi de message
             async function sendMessage() {
                 const nom = suppNom?.value.trim() || "Utilisateur";
                 const phone = suppPhone?.value.trim() || "";
@@ -513,24 +769,29 @@
                 inputMsg.value = "";
 
                 try {
-                    // Structure exacte vue sur l'image Firebase :
-                    // messages_support / {userId} / {messageId}
-                    const newMessageRef = push(ref(dbInstance, `messages_support/${currentUid}`));
-                    
-                    await set(newMessageRef, {
+                    // Sauvegarde des coordonnées
+                    await set(ref(dbInstance, `users/${currentUid}/coordonnees`), {
+                        nom,
+                        telephone: phone,
+                        email
+                    });
+
+                    // Écriture du message utilisateur
+                    await push(ref(dbInstance, `messages_support/${currentUid}`), {
                         emailClient: email,
                         nomClient: nom,
                         sender: "user",
                         telephoneClient: phone,
                         texte: text,
-                        timestamp: Date.now() // Ou serverTimestamp()
+                        timestamp: Date.now()
                     });
 
-                    // Réponse automatique
+                    mettreAJourLienWhatsapp(text);
+
+                    // Génération et écriture de la réponse automatique
                     const reponseBot = obtenirReponseAutomatique(text);
                     setTimeout(async () => {
-                        const botMsgRef = push(ref(dbInstance, `messages_support/${currentUid}`));
-                        await set(botMsgRef, {
+                        await push(ref(dbInstance, `messages_support/${currentUid}`), {
                             emailClient: "contact@dakproelite.com",
                             nomClient: "Assistant DAKPROELITE",
                             sender: "bot",
@@ -538,10 +799,10 @@
                             texte: reponseBot,
                             timestamp: Date.now()
                         });
-                    }, 500);
+                    }, 400);
 
                 } catch (e) {
-                    console.error("Erreur lors de l'écriture Firebase :", e);
+                    console.error("Erreur lors de l'envoi :", e);
                     alert("Erreur lors de l'envoi du message : " + e.message);
                 }
             }
@@ -552,17 +813,17 @@
             });
         }
 
+        // Lancement et gestion de l'authentification
         const container = document.getElementById("supportContainer");
         
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 init(container, db, auth, user);
             } else {
-                // Authentification anonyme si non connecté pour pouvoir écrire sur Firebase
                 signInAnonymously(auth).then((cred) => {
                     init(container, db, auth, cred.user);
                 }).catch((err) => {
-                    console.warn("Auth anonyme non activée, utilisation du mode fallback :", err);
+                    console.warn("Auth anonyme non disponible, passage en mode direct :", err);
                     init(container, db, auth, null);
                 });
             }

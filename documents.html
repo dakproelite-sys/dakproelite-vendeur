@@ -19,7 +19,7 @@
     /* Format Carte Badge VIP ID-1 (Ratio 85.6mm x 53.98mm) */
     .badge-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       aspect-ratio: 1.586 / 1;
       background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
       border: 2px solid #f59e0b;
@@ -89,10 +89,10 @@
 
       <!-- Badge Visualizer HTML -->
       <div class="flex justify-center">
-        <div id="badgeCard" class="badge-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
+        <div id="badgeCard" class="badge-card rounded-2xl p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
           <!-- Motifs décoratifs arrière-plan -->
-          <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl"></div>
-          <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
+          <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
           <!-- Header Badge -->
           <div class="flex items-center justify-between border-b border-amber-500/30 pb-2 relative z-10">
@@ -109,40 +109,62 @@
           </div>
 
           <!-- Corps du Badge -->
-          <div class="grid grid-cols-12 gap-3 items-center my-auto relative z-10">
+          <div class="grid grid-cols-12 gap-2 items-center my-auto relative z-10">
             <!-- Photo Vendeur -->
-            <div class="col-span-4 flex justify-center">
-              <div class="w-20 h-20 rounded-xl border-2 border-amber-400 p-0.5 bg-slate-900 shadow-xl overflow-hidden">
+            <div class="col-span-3 flex justify-center">
+              <div class="w-16 h-20 sm:w-20 sm:h-24 rounded-xl border-2 border-amber-400 p-0.5 bg-slate-900 shadow-xl overflow-hidden">
                 <img id="badgeImgPhoto" src="" alt="Vendeur" class="w-full h-full object-cover rounded-lg">
               </div>
             </div>
 
             <!-- Détails Vendeur -->
-            <div class="col-span-5 space-y-1 text-left">
+            <div class="col-span-5 space-y-0.5 text-left pl-1">
               <div>
-                <span class="text-[8px] text-slate-400 uppercase block font-bold">Nom & Prénoms</span>
-                <p id="badgeTxtNom" class="text-xs font-black text-white truncate uppercase">------------------</p>
+                <span class="text-[6.5px] text-slate-400 uppercase block font-bold leading-tight">Nom & Prénoms</span>
+                <p id="badgeTxtNom" class="text-[10px] font-black text-white truncate uppercase">------------------</p>
+              </div>
+              <div class="grid grid-cols-2 gap-1">
+                <div>
+                  <span class="text-[6.5px] text-slate-400 uppercase block font-bold leading-tight">Né(e) le</span>
+                  <p id="badgeTxtDateNaissance" class="text-[8.5px] font-bold text-slate-200 truncate">--/--/----</p>
+                </div>
+                <div>
+                  <span class="text-[6.5px] text-slate-400 uppercase block font-bold leading-tight">Résidence</span>
+                  <p id="badgeTxtPays" class="text-[8.5px] font-bold text-amber-400 truncate">------------</p>
+                </div>
               </div>
               <div>
-                <span class="text-[8px] text-slate-400 uppercase block font-bold">Contact Officiel</span>
-                <p id="badgeTxtTel" class="text-[11px] font-bold text-amber-400 truncate">+229 00 00 00 00</p>
+                <span class="text-[6.5px] text-slate-400 uppercase block font-bold leading-tight">Contact Officiel</span>
+                <p id="badgeTxtTel" class="text-[9.5px] font-bold text-amber-400 truncate">+229 00 00 00 00</p>
               </div>
               <div>
-                <span class="text-[8px] text-slate-400 uppercase block font-bold">Matricule Vendeur</span>
-                <p id="badgeTxtID" class="text-[9px] font-mono font-semibold text-slate-300 truncate">ID: ------</p>
+                <span class="text-[6.5px] text-slate-400 uppercase block font-bold leading-tight">Matricule Vendeur</span>
+                <p id="badgeTxtID" class="text-[7.5px] font-mono font-semibold text-slate-300 truncate">ID: ------</p>
               </div>
             </div>
 
-            <!-- QR Code -->
-            <div class="col-span-3 flex flex-col items-center justify-center">
-              <div id="qrcode" class="p-1.5 bg-white rounded-lg shadow-lg border border-amber-400"></div>
-              <span class="text-[7px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">SCAN TO VERIFY</span>
+            <!-- Tampon Officiel + QR Code -->
+            <div class="col-span-4 flex items-center justify-end space-x-1.5">
+              <!-- Tampon Officiel CSS/HTML -->
+              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-red-500/80 p-0.5 flex flex-col items-center justify-center text-center text-red-500 rotate-[-12deg] shadow-lg bg-red-950/20 backdrop-blur-sm select-none pointer-events-none">
+                <div class="w-full h-full rounded-full border border-red-500/60 flex flex-col items-center justify-center p-0.5">
+                  <span class="text-[5px] font-black uppercase tracking-tighter leading-none">MARCHÉ INT.</span>
+                  <span class="text-[6px] font-black text-white bg-red-600/80 px-1 py-0.2 my-0.5 rounded leading-none">DIRECTEUR</span>
+                  <span class="text-[4.5px] font-bold text-red-400 uppercase leading-none">AGLIGNAMOU D.</span>
+                </div>
+              </div>
+
+              <!-- QR Code -->
+              <div class="flex flex-col items-center justify-center">
+                <div id="qrcode" class="p-1 bg-white rounded-lg shadow-xl border border-amber-400"></div>
+                <span class="text-[6px] text-slate-400 mt-1 uppercase font-black tracking-tighter">SCAN TO VERIFY</span>
+              </div>
             </div>
           </div>
 
           <!-- Footer Badge -->
-          <div class="border-t border-slate-800 pt-1.5 flex justify-between items-center relative z-10 text-[8px] text-slate-400">
-            <span>DAKPROÉLITE PAYMENT & E-COMMERCE NETWORK</span>
+          <div class="border-t border-slate-800 pt-1 flex justify-between items-center relative z-10 text-[7.5px] text-slate-400">
+            <span>DAKPROÉLITE MARKETPLACE NETWORK</span>
             <span class="font-bold text-amber-400">SÉCURISÉ PKI</span>
           </div>
         </div>
@@ -165,28 +187,40 @@
       </h2>
 
       <form id="formKYC" class="space-y-5">
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Nom Complet (Tel qu'inscrit sur votre pièce) *</label>
-          <input type="text" id="nomComplet" required placeholder="Ex: AGLIGNAMOU DAVID" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Nom Complet (Tel qu'inscrit sur votre pièce) *</label>
+            <input type="text" id="nomComplet" required placeholder="Ex: AGLIGNAMOU DAVID" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Date de Naissance Complexe / Réelle *</label>
+            <input type="date" id="dateNaissance" required class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-all">
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Pays de Résidence *</label>
+            <input type="text" id="paysResidence" required placeholder="Ex: Bénin, Togo, France..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-semibold">
+          </div>
+          <div>
             <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Numéro de Téléphone MoMo / WhatsApp *</label>
             <input type="tel" id="telephone" required placeholder="+229 01 XX XX XX XX" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Adresse Email Professionnelle *</label>
             <input type="email" id="email" required placeholder="vendeur@gmail.com" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all">
           </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Type de Document Fourni *</label>
-          <select id="typeDocument" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-semibold">
-            <option value="cni">Carte Nationale d'Identité / CIP / CNI-E</option>
-            <option value="passeport">Passeport International</option>
-          </select>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Type de Document Fourni *</label>
+            <select id="typeDocument" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-semibold">
+              <option value="cni">Carte Nationale d'Identité / CIP / CNI-E</option>
+              <option value="passeport">Passeport International</option>
+            </select>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
@@ -226,8 +260,8 @@
       </form>
     </div>
 
-    <!-- Canvas Caché pour Rendu PNG HD Haute Qualité (Dimensions 1000x631 pixels pour impression nette 8.5x5.4cm) -->
-    <canvas id="canvasHD" width="1000" height="631" class="hidden"></canvas>
+    <!-- Canvas Caché pour Rendu PNG HD (1200x756 pixels - ultra net) -->
+    <canvas id="canvasHD" width="1200" height="756" class="hidden"></canvas>
 
   </main>
 
@@ -336,6 +370,14 @@
       reader.readAsDataURL(file);
     };
 
+    // Formater la date YYYY-MM-DD en DD/MM/YYYY
+    function formaterDateFR(dateStr) {
+      if (!dateStr) return 'Non renseignée';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return dateStr;
+    }
+
     // Soumission du formulaire
     document.getElementById('formKYC').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -344,6 +386,8 @@
       const btnLabel = document.getElementById('btnLabel');
       
       const nomComplet = document.getElementById('nomComplet').value.trim();
+      const dateNaissance = document.getElementById('dateNaissance').value;
+      const paysResidence = document.getElementById('paysResidence').value.trim();
       const telephone = document.getElementById('telephone').value.trim();
       const email = document.getElementById('email').value.trim();
       const typeDocument = document.getElementById('typeDocument').value;
@@ -360,6 +404,8 @@
 
       const kycData = {
         nomComplet: nomComplet,
+        dateNaissance: dateNaissance,
+        pays: paysResidence,
         telephone: telephone,
         email: email,
         typeDocument: typeDocument,
@@ -402,7 +448,7 @@
       globalVendeurData = data;
       const statut = (data.statut || "").toLowerCase();
 
-      // SI STATUT VALIDÉ / APPROUVÉ -> FERMETURE FORMULAIRE & AFFICHAGE CARTE BADGE HD + BOUTON TÉLÉCHARGER
+      // SI STATUT VALIDÉ / APPROUVÉ -> FERMETURE FORMULAIRE & AFFICHAGE CARTE BADGE HD
       if (statut === 'valide' || statut === 'validé' || statut === 'approuve') {
         formSection.classList.add('hidden');
         badgeCertifieSection.classList.remove('hidden');
@@ -420,22 +466,27 @@
             </div>
           </div>`;
 
-        // Injection des métadonnées dans le badge HTML
+        // Injection des métadonnées
         document.getElementById('badgeTxtNom').innerText = data.nomComplet || 'VENDEUR CERTIFIÉ';
+        document.getElementById('badgeTxtDateNaissance').innerText = formaterDateFR(data.dateNaissance);
+        document.getElementById('badgeTxtPays').innerText = data.pays || 'Non renseigné';
         document.getElementById('badgeTxtTel').innerText = data.telephone || 'Non renseigné';
         document.getElementById('badgeTxtID').innerText = 'ID: ' + vendeurId.substring(0, 12).toUpperCase();
         document.getElementById('badgeImgPhoto').src = data.photoIdentite || data.photoPiece;
 
-        // Génération du QR Code
+        // Génération QR Code HAUTE DENSITÉ (Haute Correction d'Erreur Niveau H - 30%)
         const qrContainer = document.getElementById('qrcode');
         qrContainer.innerHTML = "";
+
+        const qrDataPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${data.nomComplet};;;;\nFN:${data.nomComplet}\nORG:DAKPROÉLITE MARKETPLACE\nTITLE:Vendeur Certifié Officiel\nTEL:${data.telephone}\nNOTE:ID Vendeur Certifié: ${vendeurId} | Né le: ${formaterDateFR(data.dateNaissance)} | Pays: ${data.pays || 'N/A'} | Validé par AGLIGNAMOU DAVID (Directeur de Marketplace)\nURL:https://dakproelite.com/verify?id=${vendeurId}\nEND:VCARD`;
+
         new QRCode(qrContainer, {
-          text: `DAKPROELITE-VERIFIED:${vendeurId}:${data.nomComplet}`,
-          width: 55,
-          height: 55,
-          colorDark : "#0f172a",
-          colorLight : "#ffffff",
-          correctLevel : QRCode.CorrectLevel.H
+          text: qrDataPayload,
+          width: 70,
+          height: 70,
+          colorDark: "#020617",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
         });
 
       } else if (statut === 'en_attente') {
@@ -465,14 +516,90 @@
       }
     });
 
-    // RENDER CANVAS & GENERATION DE LA CARTE PROFESSIONNELLE PNG HD
+    // DESSIN DU CACHET/TAMPON OFFICIEL SUR CANVAS
+    function dessinerTamponOfficiel(ctx, cx, cy, r) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-0.2); // Inclinaison authentique de -11.5 degrés
+
+      // Effet d'encre rouge/rubis
+      ctx.strokeStyle = '#dc2626';
+      ctx.fillStyle = '#dc2626';
+
+      // Cercle Extérieur Double
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 6, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Cercle Intérieur
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 26, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Texte Arqué Supérieur : "MARCHÉ INTERNATIONAL"
+      ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const textTop = "MARCHÉ INTERNATIONAL";
+      const angleStepTop = 1.6 / textTop.length;
+      let startAngleTop = -Math.PI / 2 - (angleStepTop * (textTop.length - 1)) / 2;
+
+      for (let i = 0; i < textTop.length; i++) {
+        let charAngle = startAngleTop + i * angleStepTop;
+        ctx.save();
+        ctx.rotate(charAngle);
+        ctx.fillText(textTop[i], 0, -(r - 16));
+        ctx.restore();
+      }
+
+      // Texte Arqué Inférieur : "* DAKPROÉLITE *"
+      const textBot = "DAKPROÉLITE";
+      const angleStepBot = 1.4 / textBot.length;
+      let startAngleBot = Math.PI / 2 + (angleStepBot * (textBot.length - 1)) / 2;
+
+      for (let i = 0; i < textBot.length; i++) {
+        let charAngle = startAngleBot - i * angleStepBot;
+        ctx.save();
+        ctx.rotate(charAngle);
+        ctx.fillText(textBot[i], 0, (r - 16));
+        ctx.restore();
+      }
+
+      // Étoiles décoratives latérales
+      ctx.font = '10px sans-serif';
+      ctx.fillText('★', -(r - 16), 0);
+      ctx.fillText('★', (r - 16), 0);
+
+      // Texte Central : DIRECTEUR DE MARKETPLACE + NOM
+      ctx.fillStyle = '#b91c1c';
+      ctx.fillRect(-r + 14, -13, (r - 14) * 2, 26);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'black 9px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('DIRECTEUR DE MARKETPLACE', 0, -2);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.font = 'extrabold 9px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('AGLIGNAMOU DAVID', 0, 20);
+
+      ctx.restore();
+    }
+
+    // RENDER CANVAS & GENERATION DE LA CARTE PROFESSIONNELLE PNG HD (1200x756)
     window.telechargerBadgePNG = function() {
       if (!globalVendeurData) return;
 
       const canvas = document.getElementById('canvasHD');
       const ctx = canvas.getContext('2d');
-      const width = canvas.width;  // 1000px
-      const height = canvas.height; // 631px
+      const width = canvas.width;   // 1200px
+      const height = canvas.height;  // 756px
 
       // 1. Fond Dégradé Luxueux
       const grad = ctx.createLinearGradient(0, 0, width, height);
@@ -482,97 +609,124 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Bordure Dorée Professionnelle
+      // 2. Bordure Double Dorée
       ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 12;
-      ctx.strokeRect(6, 6, width - 12, height - 12);
+      ctx.lineWidth = 14;
+      ctx.strokeRect(7, 7, width - 14, height - 14);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 20, width - 40, height - 40);
 
       // 3. En-tête
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('DAKPROÉLITE', 50, 70);
+      ctx.font = 'black 42px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('DAKPROÉLITE', 60, 80);
 
       ctx.fillStyle = '#f59e0b';
-      ctx.font = 'bold 18px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('CARTE PROFESSIONNELLE VENDEUR CERTIFIÉ', 50, 100);
+      ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('CARTE PROFESSIONNELLE VENDEUR CERTIFIÉ', 60, 115);
 
       ctx.fillStyle = '#10b981';
-      ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('✓ VERIFIED OFFICIAL', width - 240, 70);
+      ctx.font = 'black 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('✓ VERIFIED OFFICIAL', width - 280, 80);
 
       // Ligne de séparation
       ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(50, 125);
-      ctx.lineTo(width - 50, 125);
+      ctx.moveTo(60, 140);
+      ctx.lineTo(width - 60, 140);
       ctx.stroke();
 
-      // Load Foto Vendeur sur Canvas
+      // Load Photo Vendeur sur Canvas
       const imgPhoto = new Image();
       imgPhoto.crossOrigin = "anonymous";
       imgPhoto.onload = function() {
-        // Dessin Photo Vendeur avec Contour Or
+        // Dessin Photo Vendeur avec cadre Doré
         ctx.save();
         ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 6;
-        ctx.strokeRect(50, 160, 220, 260);
-        ctx.drawImage(imgPhoto, 50, 160, 220, 260);
+        ctx.lineWidth = 8;
+        ctx.strokeRect(60, 180, 260, 320);
+        ctx.drawImage(imgPhoto, 60, 180, 260, 320);
         ctx.restore();
 
         // TEXTES METADONNEES
         ctx.fillStyle = '#94a3b8';
         ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('TITULAIRE DU COMPTE', 310, 180);
+        ctx.fillText('TITULAIRE DU COMPTE', 360, 200);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'black 28px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText((globalVendeurData.nomComplet || 'VENDEUR DAKPROELITE').toUpperCase(), 310, 215);
+        ctx.font = 'black 32px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText((globalVendeurData.nomComplet || 'VENDEUR DAKPROELITE').toUpperCase(), 360, 240);
 
+        // Date de Naissance & Pays de Résidence sur le Canvas HD
         ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('TÉLÉPHONE / MOMO', 310, 260);
+        ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('DATE DE NAISSANCE', 360, 280);
+        ctx.fillText('PAYS DE RÉSIDENCE', 620, 280);
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(formaterDateFR(globalVendeurData.dateNaissance), 360, 310);
 
         ctx.fillStyle = '#f59e0b';
-        ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText(globalVendeurData.telephone || '+229 00000000', 310, 290);
+        ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText((globalVendeurData.pays || 'Non renseigné').toUpperCase(), 620, 310);
 
         ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('MATRICULE UNIQUE', 310, 335);
+        ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('CONTACTS MOMO / WHATSAPP', 360, 360);
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 26px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(globalVendeurData.telephone || '+229 00000000', 360, 395);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('MATRICULE UNIQUE D\'ACCRÉDITATION', 360, 445);
 
         ctx.fillStyle = '#cbd5e1';
-        ctx.font = '20px monospace';
-        ctx.fillText('ID: ' + vendeurId.toUpperCase(), 310, 365);
+        ctx.font = 'bold 22px monospace';
+        ctx.fillText('ID: ' + vendeurId.toUpperCase(), 360, 475);
 
         ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('STATUT DU COMPTE', 310, 410);
+        ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('STATUT DU COMPTE', 360, 520);
 
         ctx.fillStyle = '#10b981';
-        ctx.font = 'extrabold 20px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('AGRÉÉ & ACCRÉDITÉ PAR LA DIRECTION', 310, 440);
+        ctx.font = 'black 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('AGRÉÉ & ACCRÉDITÉ PAR LA DIRECTION', 360, 550);
 
-        // Intégration QR Code dans le Canvas
+        // Intégration du Cachet/Tampon Rond Officiel sur Canvas
+        dessinerTamponOfficiel(ctx, width - 360, 340, 75);
+
+        // Intégration QR Code Haute Qualité
         const qrCanvas = document.querySelector('#qrcode canvas');
         if (qrCanvas) {
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(width - 220, 160, 170, 170);
+          ctx.fillRect(width - 240, 180, 180, 180);
           ctx.strokeStyle = '#f59e0b';
           ctx.lineWidth = 4;
-          ctx.strokeRect(width - 220, 160, 170, 170);
-          ctx.drawImage(qrCanvas, width - 210, 170, 150, 150);
+          ctx.strokeRect(width - 240, 180, 180, 180);
+          ctx.drawImage(qrCanvas, width - 230, 190, 160, 160);
 
           ctx.fillStyle = '#94a3b8';
-          ctx.font = 'bold 12px "Plus Jakarta Sans", sans-serif';
-          ctx.fillText('SCAN POUR VÉRIFIER', width - 210, 350);
+          ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+          ctx.fillText('SCAN POUR VÉRIFIER', width - 220, 385);
         }
 
         // Bas de carte
-        ctx.fillStyle = '#64748b';
-        ctx.font = '14px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('Ce badge officiel certifie la légitimité du vendeur sur le réseau international DAKPROÉLITE.', 50, 560);
-        ctx.fillText('Document numérique sécurisé. Délivré par le centre de contrôle KYC.', 50, 585);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(60, 640);
+        ctx.lineTo(width - 60, 640);
+        ctx.stroke();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Ce badge officiel certifie la légitimité du vendeur sur le réseau international DAKPROÉLITE.', 60, 680);
+        ctx.fillText('Document numérique cryptographiquement sécurisé. Délivré sous le contrôle de la Direction.', 60, 710);
 
         // Exportation et Téléchargement Automatique
         const link = document.createElement('a');
@@ -580,7 +734,7 @@
         link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
 
-        afficherToast("✅ Téléchargement de votre Carte Professionnelle PNG réussi !");
+        afficherToast("✅ Téléchargement de votre Carte Professionnelle PNG HD réussi !");
       };
 
       imgPhoto.src = globalVendeurData.photoIdentite || globalVendeurData.photoPiece;
