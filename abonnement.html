@@ -7,8 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- SDK de Paiement Checkout -->
-  <script src="https://cdn.fetanpay.com/sdk/v1/checkout.js"></script>
+  <!-- SDK Officiel Checkout FedaPay -->
+  <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -217,24 +217,16 @@
         </button>
 
         <h3 class="text-lg font-bold text-white mb-1" id="modalPlanTitre">Confirmation de l'Abonnement</h3>
-        <p class="text-xs text-slate-400 mb-6">Confirmez votre numéro pour lancer le guichet de paiement sécurisé.</p>
+        <p class="text-xs text-slate-400 mb-6">Vérifiez vos coordonnées avant d'ouvrir le guichet FedaPay.</p>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Méthode de Paiement *</label>
-            <select id="selectModePaiement" class="w-full bg-slate-900 border border-slate-700 focus:border-purple-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
-              <option value="momo">MTN Mobile Money / Moov Money / Wave</option>
-              <option value="carte">Carte Bancaire Visa / Mastercard</option>
-            </select>
-          </div>
-
-          <div id="champNumeroMomo">
-            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Numéro de Téléphone *</label>
-            <input type="tel" id="inputTelephone" placeholder="Ex: +229 0197455309" value="+2290197455309" class="w-full bg-slate-900 border border-slate-700 focus:border-purple-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none">
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Numéro de Téléphone Mobile Money *</label>
+            <input type="tel" id="inputTelephone" placeholder="Ex: +2290197455309" value="+2290197455309" class="w-full bg-slate-900 border border-slate-700 focus:border-purple-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none">
           </div>
 
           <button id="btnValiderPaiement" onclick="validerEtPayerAbonnement()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-black text-sm rounded-2xl shadow-xl shadow-purple-600/30 active:scale-95 transition-all mt-4 flex items-center justify-center gap-2">
-            <span>Procéder au Paiement</span>
+            <span>Payer avec FedaPay</span>
           </button>
         </div>
       </div>
@@ -247,8 +239,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, get, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Clé publique de règlement Checkout
-    const CHECKOUT_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
+    // Clé publique FedaPay officielle
+    const FEDAPAY_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
 
     const firebaseConfig = {
       apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
@@ -296,9 +288,9 @@
       const snapUser = await get(userRef);
       const isUserAdmin = snapUser.exists() && snapUser.val().role === 'admin';
 
-      // 1. Initialisation automatique de l'essai gratuit (6 mois / 2 articles) lors du 1er jour
+      // 1. Initialisation automatique de l'essai gratuit (6 mois / 2 articles)
       if (!aboData) {
-        const dateFinEssai = maintenant + (180 * 24 * 60 * 60 * 1000); // 6 Mois
+        const dateFinEssai = maintenant + (180 * 24 * 60 * 60 * 1000);
         aboData = {
           nomPlan: "Essai Gratuit (6 Mois)",
           maxArticles: 2,
@@ -379,7 +371,7 @@
       }
     });
 
-    // Enregistrement des transactions et notifications après paiement
+    // Enregistrement des transactions et notifications après paiement FedaPay
     async function enregistrerPaiementEtNotification(donneesPaiement) {
       const maintenant = Date.now();
       const dateExpiration = maintenant + (planSelectionne.jours * 24 * 60 * 60 * 1000);
@@ -392,7 +384,7 @@
         dateFin: dateExpiration,
         statut: "actif",
         prixPaye: planSelectionne.prix,
-        moyenPaiement: donneesPaiement.mode,
+        moyenPaiement: "FedaPay",
         telephonePaiement: donneesPaiement.telephone || 'N/A',
         transactionId: donneesPaiement.transactionId,
         vendeurId: currentVendeurId
@@ -407,7 +399,7 @@
         montant: planSelectionne.prix,
         devise: "XOF",
         plan: planSelectionne.nom,
-        mode: donneesPaiement.mode,
+        mode: "FedaPay",
         telephone: donneesPaiement.telephone || 'N/A',
         statut: "SUCCES",
         horodatage: maintenant,
@@ -425,73 +417,62 @@
       });
     }
 
-    // Lancement du Checkout
+    window.traiterSuccesPaiement = async function(response) {
+      try {
+        const txId = response.transaction?.id || response.id || 'TX_FEDAPAY_' + Date.now();
+        const tel = document.getElementById('inputTelephone').value.trim();
+
+        await enregistrerPaiementEtNotification({
+          telephone: tel,
+          transactionId: txId
+        });
+        
+        afficherToast("🎉 Abonnement activé ! Redirection...");
+        fermerModalPaiement();
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      } catch (err) {
+        afficherToast("Erreur lors de l'enregistrement : " + err.message);
+      }
+    };
+
+    // Lancement de FedaPay Checkout
     window.validerEtPayerAbonnement = function() {
       const tel = document.getElementById('inputTelephone').value.trim();
-      const mode = document.getElementById('selectModePaiement').value;
 
-      if (mode === 'momo' && !tel) {
-        afficherToast("Veuillez saisir votre numéro de téléphone Mobile Money.");
+      if (!tel) {
+        afficherToast("Veuillez saisir votre numéro de téléphone.");
         return;
       }
 
-      afficherToast("Ouverture du guichet de paiement...");
+      if (typeof FedaPay === 'undefined') {
+        afficherToast("Erreur : Le module FedaPay ne s'est pas chargé correctement.");
+        return;
+      }
 
-      const paymentConfig = {
-        key: CHECKOUT_PUBLIC_KEY,
-        amount: planSelectionne.prix,
-        currency: "XOF",
+      afficherToast("Ouverture du guichet FedaPay...");
+
+      let widget = FedaPay.init({
+        public_key: FEDAPAY_PUBLIC_KEY,
+        transaction: {
+          amount: planSelectionne.prix,
+          description: `Abonnement DAKPROÉLITE - ${planSelectionne.nom}`
+        },
         customer: {
-          phone: tel,
-          id: currentVendeurId
-        },
-        description: `Souscription ${planSelectionne.nom} - DAKPROELITE`,
-        metadata: {
-          vendeurId: currentVendeurId,
-          plan: planSelectionne.nom,
-          dureeJours: planSelectionne.jours
-        },
-        onSuccess: async function(response) {
-          try {
-            const txId = response.transactionId || 'TX_' + Date.now();
-            await enregistrerPaiementEtNotification({
-              mode: mode,
-              telephone: tel,
-              transactionId: txId
-            });
-            afficherToast("🎉 Abonnement activé ! Redirection...");
-            fermerModalPaiement();
-            setTimeout(() => {
-              window.location.href = 'index.html';
-            }, 1500);
-          } catch (err) {
-            afficherToast("Erreur lors de l'enregistrement : " + err.message);
+          phone_number: {
+            number: tel,
+            country: 'BJ'
           }
         },
-        onClose: function() {
-          afficherToast("Procédure de paiement annulée.");
-        },
-        onError: function(error) {
-          afficherToast("Erreur de traitement : " + (error.message || "Échec réseau"));
+        onComplete: function(reason) {
+          if (reason === FedaPay.CHECKOUT_COMPLETED) {
+            window.traiterSuccesPaiement({ transactionId: 'FP_' + Date.now() });
+          } else if (reason === FedaPay.DIALOG_DISMISSED) {
+            afficherToast("Paiement FedaPay annulé.");
+          }
         }
-      };
+      });
 
-      if (window.Checkout) {
-        const checkoutInstance = new window.Checkout(paymentConfig);
-        checkoutInstance.open();
-      } else {
-        // Mode dégradé si le SDK externe ne charge pas
-        const txId = 'TX_DIRECT_' + Date.now();
-        enregistrerPaiementEtNotification({
-          mode: mode,
-          telephone: tel,
-          transactionId: txId
-        }).then(() => {
-          afficherToast("🎉 Abonnement activé avec succès !");
-          fermerModalPaiement();
-          setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-        });
-      }
+      widget.open();
     };
   </script>
 
