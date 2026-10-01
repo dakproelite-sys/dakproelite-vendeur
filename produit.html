@@ -5,10 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DAKPROELITE - Détails du Produit</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Polices Google -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- FedaPay Checkout SDK -->
+  <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
+
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card {
@@ -20,11 +25,11 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
 
-  <!-- En-tête Principal -->
+  <!-- Header principal -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <a href="index.html" class="relative w-11 h-11 rounded-full border-2 border-amber-400 bg-slate-900 flex items-center justify-center overflow-hidden">
+        <a href="index.html" class="relative w-11 h-11 rounded-full border-2 border-amber-400 bg-slate-900 flex items-center justify-center overflow-hidden shrink-0">
           <img id="logoApp" src="477912.png" alt="Logo" class="w-full h-full object-contain hidden" onload="this.classList.remove('hidden')" onerror="document.getElementById('logoFallback').classList.remove('hidden'); this.remove();">
           <div id="logoFallback" class="hidden font-black text-amber-400 text-lg">DE</div>
         </a>
@@ -43,166 +48,214 @@
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
 
-    <!-- Notification Toast -->
+    <!-- Toast Notification -->
     <div id="toastNotification" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3.5 rounded-2xl shadow-2xl border border-amber-500/40 flex items-center space-x-3 transition-all duration-300">
-      <div class="w-7 h-7 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+      <div class="w-7 h-7 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
-      <span id="toastMessage">Notification</span>
+      <span id="toastMessage">Message notification</span>
     </div>
 
     <!-- Bannière Succès Paiement -->
     <div id="bannerPaiementSucces" class="hidden mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
         </div>
         <div>
           <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wide">Paiement Confirmé !</h4>
-          <p class="text-[11px] text-slate-300">Merci pour votre achat. Votre commande a été transmise à notre base de données.</p>
+          <p class="text-[11px] text-slate-300">Merci pour votre achat. Votre contenu numérique est désormais débloqué ci-dessous.</p>
         </div>
       </div>
     </div>
 
-    <!-- Modal de validation OTP Mobile Money -->
-    <div id="modalOTP" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-amber-500/30 shadow-2xl space-y-4 text-center">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 002-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-        </div>
-        <h3 class="text-lg font-bold text-white">Confirmation Mobile Money</h3>
-        <p class="text-xs text-slate-300 leading-relaxed">
-          Un code d'autorisation/OTP a été envoyé sur votre téléphone. Veuillez le saisir ci-dessous pour valider le débit Mobile Money.
-        </p>
-        <input type="text" id="inputCodeOTP" maxlength="8" placeholder="Entrez le code OTP reçu par SMS" class="w-full text-center tracking-widest text-base font-bold bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-white focus:outline-none">
-        <div class="flex gap-3 pt-2">
-          <button type="button" onclick="fermerModalOTP()" class="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700">Annuler</button>
-          <button type="button" id="btnValiderOTP" onclick="confirmerCodeOTP()" class="w-1/2 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl shadow-lg">Valider le paiement</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Grille produit -->
+    <!-- Grille produit dynamique -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      <!-- Visuel Produit -->
+      <!-- Section Visuel Produit & Documents -->
       <div class="lg:col-span-7 space-y-6">
         <div class="glass-card rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl space-y-4">
-          <div id="mediaContainer" class="relative rounded-2xl bg-slate-900 border border-slate-800/80 overflow-hidden flex items-center justify-center min-h-[250px] max-h-[600px] h-auto w-full">
+          
+          <!-- Conteneur Média Dynamique -->
+          <div id="mediaContainer" class="relative rounded-2xl bg-slate-900 border border-slate-800/80 overflow-hidden flex items-center justify-center min-h-[300px] max-h-[550px] w-full">
+            
+            <!-- Loader -->
             <div id="loaderMedia" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 z-10">
               <div class="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mb-2"></div>
               <span class="text-xs text-slate-400 font-medium">Chargement du visuel...</span>
             </div>
+
+            <!-- Arrière-plan flouté pour images -->
             <img id="produitImageBg" src="" alt="" class="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-30 pointer-events-none hidden">
-            <img id="produitImage" src="" alt="Photo Produit" class="relative z-1 w-full h-auto max-h-[550px] object-contain rounded-xl hidden transition-all duration-300">
-            <video id="produitVideo" src="" class="relative z-1 w-full h-auto max-h-[550px] object-contain rounded-xl hidden" controls autoplay loop muted></video>
+
+            <!-- Image Principale -->
+            <img id="produitImage" src="" alt="Photo Produit" class="relative z-1 w-full h-full object-contain max-h-[500px] rounded-xl hidden transition-all duration-300">
+            
+            <!-- Vidéo Principale -->
+            <video id="produitVideo" class="relative z-1 w-full h-full object-contain max-h-[500px] rounded-xl hidden" controls playsinline preload="auto"></video>
           </div>
 
-          <div id="sectionRessources" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-amber-500/20 space-y-2">
+          <!-- Section Documents / Ressources / Cours associés -->
+          <div id="sectionRessources" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-amber-500/20 space-y-3">
             <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              Ressources & Documents Associés
+              Ressources & Accès au Contenu
             </h4>
-            <p id="ressourceNotice" class="text-[11px] text-slate-400">Ce produit inclut un accès à des supports PDF/Cours vidéos exclusifs après confirmation.</p>
-            <a id="lienRessource" href="#" target="_blank" class="inline-flex items-center space-x-2 text-xs font-bold text-amber-400 hover:underline pt-1">
-              <span>Consulter l'aperçu du document/cours</span>
-            </a>
+            <p id="ressourceNotice" class="text-[11px] text-slate-400">Ce produit inclut un fichier PDF, un document explicatif ou une vidéo intégrale.</p>
+            
+            <div id="zoneApercuAvantPaiement" class="flex flex-wrap gap-3 items-center">
+              <a id="lienRessource" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 text-xs font-bold text-amber-400 hover:underline bg-amber-400/10 px-3 py-2 rounded-xl border border-amber-400/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                <span>Ouvrir dans un Onglet</span>
+              </a>
+
+              <button type="button" id="btnApercuIntegre" onclick="basculerVisionneuseDocument()" class="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Aperçu sur la Page</span>
+              </button>
+            </div>
+
+            <!-- Visionneuse PDF / Document Intégrée -->
+            <div id="conteneurVisionneuse" class="hidden mt-3 rounded-xl border border-slate-800 overflow-hidden bg-slate-950">
+              <iframe id="iframeDocument" class="w-full h-[400px] border-0" src="" allow="autoplay"></iframe>
+            </div>
+
+            <!-- Zone de Téléchargement Débloquée après Paiement -->
             <div id="zoneTelechargementApresPaiement" class="hidden pt-2">
               <a id="btnTelechargerDocument" href="#" download target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all">
-                <span>Télécharger le Document / Accéder au Cours Complet</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span id="labelBoutonTelechargement">Télécharger le Fichier</span>
               </a>
             </div>
           </div>
+
+          <!-- Badges de réassurance -->
+          <div class="grid grid-cols-3 gap-2 pt-2 text-center text-[10px] text-slate-400 border-t border-slate-800/60">
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Accès Instantané</span>
+              <span>Téléchargement Immédiat</span>
+            </div>
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Paiement Sécurisé</span>
+              <span>MoMo, Moov & Cartes</span>
+            </div>
+            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
+              <span class="block font-bold text-slate-200">Garantie Qualité</span>
+              <span>100% Authentique</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Détails et Formulaire -->
+      <!-- Section Détails & Formulaire de Commande -->
       <div class="lg:col-span-5 space-y-6">
+        
         <div class="glass-card rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-6">
+          
+          <!-- Titre & Prix -->
           <div class="space-y-3 border-b border-slate-800 pb-5">
-            <span class="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full inline-block">Article vérifié DAKPROÉLITE</span>
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span id="badgePro" class="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">Article vérifié DAKPROÉLITE</span>
+              <span id="affiliateBadge" class="hidden text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">Lien Affilié</span>
+            </div>
+
             <h1 id="produitNom" class="text-xl sm:text-2xl font-extrabold text-white leading-snug">Chargement de l'article...</h1>
+            
             <div class="flex items-baseline gap-3 pt-1">
               <span id="prixPromo" class="text-2xl font-black text-amber-400">0 FCFA</span>
               <span id="prixNormal" class="text-sm font-semibold text-slate-500 line-through">0 FCFA</span>
+              <span id="badgeRemise" class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg">PROMO</span>
             </div>
           </div>
 
+          <!-- Description -->
           <div class="space-y-2">
             <h3 class="text-xs font-bold uppercase text-slate-300 tracking-wider">Description de l'offre</h3>
-            <div id="produitDescription" class="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-pre-line">Chargement...</div>
+            <p id="produitDescription" class="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-pre-line">Chargement de la description du produit...</p>
           </div>
 
-          <div id="blocQuantitePanier" class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-300">Quantité :</span>
-              <div class="flex items-center space-x-3 bg-slate-950 border border-slate-700 rounded-xl p-1">
-                <button type="button" onclick="modifierQuantite(-1)" class="w-8 h-8 rounded-lg bg-slate-800 text-amber-400 font-extrabold">-</button>
-                <span id="quantitePanier" class="text-sm font-extrabold text-white px-2">1</span>
-                <button type="button" onclick="modifierQuantite(1)" class="w-8 h-8 rounded-lg bg-slate-800 text-amber-400 font-extrabold">+</button>
-              </div>
+          <!-- Notice explicative -->
+          <div id="noticeLivraison" class="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-start space-x-3">
+            <div class="text-amber-400 shrink-0 mt-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-              <span class="text-xs font-bold text-slate-400">Montant Total :</span>
-              <span id="montantTotalCalcul" class="text-base font-black text-amber-400">0 FCFA</span>
+            <div class="text-xs text-slate-300 leading-relaxed">
+              <strong class="text-amber-400 block font-bold">Accès & Téléchargement :</strong>
+              Remplissez les informations ci-dessous. Réglez par Mobile Money/Carte via <span class="text-amber-400 font-bold">FedaPay</span> pour débloquer votre vidéo ou document immédiatement.
             </div>
           </div>
 
-          <!-- Formulaire Coordonnées -->
+          <!-- Formulaire de Livraison -->
           <div id="formulaireLivraison" class="space-y-4 pt-2 border-t border-slate-800">
+            <h3 class="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5 tracking-wider">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+              Informations du Client
+            </h3>
+
+            <!-- Nom & Prénom -->
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">Nom et Prénom *</label>
-              <input type="text" id="clientNom" placeholder="Ex: Jean Marc" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+              <input type="text" id="clientNom" placeholder="Ex: Marc Agbovon" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
             </div>
+
+            <!-- Email -->
             <div>
-              <label class="block text-[11px] font-bold text-slate-400 mb-1">Numéro Téléphone (MoMo / WhatsApp) *</label>
-              <input type="tel" id="clientTelephone" placeholder="Ex: +229 01 00 00 00" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Adresse Email *</label>
+              <input type="email" id="clientEmail" placeholder="Ex: client@email.com" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">Pays *</label>
-                <input type="text" id="clientPays" value="Bénin" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">Ville *</label>
-                <input type="text" id="clientVille" placeholder="Cotonou" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
-              </div>
+
+            <!-- Téléphone -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Numéro de Téléphone (MoMo / WhatsApp) *</label>
+              <input type="tel" id="clientTelephone" placeholder="Ex: +229 01 00 00 00" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
             </div>
-            <div class="grid grid-cols-2 gap-3">
+
+            <!-- Date & Adresse -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">Date de livraison *</label>
-                <input type="date" id="clientDateLivraison" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">Date *</label>
+                <input type="date" id="clientDateLivraison" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-all">
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">Adresse complète *</label>
-                <input type="text" id="clientAdresse" placeholder="Quartier, Maison..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">Ville / Adresse *</label>
+                <input type="text" id="clientAdresse" placeholder="Ex: Cotonou" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
               </div>
             </div>
           </div>
 
-          <!-- Boutons -->
-          <div id="zoneBoutonsActions" class="space-y-3 pt-2">
-            <button type="button" id="btnPayDunya" onclick="procederPaiementPayDunya()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all">
-              Payer Maintenant (MoMo / Cartes)
+          <!-- Boutons d'actions -->
+          <div id="zoneBoutonsActions" class="space-y-3 pt-3">
+            
+            <!-- Bouton FedaPay -->
+            <button type="button" id="btnPaiementFedaPay" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span>Payer en Ligne & Télécharger Immédiatement</span>
             </button>
-            <button type="button" onclick="commanderWhatsApp()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl active:scale-95 transition-all">
-              Commander via WhatsApp (Payer à la livraison)
+
+            <!-- Bouton WhatsApp -->
+            <button type="button" id="btnCommandeWhatsApp" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-emerald-600/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+              <span>Commander via WhatsApp</span>
             </button>
+
           </div>
 
         </div>
+
       </div>
 
     </div>
+
   </main>
 
-  <!-- Script Firebase v10 & Enregistrement Realtime Database -->
+  <!-- Module Firebase & Logique Applicative -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Configuration Firebase DAKPROELITE
+    const FEDAPAY_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
+
     const firebaseConfig = {
       apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
@@ -215,17 +268,9 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const auth = getAuth(app);
 
     window.produitCourant = null;
-    window.quantitePanierCount = 1;
-    window.produitIdCourant = null;
-    window.currentUserUID = "ANONYMOUS_USER";
-    window.pendingPaymentData = null;
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.currentUserUID = user.uid;
-    });
+    window.affiliateId = null;
 
     function afficherToast(msg) {
       const toast = document.getElementById('toastNotification');
@@ -234,98 +279,53 @@
       setTimeout(() => { toast.classList.add('hidden'); }, 3500);
     }
 
-    window.modifierQuantite = function(delta) {
-      window.quantitePanierCount += delta;
-      if (window.quantitePanierCount < 1) window.quantitePanierCount = 1;
-      document.getElementById('quantitePanier').innerText = window.quantitePanierCount;
-      calculerTotal();
-    };
+    // Basculer l'affichage de la visionneuse de document intégrée
+    window.basculerVisionneuseDocument = function() {
+      const conteneur = document.getElementById('conteneurVisionneuse');
+      const iframe = document.getElementById('iframeDocument');
+      const docUrl = window.produitCourant?.documentUrl || window.produitCourant?.coursUrl || window.produitCourant?.fileUrl || window.produitCourant?.videoUrl;
 
-    function calculerTotal() {
-      if (!window.produitCourant) return;
-      const unitaire = window.produitCourant.prixPromo || window.produitCourant.prix || 0;
-      const total = unitaire * window.quantitePanierCount;
-      document.getElementById('montantTotalCalcul').innerText = `${Number(total).toLocaleString('fr-FR')} FCFA`;
-    }
-
-    function viderPanier() {
-      window.quantitePanierCount = 0;
-      document.getElementById('quantitePanier').innerText = "0";
-      document.getElementById('montantTotalCalcul').innerText = "0 FCFA";
-      document.getElementById('blocQuantitePanier')?.classList.add('hidden');
-      document.getElementById('formulaireLivraison')?.classList.add('hidden');
-      document.getElementById('zoneBoutonsActions')?.classList.add('hidden');
-    }
-
-    // TRANSMISSION ET ENREGISTREMENT SYNC DANS TOUTES LES TABLES DE LA DATABASE
-    async function enregistrerPaiementEtNotifications(clientData, transactionId, unitaire, totalMontant) {
-      const timestamp = Date.now();
-      const txKey = transactionId || ("TX-" + Math.floor(10000000 + Math.random() * 90000000));
-      const p = window.produitCourant || {};
-      const prodId = window.produitIdCourant || "PROD-DEFAULT";
-
-      const payloadTransaction = {
-        client: clientData,
-        parrain: p.parrain || "aucun",
-        prixUnitaire: unitaire,
-        produitId: prodId,
-        produitNom: p.nom || "Produit DAKPROELITE",
-        quantite: window.quantitePanierCount || 1,
-        statut: "Succès",
-        timestamp: timestamp,
-        total: String(totalMontant),
-        uid: window.currentUserUID
-      };
-
-      try {
-        // Enregistrement simultané aux différents chemins requis
-        await set(ref(db, `transactions/${txKey}`), payloadTransaction);
-        await set(ref(db, `paiement/${txKey}`), payloadTransaction);
-        await set(ref(db, `paiements/${txKey}`), payloadTransaction);
-
-        // Notification de l'utilisateur
-        await set(push(ref(db, `notifications_utilisateurs/${window.currentUserUID}`)), {
-          titre: "Paiement Confirmé !",
-          message: `Votre commande pour "${p.nom || 'Produit'}" (${totalMontant.toLocaleString('fr-FR')} FCFA) a été validée.`,
-          date: new Date().toISOString(),
-          timestamp: timestamp,
-          lu: false,
-          type: "commande_succes",
-          transactionId: txKey
-        });
-
-        // Envoi au support / administrateur
-        await set(push(ref(db, "messages_support")), {
-          titre: "Nouvelle Commande Payée",
-          message: `Client: ${clientData.nom} (${clientData.tel}) - Produit: ${p.nom} - Total: ${totalMontant} FCFA`,
-          client: clientData,
-          transactionId: txKey,
-          timestamp: timestamp,
-          type: "nouvelle_commande"
-        });
-
-        afficherToast("Transaction enregistrée en base de données avec succès !");
-      } catch (err) {
-        console.error("Erreur écriture Firebase Realtime Database :", err);
-        afficherToast("Erreur lors de la sauvegarde dans la base de données.");
+      if (!docUrl) {
+        afficherToast("Aucun document associé à visualiser.");
+        return;
       }
-    }
+
+      if (conteneur.classList.contains('hidden')) {
+        if (docUrl.toLowerCase().endsWith('.pdf') || docUrl.includes('drive.google.com') || docUrl.includes('firebase')) {
+          iframe.src = `https://docs.google.com/gview?url=${encodeURIComponent(docUrl)}&embedded=true`;
+        } else {
+          iframe.src = docUrl;
+        }
+        conteneur.classList.remove('hidden');
+      } else {
+        conteneur.classList.add('hidden');
+        iframe.src = '';
+      }
+    };
 
     async function chargerProduitDynamique() {
       const urlParams = new URLSearchParams(window.location.search);
       const produitId = urlParams.get('id');
-      window.produitIdCourant = produitId;
+      const paymentStatus = urlParams.get('status') || urlParams.get('fedapay_status');
+      
+      window.affiliateId = urlParams.get('ref') || urlParams.get('aff') || urlParams.get('affiliate');
+      if (window.affiliateId) {
+        document.getElementById('affiliateBadge')?.classList.remove('hidden');
+      }
 
       if (!produitId) {
         window.produitCourant = {
           nom: "Chaussure Italienne en Cuir Véritable",
-          description: "Découvrez l'élégance artisanale italienne.",
+          description: "Découvrez l'élégance artisanale italienne avec cette paire en cuir véritable d'exception. Confort optimal et durabilité garantie.",
           prixPromo: 20000,
           prixNormal: 35000,
           imageUrl: "477912.png",
-          whatsappNumero: "2290197455309"
+          mediaType: "image",
+          whatsappNumero: "2290197455309",
+          documentUrl: ""
         };
         afficherDonneesProduit(window.produitCourant);
+        verifierRetourPaiement(paymentStatus);
         return;
       }
 
@@ -334,13 +334,21 @@
         if (snapshot.exists()) {
           window.produitCourant = snapshot.val();
           afficherDonneesProduit(window.produitCourant);
+          verifierRetourPaiement(paymentStatus);
         } else {
-          afficherToast("Article non trouvé. Affichage de l'article par défaut.");
-          window.produitCourant = { nom: "Article DAKPROÉLITE", description: "Non disponible", prixPromo: 0, prixNormal: 0, imageUrl: "477912.png" };
+          afficherToast("Produit introuvable.");
+          window.produitCourant = {
+            nom: "Article DAKPROÉLITE",
+            description: "Description indisponible.",
+            prixPromo: 0,
+            prixNormal: 0,
+            imageUrl: "477912.png"
+          };
           afficherDonneesProduit(window.produitCourant);
         }
       } catch (e) {
-        afficherToast("Erreur de chargement Firebase.");
+        console.error(e);
+        afficherToast("Erreur lors du chargement de l'article.");
       }
     }
 
@@ -354,110 +362,235 @@
       document.getElementById('prixPromo').innerText = `${Number(pPromo).toLocaleString('fr-FR')} FCFA`;
       document.getElementById('prixNormal').innerText = `${Number(pNormal).toLocaleString('fr-FR')} FCFA`;
 
-      calculerTotal();
-
       const loader = document.getElementById('loaderMedia');
       const img = document.getElementById('produitImage');
       const imgBg = document.getElementById('produitImageBg');
+      const video = document.getElementById('produitVideo');
+
+      const mediaUrl = p.videoUrl || p.imageUrl || '477912.png';
       
-      img.src = p.imageUrl || p.image || '477912.png';
-      imgBg.src = img.src;
-      img.onload = () => { loader.classList.add('hidden'); img.classList.remove('hidden'); imgBg.classList.remove('hidden'); };
-      img.onerror = () => { loader.classList.add('hidden'); img.src = '477912.png'; img.classList.remove('hidden'); };
+      const estVideo = p.mediaType === 'video' || (typeof mediaUrl === 'string' && mediaUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i));
+
+      if (estVideo) {
+        img.classList.add('hidden');
+        imgBg.classList.add('hidden');
+        
+        video.src = mediaUrl;
+        video.classList.remove('hidden');
+        
+        video.oncanplay = () => { loader.classList.add('hidden'); };
+        video.onerror = () => {
+          loader.classList.add('hidden');
+          afficherToast("Erreur de chargement de la vidéo.");
+        };
+        setTimeout(() => loader.classList.add('hidden'), 2000);
+      } else {
+        video.classList.add('hidden');
+
+        img.src = mediaUrl;
+        imgBg.src = mediaUrl;
+
+        img.onload = () => {
+          loader.classList.add('hidden');
+          img.classList.remove('hidden');
+          imgBg.classList.remove('hidden');
+        };
+
+        img.onerror = () => {
+          loader.classList.add('hidden');
+          img.src = '477912.png';
+          img.classList.remove('hidden');
+        };
+      }
+
+      // Configuration des liens documents/ressources avant paiement
+      const docLink = p.documentUrl || p.coursUrl || p.fileUrl;
+      if (docLink && docLink.trim() !== '' && docLink !== '#') {
+        const secRes = document.getElementById('sectionRessources');
+        const lienRes = document.getElementById('lienRessource');
+        if (lienRes) lienRes.href = docLink;
+        if (secRes) secRes.classList.remove('hidden');
+      }
+    }
+
+    // FONCTION DE DÉBLOCAGE DES RESSOURCES VIDÉOS & DOCUMENTS APRÈS PAIEMENT
+    function activerAccesRessourcesPayees() {
+      document.getElementById('bannerPaiementSucces')?.classList.remove('hidden');
+      document.getElementById('formulaireLivraison')?.classList.add('hidden');
+      document.getElementById('noticeLivraison')?.classList.add('hidden');
+      document.getElementById('zoneBoutonsActions')?.classList.add('hidden');
+
+      const p = window.produitCourant || {};
+      const ressourceUrl = p.documentUrl || p.coursUrl || p.fileUrl || p.videoUrl;
+      
+      const secRes = document.getElementById('sectionRessources');
+      const zoneDl = document.getElementById('zoneTelechargementApresPaiement');
+      const resNotice = document.getElementById('ressourceNotice');
+      const btnDl = document.getElementById('btnTelechargerDocument');
+      const labelDl = document.getElementById('labelBoutonTelechargement');
+
+      if (secRes) secRes.classList.remove('hidden');
+      if (zoneDl) zoneDl.classList.remove('hidden');
+
+      if (ressourceUrl) {
+        const estVideo = (typeof ressourceUrl === 'string' && ressourceUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i)) || p.mediaType === 'video';
+        
+        if (btnDl) {
+          btnDl.href = ressourceUrl;
+          btnDl.setAttribute('download', p.nom || 'ressource');
+          
+          if (labelDl) {
+            labelDl.innerText = estVideo ? "Télécharger la Vidéo Complète" : "Télécharger le Document Complet";
+          }
+        }
+
+        if (resNotice) {
+          resNotice.innerText = estVideo 
+            ? "Accès débloqué ! Vous pouvez visionner ou télécharger votre vidéo ci-dessous." 
+            : "Accès débloqué ! Vous pouvez consulter et télécharger votre document ci-dessous.";
+        }
+
+        // Si c'est une vidéo payée, afficher directement le lecteur vidéo débloqué
+        if (estVideo) {
+          const videoElem = document.getElementById('produitVideo');
+          if (videoElem) {
+            videoElem.src = ressourceUrl;
+            videoElem.classList.remove('hidden');
+            document.getElementById('produitImage')?.classList.add('hidden');
+            document.getElementById('produitImageBg')?.classList.add('hidden');
+          }
+        }
+      } else {
+        if (resNotice) {
+          resNotice.innerText = "Paiement confirmé. Notre équipe prendra contact avec vous pour acheminer votre commande.";
+        }
+      }
+    }
+
+    function verifierRetourPaiement(status) {
+      if (status === 'approved' || status === 'success' || status === 'completed') {
+        afficherToast("Paiement validé !");
+        activerAccesRessourcesPayees();
+      }
     }
 
     function validerFormulaire() {
       const nom = document.getElementById('clientNom').value.trim();
+      const email = document.getElementById('clientEmail').value.trim();
       const tel = document.getElementById('clientTelephone').value.trim();
-      const pays = document.getElementById('clientPays').value.trim();
-      const ville = document.getElementById('clientVille').value.trim();
       const date = document.getElementById('clientDateLivraison').value;
       const adresse = document.getElementById('clientAdresse').value.trim();
 
-      if (!nom || !tel || !pays || !ville || !date || !adresse) {
+      if (!nom || !email || !tel || !date || !adresse) {
         afficherToast("Veuillez remplir tous les champs du formulaire !");
         return null;
       }
-      return { nom, tel, pays, ville, date, adresse };
+
+      return { nom, email, tel, date, adresse };
     }
 
-    window.commanderWhatsApp = function() {
+    async function enregistrerCommandeFirebase(client, modePaiement, statutPaiement = 'en_attente') {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const produitId = urlParams.get('id') || 'defaut';
+
+        const commandeRef = ref(db, 'commandes');
+        const nouvelleCommandeRef = push(commandeRef);
+
+        await set(nouvelleCommandeRef, {
+          commandeId: nouvelleCommandeRef.key,
+          produitId: produitId,
+          produitNom: window.produitCourant?.nom || 'Article',
+          montant: window.produitCourant?.prixPromo || window.produitCourant?.prix || 0,
+          client: client,
+          modePaiement: modePaiement,
+          statutPaiement: statutPaiement,
+          affiliateId: window.affiliateId || null,
+          dateCreation: new Date().toISOString()
+        });
+      } catch (err) {
+        console.error("Erreur d'enregistrement de la commande :", err);
+      }
+    }
+
+    window.procederPaiementFedaPay = async function() {
       const client = validerFormulaire();
       if (!client) return;
 
       const p = window.produitCourant || {};
-      const numWhatsApp = p.whatsappNumero || "2290197455309";
+      const montant = p.prixPromo || p.prix || 2000;
+
+      await enregistrerCommandeFirebase(client, 'FedaPay', 'initie');
+
+      if (typeof FedaPay !== 'undefined') {
+        let widget = FedaPay.init({
+          public_key: FEDAPAY_PUBLIC_KEY,
+          transaction: {
+            amount: parseInt(montant),
+            description: `Achat - ${p.nom || 'Article DAKPROÉLITE'}`,
+            custom_metadata: {
+              client_nom: client.nom,
+              client_tel: client.tel,
+              client_adresse: client.adresse,
+              affiliate_id: window.affiliateId || 'direct'
+            }
+          },
+          customer: {
+            email: client.email,
+            lastname: client.nom,
+            phone_number: {
+              number: client.tel.replace(/[^0-9+]/g, '')
+            }
+          },
+          onComplete: function(response) {
+            if (response && (response.reason === FedaPay.CHECKOUT_COMPLETED || response.status === 'approved')) {
+              afficherToast("Paiement réussi !");
+              enregistrerCommandeFirebase(client, 'FedaPay', 'paye');
+              activerAccesRessourcesPayees();
+            } else {
+              afficherToast("Paiement annulé ou non finalisé.");
+            }
+          }
+        });
+
+        widget.open();
+      } else {
+        afficherToast("Impossible d'initialiser FedaPay.");
+      }
+    };
+
+    window.commanderWhatsApp = async function() {
+      const client = validerFormulaire();
+      if (!client) return;
+
+      const p = window.produitCourant || {};
+      const numWhatsApp = p.whatsappNumero || p.vendeurTelephone || "2290197455309";
       const numeroPropre = numWhatsApp.replace(/[^0-9]/g, '');
 
-      const unitaire = p.prixPromo || p.prix || 0;
-      const total = unitaire * window.quantitePanierCount;
+      await enregistrerCommandeFirebase(client, 'WhatsApp (Paiement livraison)', 'en_attente');
 
       const message = `Bonjour ! Je souhaite commander cet article :
 
 📌 *Article* : ${p.nom || 'Produit DAKPROELITE'}
-🔢 *Quantité* : ${window.quantitePanierCount}
-💰 *Prix Total* : ${total.toLocaleString('fr-FR')} FCFA
-
+💰 *Prix Promo* : ${p.prixPromo || p.prix || 0} FCFA
+${window.affiliateId ? `🔗 *Réf. Affilié* : ${window.affiliateId}\n` : ''}
 👤 *Nom & Prénom* : ${client.nom}
-📞 *Téléphone* : ${client.tel}
-🌍 *Pays / Ville* : ${client.pays}, ${client.ville}
-📅 *Date de livraison* : ${client.date}
-📍 *Adresse complète* : ${client.adresse}`;
+✉️ *Email* : ${client.email}
+📞 *Téléphone Client* : ${client.tel}
+📅 *Date souhaitée* : ${client.date}
+📍 *Adresse / Ville* : ${client.adresse}`;
 
-      window.open(`https://wa.me/${numeroPropre}?text=${encodeURIComponent(message)}`, '_blank');
+      const urlWhatsApp = `https://wa.me/${numeroPropre}?text=${encodeURIComponent(message)}`;
+      window.open(urlWhatsApp, '_blank');
     };
 
-    // DÉCLENCHEMENT DE L'ENVOI DU CODE ET OUVERTURE DE LA MODALE OTP
-    window.procederPaiementPayDunya = function() {
-      const client = validerFormulaire();
-      if (!client) return;
+    // Écouteurs d'événements au chargement du DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      chargerProduitDynamique();
 
-      const p = window.produitCourant || {};
-      const unitaire = p.prixPromo || p.prix || 2000;
-      const totalMontant = unitaire * window.quantitePanierCount;
-      const transactionId = "TX-" + Math.floor(10000000 + Math.random() * 90000000);
-
-      window.pendingPaymentData = { client, transactionId, unitaire, totalMontant };
-
-      afficherToast(`Code de confirmation envoyé sur le ${client.tel}`);
-      document.getElementById('modalOTP').classList.remove('hidden');
-    };
-
-    window.fermerModalOTP = function() {
-      document.getElementById('modalOTP').classList.add('hidden');
-    };
-
-    // VALIDATION DU CODE OTP ET ENVOI IMMÉDIAT DANS LA BASE REALTIME DATABASE
-    window.confirmerCodeOTP = async function() {
-      const codeInput = document.getElementById('inputCodeOTP').value.trim();
-
-      if (!codeInput || codeInput.length < 4) {
-        afficherToast("Veuillez saisir un code OTP valide.");
-        return;
-      }
-
-      const btnValider = document.getElementById('btnValiderOTP');
-      btnValider.disabled = true;
-      btnValider.innerText = "Validation...";
-
-      if (window.pendingPaymentData) {
-        const { client, transactionId, unitaire, totalMontant } = window.pendingPaymentData;
-
-        // Transmission directe à Firebase Realtime Database
-        await enregistrerPaiementEtNotifications(client, transactionId, unitaire, totalMontant);
-
-        fermerModalOTP();
-        document.getElementById('bannerPaiementSucces').classList.remove('hidden');
-        document.getElementById('sectionRessources').classList.remove('hidden');
-        document.getElementById('zoneTelechargementApresPaiement').classList.remove('hidden');
-        viderPanier();
-      }
-
-      btnValider.disabled = false;
-      btnValider.innerText = "Valider le paiement";
-    };
-
-    window.addEventListener('DOMContentLoaded', chargerProduitDynamique);
+      document.getElementById('btnPaiementFedaPay')?.addEventListener('click', window.procederPaiementFedaPay);
+      document.getElementById('btnCommandeWhatsApp')?.addEventListener('click', window.commanderWhatsApp);
+    });
   </script>
 
 </body>
