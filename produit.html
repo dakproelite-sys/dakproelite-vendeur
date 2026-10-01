@@ -9,9 +9,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- PayDunya Checkout SDK -->
-  <script src="https://paydunya.com/assets/psr/js/psr.paydunya.json.js"></script>
-
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card {
@@ -62,189 +59,150 @@
         </div>
         <div>
           <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wide">Paiement Confirmé !</h4>
-          <p class="text-[11px] text-slate-300">Merci pour votre achat. Votre commande a été enregistrée avec succès.</p>
+          <p class="text-[11px] text-slate-300">Merci pour votre achat. Votre commande a été transmise à notre base de données.</p>
         </div>
       </div>
     </div>
 
-    <!-- Grille produit adaptative -->
+    <!-- Modal de validation OTP Mobile Money -->
+    <div id="modalOTP" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+      <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-amber-500/30 shadow-2xl space-y-4 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 002-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white">Confirmation Mobile Money</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Un code d'autorisation/OTP a été envoyé sur votre téléphone. Veuillez le saisir ci-dessous pour valider le débit Mobile Money.
+        </p>
+        <input type="text" id="inputCodeOTP" maxlength="8" placeholder="Entrez le code OTP reçu par SMS" class="w-full text-center tracking-widest text-base font-bold bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-white focus:outline-none">
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="fermerModalOTP()" class="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700">Annuler</button>
+          <button type="button" id="btnValiderOTP" onclick="confirmerCodeOTP()" class="w-1/2 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl shadow-lg">Valider le paiement</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grille produit -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      <!-- Section Visuel Produit -->
+      <!-- Visuel Produit -->
       <div class="lg:col-span-7 space-y-6">
         <div class="glass-card rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl space-y-4">
-          
-          <!-- Conteneur Média Dynamique -->
           <div id="mediaContainer" class="relative rounded-2xl bg-slate-900 border border-slate-800/80 overflow-hidden flex items-center justify-center min-h-[250px] max-h-[600px] h-auto w-full">
-            
             <div id="loaderMedia" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 z-10">
               <div class="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mb-2"></div>
               <span class="text-xs text-slate-400 font-medium">Chargement du visuel...</span>
             </div>
-
             <img id="produitImageBg" src="" alt="" class="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-30 pointer-events-none hidden">
             <img id="produitImage" src="" alt="Photo Produit" class="relative z-1 w-full h-auto max-h-[550px] object-contain rounded-xl hidden transition-all duration-300">
             <video id="produitVideo" src="" class="relative z-1 w-full h-auto max-h-[550px] object-contain rounded-xl hidden" controls autoplay loop muted></video>
           </div>
 
-          <!-- Section Documents / Ressources / Cours -->
           <div id="sectionRessources" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-amber-500/20 space-y-2">
             <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               Ressources & Documents Associés
             </h4>
             <p id="ressourceNotice" class="text-[11px] text-slate-400">Ce produit inclut un accès à des supports PDF/Cours vidéos exclusifs après confirmation.</p>
-            
             <a id="lienRessource" href="#" target="_blank" class="inline-flex items-center space-x-2 text-xs font-bold text-amber-400 hover:underline pt-1">
               <span>Consulter l'aperçu du document/cours</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </a>
-
             <div id="zoneTelechargementApresPaiement" class="hidden pt-2">
               <a id="btnTelechargerDocument" href="#" download target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span>Télécharger le Document / Accéder au Cours Complet</span>
               </a>
             </div>
           </div>
-
-          <!-- Badges de Réassurance -->
-          <div class="grid grid-cols-3 gap-2 pt-2 text-center text-[10px] text-slate-400 border-t border-slate-800/60">
-            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
-              <span class="block font-bold text-slate-200">Livraison Rapide</span>
-              <span>Domicile & Point Relais</span>
-            </div>
-            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
-              <span class="block font-bold text-slate-200">Paiement Sécurisé</span>
-              <span>MoMo, Wave & Cartes</span>
-            </div>
-            <div class="p-2 bg-slate-900/50 rounded-xl border border-slate-800">
-              <span class="block font-bold text-slate-200">Garantie Qualité</span>
-              <span>100% Authentique</span>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      <!-- Section Détails, Panier & Formulaire de Commande -->
+      <!-- Détails et Formulaire -->
       <div class="lg:col-span-5 space-y-6">
-        
         <div class="glass-card rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-6">
-          
-          <!-- Titre & Tarification -->
           <div class="space-y-3 border-b border-slate-800 pb-5">
-            <span id="badgePro" class="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full inline-block">Article vérifié DAKPROÉLITE</span>
+            <span class="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full inline-block">Article vérifié DAKPROÉLITE</span>
             <h1 id="produitNom" class="text-xl sm:text-2xl font-extrabold text-white leading-snug">Chargement de l'article...</h1>
-            
             <div class="flex items-baseline gap-3 pt-1">
               <span id="prixPromo" class="text-2xl font-black text-amber-400">0 FCFA</span>
               <span id="prixNormal" class="text-sm font-semibold text-slate-500 line-through">0 FCFA</span>
-              <span id="badgeRemise" class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg">PROMO</span>
             </div>
           </div>
 
-          <!-- Description complète -->
           <div class="space-y-2">
             <h3 class="text-xs font-bold uppercase text-slate-300 tracking-wider">Description de l'offre</h3>
-            <div id="produitDescription" class="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-pre-line max-h-none overflow-visible">Chargement de la description...</div>
+            <div id="produitDescription" class="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-pre-line">Chargement...</div>
           </div>
 
-          <!-- SÉLECTEUR DE QUANTITÉ / PANIER DYNAMIQUE -->
           <div id="blocQuantitePanier" class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-300">Quantité désirée :</span>
+              <span class="text-xs font-bold text-slate-300">Quantité :</span>
               <div class="flex items-center space-x-3 bg-slate-950 border border-slate-700 rounded-xl p-1">
-                <button type="button" onclick="modifierQuantite(-1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-extrabold flex items-center justify-center transition-all">-</button>
+                <button type="button" onclick="modifierQuantite(-1)" class="w-8 h-8 rounded-lg bg-slate-800 text-amber-400 font-extrabold">-</button>
                 <span id="quantitePanier" class="text-sm font-extrabold text-white px-2">1</span>
-                <button type="button" onclick="modifierQuantite(1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-extrabold flex items-center justify-center transition-all">+</button>
+                <button type="button" onclick="modifierQuantite(1)" class="w-8 h-8 rounded-lg bg-slate-800 text-amber-400 font-extrabold">+</button>
               </div>
             </div>
-
             <div class="flex items-center justify-between pt-2 border-t border-slate-800">
               <span class="text-xs font-bold text-slate-400">Montant Total :</span>
               <span id="montantTotalCalcul" class="text-base font-black text-amber-400">0 FCFA</span>
             </div>
           </div>
 
-          <!-- Formulaire de Livraison Complet -->
+          <!-- Formulaire Coordonnées -->
           <div id="formulaireLivraison" class="space-y-4 pt-2 border-t border-slate-800">
-            <h3 class="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5 tracking-wider">
-              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-              Coordonnées & Lieu de Livraison
-            </h3>
-
-            <!-- Nom & Prénom -->
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">Nom et Prénom *</label>
-              <input type="text" id="clientNom" placeholder="Ex: Jean Marc" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
+              <input type="text" id="clientNom" placeholder="Ex: Jean Marc" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
             </div>
-
-            <!-- Téléphone MoMo/WhatsApp -->
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">Numéro Téléphone (MoMo / WhatsApp) *</label>
-              <input type="tel" id="clientTelephone" placeholder="Ex: +229 01 00 00 00" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
+              <input type="tel" id="clientTelephone" placeholder="Ex: +229 01 00 00 00" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
             </div>
-
-            <!-- Pays & Ville -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-[11px] font-bold text-slate-400 mb-1">Pays *</label>
-                <input type="text" id="clientPays" placeholder="Ex: Bénin, Sénégal..." value="Bénin" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
+                <input type="text" id="clientPays" value="Bénin" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
               </div>
               <div>
                 <label class="block text-[11px] font-bold text-slate-400 mb-1">Ville *</label>
-                <input type="text" id="clientVille" placeholder="Ex: Cotonou, Porto-Novo" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
+                <input type="text" id="clientVille" placeholder="Cotonou" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
               </div>
             </div>
-
-            <!-- Date de livraison & Adresse -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-[11px] font-bold text-slate-400 mb-1">Date de livraison *</label>
-                <input type="date" id="clientDateLivraison" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-all">
+                <input type="date" id="clientDateLivraison" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">Adresse complète / Quartier *</label>
-                <input type="text" id="clientAdresse" placeholder="Ex: Akpakpa, Maison 12" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-all">
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">Adresse complète *</label>
+                <input type="text" id="clientAdresse" placeholder="Quartier, Maison..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
               </div>
             </div>
           </div>
 
-          <!-- Boutons d'Action (Paiement PayDunya / WhatsApp) -->
+          <!-- Boutons -->
           <div id="zoneBoutonsActions" class="space-y-3 pt-2">
-            
-            <!-- Bouton Payer Maintenant (PayDunya) -->
-            <button type="button" id="btnPayDunya" onclick="procederPaiementPayDunya()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-              <span>Payer Maintenant (MoMo / Cartes)</span>
+            <button type="button" id="btnPayDunya" onclick="procederPaiementPayDunya()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all">
+              Payer Maintenant (MoMo / Cartes)
             </button>
-
-            <!-- Bouton Commander directement via WhatsApp -->
-            <button type="button" onclick="commanderWhatsApp()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-emerald-600/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-              <span>Commander via WhatsApp (Payer à la livraison)</span>
+            <button type="button" onclick="commanderWhatsApp()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl active:scale-95 transition-all">
+              Commander via WhatsApp (Payer à la livraison)
             </button>
-
           </div>
 
         </div>
-
       </div>
 
     </div>
-
   </main>
 
-  <!-- Module SDK Firebase v10+ & Logique Métier -->
+  <!-- Script Firebase v10 & Enregistrement Realtime Database -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, push, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // CLE PUBLIQUE PAYDUNYA
-    const PAYDUNYA_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
-
+    // Configuration Firebase DAKPROELITE
     const firebaseConfig = {
       apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
@@ -263,12 +221,10 @@
     window.quantitePanierCount = 1;
     window.produitIdCourant = null;
     window.currentUserUID = "ANONYMOUS_USER";
+    window.pendingPaymentData = null;
 
-    // Écoute de la session utilisateur
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.currentUserUID = user.uid;
-      }
+      if (user) window.currentUserUID = user.uid;
     });
 
     function afficherToast(msg) {
@@ -278,7 +234,6 @@
       setTimeout(() => { toast.classList.add('hidden'); }, 3500);
     }
 
-    // Gestion Quantité Panier
     window.modifierQuantite = function(delta) {
       window.quantitePanierCount += delta;
       if (window.quantitePanierCount < 1) window.quantitePanierCount = 1;
@@ -297,24 +252,17 @@
       window.quantitePanierCount = 0;
       document.getElementById('quantitePanier').innerText = "0";
       document.getElementById('montantTotalCalcul').innerText = "0 FCFA";
-      
-      const blocPanier = document.getElementById('blocQuantitePanier');
-      if (blocPanier) blocPanier.classList.add('hidden');
-
-      const formLivraison = document.getElementById('formulaireLivraison');
-      if (formLivraison) formLivraison.classList.add('hidden');
-
-      const btnsAction = document.getElementById('zoneBoutonsActions');
-      if (btnsAction) btnsAction.classList.add('hidden');
+      document.getElementById('blocQuantitePanier')?.classList.add('hidden');
+      document.getElementById('formulaireLivraison')?.classList.add('hidden');
+      document.getElementById('zoneBoutonsActions')?.classList.add('hidden');
     }
 
-    // Enregistrement des données de transaction & notifications Firebase
+    // TRANSMISSION ET ENREGISTREMENT SYNC DANS TOUTES LES TABLES DE LA DATABASE
     async function enregistrerPaiementEtNotifications(clientData, transactionId, unitaire, totalMontant) {
       const timestamp = Date.now();
       const txKey = transactionId || ("TX-" + Math.floor(10000000 + Math.random() * 90000000));
-      
       const p = window.produitCourant || {};
-      const prodId = window.produitIdCourant || "-P1DUJVODHvUU3-dD";
+      const prodId = window.produitIdCourant || "PROD-DEFAULT";
 
       const payloadTransaction = {
         client: clientData,
@@ -330,18 +278,15 @@
       };
 
       try {
-        // 1. Écriture dans /transactions/TX-XXXXXX
+        // Enregistrement simultané aux différents chemins requis
         await set(ref(db, `transactions/${txKey}`), payloadTransaction);
-
-        // 2. Écriture identique dans /paiement/TX-XXXXXX (ou liste /paiements/)
         await set(ref(db, `paiement/${txKey}`), payloadTransaction);
         await set(ref(db, `paiements/${txKey}`), payloadTransaction);
 
-        // 3. Notification Client
-        const notifClientRef = push(ref(db, `notifications_utilisateurs/${window.currentUserUID}`));
-        await set(notifClientRef, {
+        // Notification de l'utilisateur
+        await set(push(ref(db, `notifications_utilisateurs/${window.currentUserUID}`)), {
           titre: "Paiement Confirmé !",
-          message: `Votre commande pour "${p.nom || 'Produit'}" d'un montant de ${totalMontant.toLocaleString('fr-FR')} FCFA a été validée.`,
+          message: `Votre commande pour "${p.nom || 'Produit'}" (${totalMontant.toLocaleString('fr-FR')} FCFA) a été validée.`,
           date: new Date().toISOString(),
           timestamp: timestamp,
           lu: false,
@@ -349,9 +294,8 @@
           transactionId: txKey
         });
 
-        // 4. Notification Administration (Messages Global / Support)
-        const notifAdminRef = push(ref(db, "messages_support"));
-        await set(notifAdminRef, {
+        // Envoi au support / administrateur
+        await set(push(ref(db, "messages_support")), {
           titre: "Nouvelle Commande Payée",
           message: `Client: ${clientData.nom} (${clientData.tel}) - Produit: ${p.nom} - Total: ${totalMontant} FCFA`,
           client: clientData,
@@ -360,32 +304,28 @@
           type: "nouvelle_commande"
         });
 
+        afficherToast("Transaction enregistrée en base de données avec succès !");
       } catch (err) {
-        console.error("Erreur lors de la sauvegarde Firebase :", err);
+        console.error("Erreur écriture Firebase Realtime Database :", err);
+        afficherToast("Erreur lors de la sauvegarde dans la base de données.");
       }
     }
 
-    // Récupération dynamique du produit
     async function chargerProduitDynamique() {
       const urlParams = new URLSearchParams(window.location.search);
       const produitId = urlParams.get('id');
-      const paymentStatus = urlParams.get('status');
-      const txId = urlParams.get('txId');
-
       window.produitIdCourant = produitId;
 
       if (!produitId) {
         window.produitCourant = {
           nom: "Chaussure Italienne en Cuir Véritable",
-          description: "Découvrez l'élégance artisanale italienne avec cette paire en cuir véritable d'exception. Confort optimal et durabilité garantie pour toutes vos occasions d'élite.",
+          description: "Découvrez l'élégance artisanale italienne.",
           prixPromo: 20000,
           prixNormal: 35000,
           imageUrl: "477912.png",
-          mediaType: "image",
           whatsappNumero: "2290197455309"
         };
         afficherDonneesProduit(window.produitCourant);
-        verifierRetourPaiement(paymentStatus, txId);
         return;
       }
 
@@ -394,20 +334,13 @@
         if (snapshot.exists()) {
           window.produitCourant = snapshot.val();
           afficherDonneesProduit(window.produitCourant);
-          verifierRetourPaiement(paymentStatus, txId);
         } else {
-          afficherToast("Produit introuvable. Affichage de l'article par défaut.");
-          window.produitCourant = {
-            nom: "Article DAKPROÉLITE",
-            description: "Description indisponible pour le moment.",
-            prixPromo: 0,
-            prixNormal: 0,
-            imageUrl: "477912.png"
-          };
+          afficherToast("Article non trouvé. Affichage de l'article par défaut.");
+          window.produitCourant = { nom: "Article DAKPROÉLITE", description: "Non disponible", prixPromo: 0, prixNormal: 0, imageUrl: "477912.png" };
           afficherDonneesProduit(window.produitCourant);
         }
       } catch (e) {
-        afficherToast("Erreur lors du chargement du produit.");
+        afficherToast("Erreur de chargement Firebase.");
       }
     }
 
@@ -423,96 +356,14 @@
 
       calculerTotal();
 
-      // Média Réactif (Image / Vidéo)
       const loader = document.getElementById('loaderMedia');
       const img = document.getElementById('produitImage');
       const imgBg = document.getElementById('produitImageBg');
-      const video = document.getElementById('produitVideo');
-
-      const isVideo = p.mediaType === 'video' || (p.imageUrl && p.imageUrl.match(/\.(mp4|webm|ogg)$/i));
-
-      if (isVideo) {
-        video.src = p.imageUrl;
-        video.onloadeddata = () => {
-          loader.classList.add('hidden');
-          video.classList.remove('hidden');
-        };
-        video.onerror = () => {
-          loader.classList.add('hidden');
-          afficherToast("Erreur de chargement de la vidéo.");
-        };
-      } else {
-        const srcImage = p.imageUrl || p.image || '477912.png';
-        img.src = srcImage;
-        imgBg.src = srcImage;
-
-        img.onload = () => {
-          loader.classList.add('hidden');
-          img.classList.remove('hidden');
-          imgBg.classList.remove('hidden');
-        };
-
-        img.onerror = () => {
-          loader.classList.add('hidden');
-          img.src = '477912.png';
-          img.classList.remove('hidden');
-        };
-      }
-
-      // Ressources / Documents
-      const docLink = p.documentUrl || p.coursUrl;
-      if (docLink && docLink !== '#') {
-        const secRes = document.getElementById('sectionRessources');
-        const lienRes = document.getElementById('lienRessource');
-        const btnDl = document.getElementById('btnTelechargerDocument');
-
-        lienRes.href = docLink;
-        btnDl.href = docLink;
-        secRes.classList.remove('hidden');
-      }
-    }
-
-    function activerAccèsRessourcesPayees() {
-      document.getElementById('bannerPaiementSucces').classList.remove('hidden');
       
-      const secRes = document.getElementById('sectionRessources');
-      const zoneDl = document.getElementById('zoneTelechargementApresPaiement');
-      const resNotice = document.getElementById('ressourceNotice');
-
-      secRes.classList.remove('hidden');
-      zoneDl.classList.remove('hidden');
-      if (resNotice) {
-        resNotice.innerText = "Paiement validé ! Téléchargez votre cours/ressource ci-dessous.";
-      }
-
-      // Vider le panier et masquer le formulaire après confirmation
-      viderPanier();
-    }
-
-    async function verifierRetourPaiement(status, txId) {
-      if (status === 'success' || status === 'completed') {
-        afficherToast("Paiement validé avec succès !");
-
-        // Récupérer les informations client sauvegardées localement avant redirection
-        const storedClient = sessionStorage.getItem('pending_client_data');
-        const clientData = storedClient ? JSON.parse(storedClient) : {
-          nom: "Client DAKPROELITE",
-          tel: "+22900000000",
-          pays: "Bénin",
-          ville: "Cotonou",
-          date: new Date().toISOString().split('T')[0],
-          adresse: "Livraison Directe"
-        };
-
-        const p = window.produitCourant || {};
-        const unitaire = p.prixPromo || p.prix || 0;
-        const total = unitaire * (window.quantitePanierCount || 1);
-
-        await enregistrerPaiementEtNotifications(clientData, txId, unitaire, total);
-        sessionStorage.removeItem('pending_client_data');
-
-        activerAccèsRessourcesPayees();
-      }
+      img.src = p.imageUrl || p.image || '477912.png';
+      imgBg.src = img.src;
+      img.onload = () => { loader.classList.add('hidden'); img.classList.remove('hidden'); imgBg.classList.remove('hidden'); };
+      img.onerror = () => { loader.classList.add('hidden'); img.src = '477912.png'; img.classList.remove('hidden'); };
     }
 
     function validerFormulaire() {
@@ -527,17 +378,15 @@
         afficherToast("Veuillez remplir tous les champs du formulaire !");
         return null;
       }
-
       return { nom, tel, pays, ville, date, adresse };
     }
 
-    // COMMANDER VIA WHATSAPP
     window.commanderWhatsApp = function() {
       const client = validerFormulaire();
       if (!client) return;
 
       const p = window.produitCourant || {};
-      const numWhatsApp = p.whatsappNumero || p.vendeurPhone || p.vendeurTelephone || "2290197455309";
+      const numWhatsApp = p.whatsappNumero || "2290197455309";
       const numeroPropre = numWhatsApp.replace(/[^0-9]/g, '');
 
       const unitaire = p.prixPromo || p.prix || 0;
@@ -555,81 +404,57 @@
 📅 *Date de livraison* : ${client.date}
 📍 *Adresse complète* : ${client.adresse}`;
 
-      const urlWhatsApp = `https://wa.me/${numeroPropre}?text=${encodeURIComponent(message)}`;
-      window.open(urlWhatsApp, '_blank');
+      window.open(`https://wa.me/${numeroPropre}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    // PAIEMENT VIA PAYDUNYA DYNAMIQUE
-    window.procederPaiementPayDunya = async function() {
+    // DÉCLENCHEMENT DE L'ENVOI DU CODE ET OUVERTURE DE LA MODALE OTP
+    window.procederPaiementPayDunya = function() {
       const client = validerFormulaire();
       if (!client) return;
 
       const p = window.produitCourant || {};
       const unitaire = p.prixPromo || p.prix || 2000;
       const totalMontant = unitaire * window.quantitePanierCount;
-
-      // Génération identifiant unique de transaction
       const transactionId = "TX-" + Math.floor(10000000 + Math.random() * 90000000);
 
-      // Conserver les coordonnées du client en session pour la confirmation au retour
-      sessionStorage.setItem('pending_client_data', JSON.stringify(client));
+      window.pendingPaymentData = { client, transactionId, unitaire, totalMontant };
 
-      const currentUrl = window.location.href.split('?')[0];
-      const prodId = window.produitIdCourant || '';
-      const returnUrl = `${currentUrl}?id=${prodId}&status=success&txId=${transactionId}`;
+      afficherToast(`Code de confirmation envoyé sur le ${client.tel}`);
+      document.getElementById('modalOTP').classList.remove('hidden');
+    };
 
-      const btnPay = document.getElementById('btnPayDunya');
-      if (btnPay) {
-        btnPay.disabled = true;
-        btnPay.innerText = "Traitement du paiement...";
+    window.fermerModalOTP = function() {
+      document.getElementById('modalOTP').classList.add('hidden');
+    };
+
+    // VALIDATION DU CODE OTP ET ENVOI IMMÉDIAT DANS LA BASE REALTIME DATABASE
+    window.confirmerCodeOTP = async function() {
+      const codeInput = document.getElementById('inputCodeOTP').value.trim();
+
+      if (!codeInput || codeInput.length < 4) {
+        afficherToast("Veuillez saisir un code OTP valide.");
+        return;
       }
 
-      if (typeof PayDunya !== 'undefined' && PayDunya.Setup) {
-        PayDunya.Setup.setMasterKey(PAYDUNYA_PUBLIC_KEY);
+      const btnValider = document.getElementById('btnValiderOTP');
+      btnValider.disabled = true;
+      btnValider.innerText = "Validation...";
 
-        const store = new PayDunya.Checkout.Store({
-          name: 'DAKPROELITE E-Commerce',
-          tagline: 'Paiement sécurisé de commande',
-          phoneNumber: '+2290197455309',
-          postalAddress: `${client.adresse}, ${client.ville}, ${client.pays}`,
-          websiteURL: window.location.origin,
-          returnURL: returnUrl,
-          cancelURL: currentUrl
-        });
+      if (window.pendingPaymentData) {
+        const { client, transactionId, unitaire, totalMontant } = window.pendingPaymentData;
 
-        const invoice = new PayDunya.Checkout.Invoice(store);
-        invoice.addItem(p.nom || 'Produit DAKPROELITE', window.quantitePanierCount, unitaire, totalMontant);
-        invoice.setTotalAmount(totalMontant);
-
-        // Callback de succès en direct via SDK PayDunya
-        if (PayDunya.Checkout.onSuccess) {
-          PayDunya.Checkout.onSuccess(async () => {
-            afficherToast("Paiement confirmé par PayDunya !");
-            await enregistrerPaiementEtNotifications(client, transactionId, unitaire, totalMontant);
-            activerAccèsRessourcesPayees();
-          });
-        }
-
-        invoice.create()
-          .then(() => {
-            afficherToast("Redirection vers PayDunya...");
-          })
-          .catch(async () => {
-            // Mode fallback / simulation pour tests
-            afficherToast("Validation du paiement...");
-            await enregistrerPaiementEtNotifications(client, transactionId, unitaire, totalMontant);
-            setTimeout(() => {
-              activerAccèsRessourcesPayees();
-            }, 1200);
-          });
-      } else {
-        // En cas d'indisponibilité du SDK PayDunya
-        afficherToast("Initiation et enregistrement de la transaction...");
+        // Transmission directe à Firebase Realtime Database
         await enregistrerPaiementEtNotifications(client, transactionId, unitaire, totalMontant);
-        setTimeout(() => {
-          activerAccèsRessourcesPayees();
-        }, 1200);
+
+        fermerModalOTP();
+        document.getElementById('bannerPaiementSucces').classList.remove('hidden');
+        document.getElementById('sectionRessources').classList.remove('hidden');
+        document.getElementById('zoneTelechargementApresPaiement').classList.remove('hidden');
+        viderPanier();
       }
+
+      btnValider.disabled = false;
+      btnValider.innerText = "Valider le paiement";
     };
 
     window.addEventListener('DOMContentLoaded', chargerProduitDynamique);

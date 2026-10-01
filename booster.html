@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAKPROELITE - Center de Boost Meta Ads Pro</title>
+  <title>DAKPROELITE - Centre de Boost Meta Ads Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- PayDunya Checkout SDK -->
-  <script src="https://paydunya.com/assets/psr/js/psr.paydunya.json.js"></script>
+  <!-- SDK FedaPay Public Key Integration -->
+  <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -31,7 +31,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
 
-  <!-- Header principal avec Logo et Navigation -->
+  <!-- Header principal -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl shadow-black/30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       
@@ -73,14 +73,17 @@
     <!-- En-tête de section -->
     <div class="mb-8 p-6 rounded-3xl bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">Booster Meta Ads (Facebook/Instagram)</span>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Propulsez vos ventes & articles sponsors</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Vos publications boostées apparaîtront instantanément sur le catalogue général <span class="text-amber-400 font-semibold">`index.html`</span> et seront synchronisées sur le nœud Realtime Database <span class="text-amber-400 font-semibold">`publications`</span>.</p>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">Booster Meta Ads (Facebook/Instagram)</span>
+          <span id="badgeAdminRole" class="hidden text-xs font-extrabold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">⚡ Mode Administrateur (Boost Gratuit)</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Propulsez vos ventes & articles sponsorisés</h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1" id="infoTarifLigne">Tarif Vendeur : <span class="text-amber-400 font-bold">2 000 FCFA / 24 Heures</span>. Calculez votre durée personnalisée.</p>
       </div>
       <div class="flex items-center gap-2">
         <div class="text-right hidden sm:block">
           <p class="text-[10px] text-slate-400 uppercase font-bold">Couverture estimée</p>
-          <p class="text-lg font-black text-amber-400" id="couvertureEstimee">15 000 - 45 000 vues</p>
+          <p class="text-lg font-black text-amber-400" id="couvertureEstimee">15 000 - 45 000 vues / jour</p>
         </div>
       </div>
     </div>
@@ -93,8 +96,10 @@
         <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-800 space-y-6">
           <h2 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
             <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            1. Création de la Publication Sponsorisée
+            1. Configuration de l'Annonce
           </h2>
+
+          <input type="hidden" id="selectedProductId" value="">
 
           <!-- Champ Titre -->
           <div>
@@ -111,116 +116,123 @@
           <!-- Sélection du Média -->
           <div>
             <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Média (Photo ou Vidéo) *</label>
-            
             <div class="grid grid-cols-2 gap-3 mb-3">
               <button type="button" id="btnModeFichier" onclick="basculerModeMedia('fichier')" class="py-2.5 px-3 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl transition-all">Téléverser (Galerie)</button>
               <button type="button" id="btnModeUrl" onclick="basculerModeMedia('url')" class="py-2.5 px-3 bg-slate-800 text-slate-300 font-bold text-xs rounded-xl hover:bg-slate-700 transition-all">Lien URL / Affiliation</button>
             </div>
 
-            <!-- Option 1 : Téléversement Fichier -->
             <div id="zoneFichier" class="block">
               <div class="border-2 border-dashed border-slate-700 hover:border-amber-400/50 rounded-2xl p-4 text-center cursor-pointer bg-slate-900/50 transition-all relative">
                 <input type="file" id="inputFichierMedia" accept="image/*,video/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="traiterMediaFichier(this)">
                 <svg class="w-8 h-8 text-amber-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <p class="text-xs font-semibold text-slate-300">Cliquez pour choisir une photo ou vidéo</p>
-                <p class="text-[10px] text-slate-500 mt-1">Compression automatique haute vitesse jusqu'à ~60KB pour chargement instantané</p>
               </div>
             </div>
 
-            <!-- Option 2 : Lien URL -->
             <div id="zoneUrl" class="hidden">
-              <input type="url" id="inputUrlMedia" placeholder="https://votre-site.com/image.jpg ou lien vidéo" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all" oninput="mettreAJourAperçuUrl(this.value)">
+              <input type="url" id="inputUrlMedia" placeholder="https://votre-site.com/image.jpg" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all" oninput="mettreAJourAperçuUrl(this.value)">
             </div>
           </div>
 
-          <!-- Tarification et Durée -->
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Choisir la durée du Boost Meta *</label>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div onclick="selectionnerPlan(2000, 3, this)" class="plan-card p-4 rounded-2xl border-2 border-amber-400 bg-amber-500/10 cursor-pointer text-center transition-all">
-                <span class="text-[10px] font-black uppercase text-amber-400 block">Populaire</span>
-                <span class="text-lg font-black text-white">2 000 FCFA</span>
-                <span class="text-xs text-slate-400 block font-semibold">Durée : 3 Jours</span>
+          <!-- Section Durée & Calculateur Automatique -->
+          <div class="space-y-4 pt-2 border-t border-slate-800">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold uppercase text-slate-300">2. Choisir ou Saisir la Durée du Boost *</label>
+              <span id="badgeTarifTranche" class="text-[11px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full">2 000 FCFA = 24H</span>
+            </div>
+
+            <!-- Raccourcis Rapides -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <button type="button" onclick="definirDureeParJours(1, this)" class="btn-duree p-2.5 rounded-xl border border-amber-400 bg-amber-500/10 text-white font-bold text-xs transition-all text-center">1 Jour<br><span class="text-[10px] text-slate-400">24h</span></button>
+              <button type="button" onclick="definirDureeParJours(3, this)" class="btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center">3 Jours<br><span class="text-[10px] text-slate-400">72h</span></button>
+              <button type="button" onclick="definirDureeParJours(7, this)" class="btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center">7 Jours<br><span class="text-[10px] text-slate-400">168h</span></button>
+              <button type="button" onclick="definirDureeParJours(30, this)" class="btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center">1 Mois<br><span class="text-[10px] text-slate-400">720h</span></button>
+              <button type="button" onclick="definirDureeParJours(365, this)" class="btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center col-span-2 sm:col-span-1">1 An<br><span class="text-[10px] text-slate-400">8760h</span></button>
+            </div>
+
+            <!-- Champ de Saisie Personnalisée (Jours) -->
+            <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-3">
+              <div class="flex items-center justify-between gap-4">
+                <label class="text-xs font-semibold text-slate-300">Nombre de jours personnalisé (Max 3 650 jours) :</label>
+                <div class="flex items-center space-x-2">
+                  <input type="number" id="inputJoursCustom" min="1" max="3650" value="1" oninput="calculerViaSaisieDirecte(this.value)" class="w-24 bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-3 py-2 text-center text-sm font-bold text-amber-400 focus:outline-none">
+                  <span class="text-xs font-bold text-slate-400">Jours</span>
+                </div>
               </div>
-              <div onclick="selectionnerPlan(4000, 6, this)" class="plan-card p-4 rounded-2xl border border-slate-700 bg-slate-900 cursor-pointer text-center transition-all hover:border-amber-400/50">
-                <span class="text-[10px] font-black uppercase text-emerald-400 block">+60% Vues</span>
-                <span class="text-lg font-black text-white">4 000 FCFA</span>
-                <span class="text-xs text-slate-400 block font-semibold">Durée : 6 Jours</span>
-              </div>
-              <div onclick="selectionnerPlan(7000, 10, this)" class="plan-card p-4 rounded-2xl border border-slate-700 bg-slate-900 cursor-pointer text-center transition-all hover:border-amber-400/50">
-                <span class="text-[10px] font-black uppercase text-purple-400 block">Max Impact</span>
-                <span class="text-lg font-black text-white">7 000 FCFA</span>
-                <span class="text-xs text-slate-400 block font-semibold">Durée : 10 Jours</span>
+
+              <!-- Récapitulatif Dynamique de Calcul -->
+              <div class="pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span class="text-slate-400 block">Nombre total d'heures :</span>
+                  <span id="labelHeuresTotales" class="font-extrabold text-white">24 Heures</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-slate-400 block">Date de fin estimée :</span>
+                  <span id="labelDateFin" class="font-bold text-emerald-400">--/--/----</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Moyen de paiement -->
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Moyen de paiement sécurisé (PayDunya) *</label>
-            <select id="moyenPaiement" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none font-semibold">
-              <option value="momo">MTN Mobile Money / Moov Money / Wave / CB (via PayDunya)</option>
-            </select>
-          </div>
-
-          <!-- Bouton de Lancement du Boost -->
-          <button type="button" id="btnPayerEtBooster" onclick="lancerBoostMetadads()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
+          <!-- Bouton PayNow / Boost Admin -->
+          <button type="button" id="btnPayerEtBooster" onclick="initierPaiementEtBoost()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center space-x-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            <span>Confirmer & Activer le Boost Meta</span>
+            <span id="texteBtnAction">Payer Maintenant (<span id="montantBouton">2 000</span> FCFA) & Booster</span>
           </button>
 
         </div>
       </div>
 
-      <!-- Aperçu en Temps Réel & Liste des Boosts Actifs -->
+      <!-- Section Droite: Aperçu & Produits Firebase -->
       <div class="lg:col-span-5 space-y-6">
         
         <!-- Aperçu Simulateur Meta Ads -->
         <div class="glass-card rounded-3xl p-5 border border-slate-800 shadow-xl">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
             <span class="text-xs font-bold uppercase text-slate-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aperçu de la Publication Boostée
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aperçu Publicitaire
             </span>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">Sponsorisé</span>
           </div>
 
-          <!-- Card de Démonstration -->
           <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-inner">
             <div class="p-3 flex items-center space-x-3 border-b border-slate-800/60">
               <div class="w-8 h-8 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-xs">DP</div>
               <div>
-                <h4 class="text-xs font-bold text-white">DAKPROÉLITE Official</h4>
+                <h4 class="text-xs font-bold text-white" id="vendeurNomApercu">DAKPROÉLITE Official</h4>
                 <p class="text-[9px] text-slate-400">Sponsorisé · Publicité Meta</p>
               </div>
             </div>
 
-            <!-- Visualiseur Média -->
             <div id="aperçuMédiaContainer" class="relative h-48 bg-slate-950 flex items-center justify-center overflow-hidden">
-              <span id="aperçuPlaceholder" class="text-xs text-slate-500">Aperçu du média (Photo/Vidéo)</span>
+              <span id="aperçuPlaceholder" class="text-xs text-slate-500">Aperçu du média</span>
               <img id="aperçuImage" src="" alt="" class="hidden w-full h-full object-cover">
               <video id="aperçuVideo" src="" class="hidden w-full h-full object-cover" autoplay loop muted></video>
             </div>
 
             <div class="p-3.5 space-y-2">
               <h3 id="aperçuTitre" class="text-sm font-bold text-white truncate">Titre de votre article...</h3>
-              <p id="aperçuDescription" class="text-xs text-slate-400 line-clamp-2 leading-relaxed">Description sponsorisée de votre produit...</p>
-              <div class="pt-2 flex items-center justify-between">
-                <span id="aperçuPrix" class="text-sm font-extrabold text-amber-400">2 000 FCFA</span>
-                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-lg font-bold">Acheter Maintenant</span>
+              <p id="aperçuDescription" class="text-xs text-slate-400 line-clamp-2 leading-relaxed">Description sponsorisée...</p>
+              <div class="pt-2 flex items-center justify-between border-t border-slate-800/60">
+                <div>
+                  <span class="text-[10px] text-slate-400 block font-semibold">Total Investi</span>
+                  <span id="aperçuPrix" class="text-sm font-extrabold text-amber-400">2 000 FCFA</span>
+                </div>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2.5 py-1.5 rounded-xl font-bold">Acheter Maintenant</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Liste des Boosts Actifs -->
+        <!-- Catalogue Firebase Realtime Database -->
         <div class="glass-card rounded-3xl p-5 border border-slate-800 shadow-xl space-y-4">
           <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center justify-between">
-            <span>Vos Boosts Actifs sur Firebase</span>
-            <span id="nbBoostsActifs" class="text-xs bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full">0</span>
+            <span>Vos Produits Disponibles</span>
+            <span id="nbProduitsTotal" class="text-xs bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full">0</span>
           </h2>
 
-          <div id="listeBoostsFirebase" class="space-y-3 max-h-80 overflow-y-auto pr-1">
-            <!-- Injecté dynamiquement depuis Realtime Database -->
+          <div id="listeProduitsFirebase" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+            <!-- Injecté dynamiquement depuis Realtime Database `publications` -->
           </div>
         </div>
 
@@ -229,15 +241,11 @@
     </div>
   </main>
 
-  <!-- Configuration PayDunya & Firebase -->
+  <!-- Firebase SDK v9+ & Logique Métier -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Clé Publique PayDunya (Master Key)
-    const PAYDUNYA_PUBLIC_KEY = "6n30kZ0a-O8lJ-L0Mh-u2m3-OytJkFmt9xT2";
-
-    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AfzaSyDR7INHKaazaqZt-xlcjk10jFIy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
@@ -252,31 +260,109 @@
     const db = getDatabase(app);
     const publicationsRef = ref(db, 'publications');
 
-    // Variables d'état
+    // Clé Publique FedaPay
+    const FEDAPAY_PUBLIC_KEY = 'pk_live_DUGntocyIWTtfHBOvFpPtq54';
+
+    // Infos Vendeur & Détection Administrateur
+    const userUid = sessionStorage.getItem('vendeur_uid') || sessionStorage.getItem('vendeur_id') || 'bi7zhxqoYfY3TyZ7dMJuj2yhsx82';
+    const userNom = sessionStorage.getItem('vendeur_nom') || 'Utilisateur DAKPROELITE';
+    const userEmail = sessionStorage.getItem('vendeur_email') || 'client@dakproelite.com';
+    const userRole = sessionStorage.getItem('vendeur_role') || sessionStorage.getItem('role') || '';
+    const isAdminFlag = sessionStorage.getItem('is_admin');
+
+    // Vérification si l'utilisateur connecté est Administrateur
+    const estAdministrateur = (
+      userRole === 'admin' || 
+      userRole === 'administrateur' || 
+      isAdminFlag === 'true' || 
+      userEmail.toLowerCase().includes('admin')
+    );
+
+    document.getElementById('vendeurNomApercu').innerText = userNom;
+
+    if (estAdministrateur) {
+      document.getElementById('badgeAdminRole').classList.remove('hidden');
+      document.getElementById('infoTarifLigne').innerHTML = `<span class="text-emerald-400 font-bold">Compte Administrateur Détecté :</span> Vous bénéficiez du boost gratuit sans frais de paiement.`;
+      document.getElementById('badgeTarifTranche').innerText = "0 FCFA (Admin)";
+      document.getElementById('badgeTarifTranche').className = "text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full";
+    }
+
+    // Constantes et Variables de calcul
+    const TARIF_PAR_24H = 2000; 
     window.mediaBase64Compressed = null;
     window.mediaType = 'image';
+    window.planDureeJours = 1;
     window.planPrix = 2000;
-    window.planDureeJours = 3;
 
     function afficherToast(msg) {
       const toast = document.getElementById('toastNotification');
       document.getElementById('toastMessage').innerText = msg;
       toast.classList.remove('hidden');
-      setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+      setTimeout(() => { toast.classList.add('hidden'); }, 4000);
     }
 
-    // Sélection du plan
-    window.selectionnerPlan = function(prix, jours, el) {
-      window.planPrix = prix;
+    // Calculateur de tarif & dates
+    window.recalculerTarifEtDuree = function(nbJours) {
+      let jours = parseInt(nbJours, 10);
+      if (isNaN(jours) || jours < 1) jours = 1;
+      if (jours > 3650) jours = 3650; 
+
       window.planDureeJours = jours;
-      document.querySelectorAll('.plan-card').forEach(card => {
-        card.className = "plan-card p-4 rounded-2xl border border-slate-700 bg-slate-900 cursor-pointer text-center transition-all hover:border-amber-400/50";
-      });
-      el.className = "plan-card p-4 rounded-2xl border-2 border-amber-400 bg-amber-500/10 cursor-pointer text-center transition-all";
-      document.getElementById('aperçuPrix').innerText = `${prix.toLocaleString('fr-FR')} FCFA`;
+
+      // Si Administrateur, le prix reste 0 FCFA
+      if (estAdministrateur) {
+        window.planPrix = 0;
+      } else {
+        window.planPrix = jours * TARIF_PAR_24H;
+      }
+
+      const heuresTotales = jours * 24;
+
+      // Calcul de la date d'expiration
+      const dateExpirationMs = Date.now() + (heuresTotales * 60 * 60 * 1000);
+      const dateFin = new Date(dateExpirationMs);
+      const dateFinFormattee = dateFin.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      // Mise à jour de l'affichage
+      document.getElementById('inputJoursCustom').value = jours;
+      document.getElementById('labelHeuresTotales').innerText = `${heuresTotales.toLocaleString('fr-FR')} Heures (${jours} Jours)`;
+      document.getElementById('labelDateFin').innerText = dateFinFormattee;
+      
+      const elPrixApercu = document.getElementById('aperçuPrix');
+      const elMontantBouton = document.getElementById('montantBouton');
+      const elTexteBtnAction = document.getElementById('texteBtnAction');
+
+      if (estAdministrateur) {
+        elPrixApercu.innerText = "GRATUIT (Admin)";
+        elPrixApercu.className = "text-sm font-extrabold text-emerald-400";
+        elTexteBtnAction.innerHTML = `🚀 Activer le Boost Gratuitement (${jours} Jours - Admin)`;
+      } else {
+        elPrixApercu.innerText = `${window.planPrix.toLocaleString('fr-FR')} FCFA`;
+        elPrixApercu.className = "text-sm font-extrabold text-amber-400";
+        elTexteBtnAction.innerHTML = `Payer Maintenant (<span id="montantBouton">${window.planPrix.toLocaleString('fr-FR')}</span> FCFA) & Booster`;
+      }
     };
 
-    // Mode Fichier vs URL
+    window.definirDureeParJours = function(jours, btnEl) {
+      document.querySelectorAll('.btn-duree').forEach(btn => {
+        btn.className = "btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center";
+      });
+      if (btnEl) {
+        btnEl.className = "btn-duree p-2.5 rounded-xl border border-amber-400 bg-amber-500/10 text-white font-bold text-xs transition-all text-center";
+      }
+      window.recalculerTarifEtDuree(jours);
+    };
+
+    window.calculerViaSaisieDirecte = function(valeur) {
+      document.querySelectorAll('.btn-duree').forEach(btn => {
+        btn.className = "btn-duree p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs hover:border-amber-400/50 transition-all text-center";
+      });
+      window.recalculerTarifEtDuree(valeur);
+    };
+
+    // Initialisation
+    window.recalculerTarifEtDuree(1);
+
     window.basculerModeMedia = function(mode) {
       const zFichier = document.getElementById('zoneFichier');
       const zUrl = document.getElementById('zoneUrl');
@@ -296,7 +382,6 @@
       }
     };
 
-    // Compression et Aperçu Média
     window.traiterMediaFichier = function(input) {
       const file = input.files[0];
       if (!file) return;
@@ -313,7 +398,7 @@
           img.src = e.target.result;
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const maxDimension = 480; 
+            const maxDimension = 600; 
             let width = img.width;
             let height = img.height;
 
@@ -328,24 +413,12 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            window.mediaBase64Compressed = canvas.toDataURL('image/jpeg', 0.6);
-            
+            window.mediaBase64Compressed = canvas.toDataURL('image/jpeg', 0.7);
             imgAperçu.src = window.mediaBase64Compressed;
             imgAperçu.classList.remove('hidden');
             vidAperçu.classList.add('hidden');
             placeholder.classList.add('hidden');
           };
-        };
-        reader.readAsDataURL(file);
-      } else if (file.type.startsWith('video/')) {
-        window.mediaType = 'video';
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          window.mediaBase64Compressed = e.target.result;
-          vidAperçu.src = window.mediaBase64Compressed;
-          vidAperçu.classList.remove('hidden');
-          imgAperçu.classList.add('hidden');
-          placeholder.classList.add('hidden');
         };
         reader.readAsDataURL(file);
       }
@@ -362,145 +435,173 @@
       }
     };
 
-    // Synchronisation Texte
+    window.chargerProduitPourBoost = function(key, nom, description, image) {
+      document.getElementById('selectedProductId').value = key;
+      document.getElementById('boostTitre').value = nom;
+      document.getElementById('boostDescription').value = description;
+      window.mediaBase64Compressed = image;
+      
+      document.getElementById('aperçuTitre').innerText = nom;
+      document.getElementById('aperçuDescription').innerText = description;
+      const imgAperçu = document.getElementById('aperçuImage');
+      imgAperçu.src = image;
+      imgAperçu.classList.remove('hidden');
+      document.getElementById('aperçuPlaceholder').classList.add('hidden');
+
+      afficherToast(`Produit "${nom}" sélectionné !`);
+    };
+
     document.getElementById('boostTitre').addEventListener('input', (e) => {
       document.getElementById('aperçuTitre').innerText = e.target.value || 'Titre de votre article...';
     });
     document.getElementById('boostDescription').addEventListener('input', (e) => {
-      document.getElementById('aperçuDescription').innerText = e.target.value || 'Description sponsorisée de votre produit...';
+      document.getElementById('aperçuDescription').innerText = e.target.value || 'Description sponsorisée...';
     });
 
-    // Enregistrement de la publication dans Firebase
-    function enregistrerPublicationFirebase() {
-      const titre = document.getElementById('boostTitre').value.trim();
-      const description = document.getElementById('boostDescription').value.trim();
-      const vendeurId = sessionStorage.getItem('vendeur_id') || 'vendeur_pro';
-
-      const maintenant = Date.now();
-      const dureeMs = window.planDureeJours * 24 * 60 * 60 * 1000;
-      const dateExpiration = maintenant + dureeMs;
-
-      const nouvellePublication = {
-        nom: titre,
-        description: description,
-        imageUrl: window.mediaBase64Compressed,
-        mediaType: window.mediaType,
-        prixPromo: window.planPrix,
-        prixNormal: window.planPrix * 1.5,
-        vendeurId: vendeurId,
-        statutBoost: 'actif',
-        dateCreation: maintenant,
-        dateExpiration: dateExpiration,
-        dureeJours: window.planDureeJours,
-        moyenPaiement: 'PayDunya'
-      };
-
-      push(publicationsRef, nouvellePublication)
-        .then(() => {
-          afficherToast("🚀 Boost Meta activé avec succès !");
-          document.getElementById('boostTitre').value = '';
-          document.getElementById('boostDescription').value = '';
-        })
-        .catch((err) => {
-          afficherToast("Erreur lors de l'enregistrement : " + err.message);
-        });
-    }
-
-    // Déclenchement du Paiement PayDunya et Lancement
-    window.lancerBoostMetadads = function() {
-      const titre = document.getElementById('boostTitre').value.trim();
-      const description = document.getElementById('boostDescription').value.trim();
-
-      if (!titre || !description) {
-        afficherToast("Veuillez remplir le titre et la description !");
-        return;
-      }
-
-      if (!window.mediaBase64Compressed) {
-        afficherToast("Veuillez téléverser ou fournir un lien d'image/vidéo !");
-        return;
-      }
-
-      // Configuration du Checkout PayDunya
-      if (typeof PayDunya !== 'undefined' && PayDunya.Setup) {
-        PayDunya.Setup.setMasterKey(PAYDUNYA_PUBLIC_KEY);
-        
-        // Initialisation de la transaction avec PayDunya PSR
-        const checkout = new PayDunya.Checkout.Store({
-          name: 'DAKPROELITE - Boost Meta Ads',
-          tagline: `Boost ${window.planDureeJours} jours`,
-          phoneNumber: '+2290197455309',
-          postalAddress: 'Cotonou, Bénin',
-          websiteURL: window.location.origin
-        });
-
-        const invoice = new PayDunya.Checkout.Invoice(checkout);
-        invoice.addItem(`Boost Meta Ads (${window.planDureeJours} Jours)`, 1, window.planPrix, window.planPrix);
-        invoice.setTotalAmount(window.planPrix);
-
-        invoice.create()
-          .then(() => {
-            // Si le paiement est initié ou complété via le widget
-            enregistrerPublicationFirebase();
-          })
-          .catch(() => {
-            // Solution de secours/Direct si PSR gère en redirection directe
-            enregistrerPublicationFirebase();
-          });
-      } else {
-        // Fallback si la librairie PayDunya rencontre un problème de chargement
-        enregistrerPublicationFirebase();
-      }
-    };
-
-    // Écoute en Temps Réel Realtime Database
+    // Écoute Realtime Database
     onValue(publicationsRef, (snapshot) => {
-      const container = document.getElementById('listeBoostsFirebase');
-      const countBadge = document.getElementById('nbBoostsActifs');
+      const container = document.getElementById('listeProduitsFirebase');
+      const countBadge = document.getElementById('nbProduitsTotal');
       container.innerHTML = '';
 
       const data = snapshot.val();
       if (!data) {
         countBadge.innerText = '0';
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Aucun boost actif actuellement.</p>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Aucun produit dans le catalogue.</p>`;
         return;
       }
 
-      const maintenant = Date.now();
-      let compteurActifs = 0;
-
+      let count = 0;
       Object.keys(data).forEach(key => {
         const p = data[key];
+        count++;
+        const imgSrc = p.image || p.imageUrl || '477912.png';
+        const isBoosted = p.boost === true || p.statutBoost === 'actif';
 
-        if (p.dateExpiration && maintenant >= p.dateExpiration) {
-          remove(ref(db, `publications/${key}`));
-        } else {
-          compteurActifs++;
-          const tempsRestantMs = p.dateExpiration - maintenant;
-          const heuresRestantes = Math.floor(tempsRestantMs / (1000 * 60 * 60));
-          const minutesRestantes = Math.floor((tempsRestantMs % (1000 * 60 * 60)) / (1000 * 60));
-
-          container.innerHTML += `
-            <div class="p-3 bg-slate-900/90 rounded-2xl border border-amber-500/30 flex items-center justify-between gap-3">
-              <div class="flex items-center space-x-3 overflow-hidden">
-                <img src="${p.imageUrl}" class="w-10 h-10 rounded-xl object-cover border border-slate-700 flex-shrink-0" onerror="this.src='477912.png';">
-                <div class="truncate">
-                  <h4 class="text-xs font-bold text-white truncate">${p.nom}</h4>
-                  <p class="text-[10px] text-amber-400 font-bold flex items-center gap-1 mt-0.5">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 10118 0z"/></svg>
-                    Expire dans : ${heuresRestantes}h ${minutesRestantes}m
-                  </p>
-                </div>
+        container.innerHTML += `
+          <div class="p-3 bg-slate-900 rounded-2xl border ${isBoosted ? 'border-amber-400/60' : 'border-slate-800'} flex items-center justify-between gap-3 hover:border-amber-400/40 transition-all">
+            <div class="flex items-center space-x-3 overflow-hidden">
+              <img src="${imgSrc}" class="w-10 h-10 rounded-xl object-cover border border-slate-700 flex-shrink-0" onerror="this.src='477912.png';">
+              <div class="truncate">
+                <h4 class="text-xs font-bold text-white truncate">${p.nom || 'Sans nom'}</h4>
+                <p class="text-[10px] text-slate-400 font-semibold">${(p.prix || p.prixPromo || 0).toLocaleString()} FCFA</p>
               </div>
-              <span class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded-lg flex-shrink-0">Actif</span>
             </div>
-          `;
+            <button type="button" onclick="chargerProduitPourBoost('${key}', '${(p.nom || '').replace(/'/g, "\\'")}', '${(p.description || '').replace(/'/g, "\\'")}', '${imgSrc}')" class="px-3 py-1.5 ${isBoosted ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-amber-400 hover:bg-amber-400 hover:text-slate-950'} font-bold text-[10px] rounded-xl transition-all flex-shrink-0">
+              ${isBoosted ? 'Boosté' : 'Ajouter & Booster'}
+            </button>
+          </div>
+        `;
+      });
+
+      countBadge.innerText = count;
+    });
+
+    // Déclenchement du traitement (FedaPay ou Accès Gratuit Admin)
+    window.initierPaiementEtBoost = function() {
+      const titre = document.getElementById('boostTitre').value.trim();
+      const description = document.getElementById('boostDescription').value.trim();
+
+      if (!titre || !description || !window.mediaBase64Compressed) {
+        afficherToast("Remplissez tous les champs et fournissez une image !");
+        return;
+      }
+
+      // 1. SI ADMINISTRATEUR : Exécution Immédiate Sans Paiement
+      if (estAdministrateur) {
+        finaliserBoostEtNotification({
+          transaction: { id: 'ADMIN_FREE_' + Date.now() },
+          status: 'approved'
+        });
+        return;
+      }
+
+      // 2. SI VENDEUR ORDINAIRE : Exécution via Module FedaPay
+      if (typeof FedaPay === 'undefined') {
+        afficherToast("Erreur de chargement du module de paiement FedaPay.");
+        return;
+      }
+
+      let widget = FedaPay.init({
+        public_key: FEDAPAY_PUBLIC_KEY,
+        transaction: {
+          amount: window.planPrix,
+          description: `Boost Meta Ads (${window.planDureeJours} jours / ${window.planDureeJours * 24}h) - ${titre}`
+        },
+        customer: {
+          email: userEmail,
+          firstname: userNom
+        },
+        onComplete: function(response) {
+          if (response.reason === FedaPay.DIALOG_DISMISSED) {
+            afficherToast("Paiement annulé.");
+          } else if (response.reason === FedaPay.TRANSACTION_APPROVED || response.status === 'approved') {
+            finaliserBoostEtNotification(response);
+          }
         }
       });
 
-      countBadge.innerText = compteurActifs;
-    });
-  </script>
+      widget.open();
+    };
 
+    function finaliserBoostEtNotification(payResponse) {
+      const titre = document.getElementById('boostTitre').value.trim();
+      const description = document.getElementById('boostDescription').value.trim();
+      const prodId = document.getElementById('selectedProductId').value;
+      const maintenant = Date.now();
+      const heuresTotales = window.planDureeJours * 24;
+      const dateExpiration = maintenant + (heuresTotales * 60 * 60 * 1000);
+
+      const boostData = {
+        nom: titre,
+        description: description,
+        image: window.mediaBase64Compressed,
+        imageUrl: window.mediaBase64Compressed,
+        boost: true,
+        statutBoost: 'actif',
+        createdBy: userUid,
+        dateBoost: maintenant,
+        dateExpiration: dateExpiration,
+        dureeBoostJours: window.planDureeJours,
+        dureeBoostHeures: heuresTotales,
+        prixBoost: window.planPrix,
+        boostByAdmin: estAdministrateur,
+        actif: true
+      };
+
+      // 1. Mettre à jour Realtime Database
+      let targetRef = prodId ? ref(db, `publications/${prodId}`) : push(publicationsRef);
+      update(targetRef, boostData);
+
+      // 2. Enregistrer l'historique
+      const paymentRecord = {
+        transactionId: payResponse.transaction ? payResponse.transaction.id : 'TX_' + maintenant,
+        montant: window.planPrix,
+        dureeJours: window.planDureeJours,
+        dureeHeures: heuresTotales,
+        userUid: userUid,
+        userNom: userNom,
+        produitNom: titre,
+        statut: 'success',
+        estGratuitAdmin: estAdministrateur,
+        createdAt: maintenant,
+        type: 'boost_meta_ads'
+      };
+      push(ref(db, 'paiement'), paymentRecord);
+      push(ref(db, 'paiements'), paymentRecord);
+
+      // 3. Notification utilisateur
+      const notifRef = ref(db, `notifications_utilisateurs/${userUid}`);
+      push(notifRef, {
+        titre: estAdministrateur ? "⚡ Boost Admin Activé !" : "🚀 Boost Meta Ads Activé !",
+        message: `Votre produit "${titre}" est sponsorisé pour ${window.planDureeJours} jours (${heuresTotales}h).` + (estAdministrateur ? " (Offert via Compte Admin)" : ""),
+        date: maintenant,
+        lu: false,
+        type: "boost_succes"
+      });
+
+      afficherToast(estAdministrateur ? "🎉 Boost Admin activé gratuitement avec succès !" : "🎉 Boost payé et activé avec succès !");
+    }
+  </script>
 </body>
 </html>

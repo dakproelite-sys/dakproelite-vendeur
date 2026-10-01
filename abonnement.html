@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- SDK de Paiement Checkout (FetanPay / DirectPay Inter) -->
+  <!-- SDK de Paiement Checkout -->
   <script src="https://cdn.fetanpay.com/sdk/v1/checkout.js"></script>
 
   <style>
@@ -31,11 +31,11 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-purple-500 selection:text-white">
 
-  <!-- Header principal avec Logo et Navigation -->
+  <!-- Header principal -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl shadow-black/30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Logo DAKPROELITE Dynamique -->
+      <!-- Logo DAKPROELITE -->
       <div class="flex items-center space-x-3">
         <a href="index.html" class="relative w-12 h-12 rounded-full border-2 border-purple-500 bg-slate-900 flex items-center justify-center shadow-lg shadow-purple-500/20 ring-2 ring-purple-500/20 overflow-hidden flex-shrink-0">
           <img id="logoApp" src="477912.png" alt="DAKPROÉLITE Logo" class="w-full h-full object-contain filter drop-shadow hidden" onload="this.classList.remove('hidden')" onerror="document.getElementById('logoFallback').classList.remove('hidden'); this.remove();">
@@ -78,29 +78,29 @@
         </div>
         <div>
           <h3 class="text-base font-extrabold text-white">⚠️ ABONNEMENT EXPIRÉ OU QUOTA ATTEINT</h3>
-          <p class="text-xs text-red-200 mt-1">Vos articles ne sont plus accessibles au public. Veuillez renouveler votre formule ci-dessous pour débloquer votre visibilité sur DAKPROÉLITE.</p>
+          <p class="text-xs text-red-200 mt-1">Vos articles ne sont plus accessibles au public. Veuillez souscrire à une formule ci-dessous pour débloquer votre visibilité sur DAKPROÉLITE.</p>
         </div>
       </div>
     </div>
 
-    <!-- Carte d'État Actuel de l'Abonnement -->
+    <!-- Carte d'État Actuel -->
     <div class="mb-10 glass-card rounded-3xl p-6 border border-purple-500/30 shadow-2xl relative overflow-hidden">
       <div class="absolute -top-12 -right-12 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
       <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <span id="badgeNomPlan" class="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black uppercase rounded-full">Essai Gratuit (60 Jours)</span>
+            <span id="badgeNomPlan" class="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black uppercase rounded-full">Chargement...</span>
             <span id="badgeStatutAbo" class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-bold rounded-full">Actif</span>
           </div>
           <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Votre Gardien de Compte Vendeur</h1>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1">Consultez en temps réel l'échéance exacte et votre quota de publication disponible.</p>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">Suivez votre statut d'abonnement et la capacité de publication de votre boutique.</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full lg:w-auto">
           <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 text-center">
             <span class="text-[10px] uppercase font-bold text-slate-400 block">Temps Restant</span>
-            <span id="compteurTempsRestant" class="text-base sm:text-lg font-black text-purple-400">-- Jours -- H</span>
+            <span id="compteurTempsRestant" class="text-base sm:text-lg font-black text-purple-400">-- Jours</span>
           </div>
           <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 text-center">
             <span class="text-[10px] uppercase font-bold text-slate-400 block">Date d'Échéance</span>
@@ -108,16 +108,16 @@
           </div>
           <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 text-center col-span-2 sm:col-span-1">
             <span class="text-[10px] uppercase font-bold text-slate-400 block">Quota d'Articles</span>
-            <span id="quotaArticlesPublies" class="text-base sm:text-lg font-black text-amber-400">0 / 2 Articles</span>
+            <span id="quotaArticlesPublies" class="text-base sm:text-lg font-black text-amber-400">0 / 0</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Grille des Offres d'Abonnement -->
+    <!-- Offres d'Abonnement (Validité 6 mois) -->
     <div class="mb-6">
-      <h2 class="text-xl font-extrabold text-white mb-2">Choisissez votre Formule Vendeur Pro</h2>
-      <p class="text-xs text-slate-400">Sélectionnez le forfait adapté à votre catalogue. Activation immédiate après paiement.</p>
+      <h2 class="text-xl font-extrabold text-white mb-2">Choisissez votre Formule Vendeur Pro (Validité : 6 Mois)</h2>
+      <p class="text-xs text-slate-400">Sélectionnez le forfait adapté à votre catalogue. Activation et déblocage immédiats après règlement.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -127,52 +127,42 @@
         <div>
           <span class="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Starter</span>
           <h3 class="text-2xl font-extrabold text-white mt-4">2 000 FCFA</h3>
-          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 30 Jours (1 Mois)</p>
+          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 6 Mois (180 Jours)</p>
 
           <ul class="space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-4 mb-6">
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Publiez jusqu'à <strong>5 Articles</strong></span>
+              <span>Publiez jusqu'à <strong>10 Articles</strong></span>
             </li>
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Visibilité publique garantie</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Support standard DAKPROÉLITE</span>
+              <span>Visibilité garantie pendant 6 mois</span>
             </li>
           </ul>
         </div>
-
-        <button onclick="ouvrirModalPaiement(2000, 5, 30, 'Plan Starter (5 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-purple-600 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">S'abonner (2 000 FCFA)</button>
+        <button onclick="ouvrirModalPaiement(2000, 10, 180, 'Plan Starter (10 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-purple-600 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">Payer Maintenant</button>
       </div>
 
       <!-- Option 2 : Business -->
       <div class="glass-card rounded-3xl p-6 border-2 border-purple-500 bg-purple-950/20 transition-all flex flex-col justify-between relative shadow-2xl">
-        <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg">Le Plus Vendu</span>
+        <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg">Populaire</span>
         <div>
           <span class="text-[10px] font-black uppercase tracking-widest text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">Business</span>
           <h3 class="text-2xl font-extrabold text-white mt-4">5 000 FCFA</h3>
-          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 30 Jours (1 Mois)</p>
+          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 6 Mois (180 Jours)</p>
 
           <ul class="space-y-3 text-xs text-slate-200 border-t border-slate-800/80 pt-4 mb-6">
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Publiez jusqu'à <strong>15 Articles</strong></span>
+              <span>Publiez jusqu'à <strong>20 Articles</strong></span>
             </li>
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Référencement prioritaire</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Support Vendeur Prioritaire</span>
+              <span>Mise en avant sur le catalogue</span>
             </li>
           </ul>
         </div>
-
-        <button onclick="ouvrirModalPaiement(5000, 15, 30, 'Plan Business (15 Articles)')" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-black text-xs rounded-2xl transition-all shadow-lg shadow-purple-600/30 active:scale-95">S'abonner (5 000 FCFA)</button>
+        <button onclick="ouvrirModalPaiement(5000, 20, 180, 'Plan Business (20 Articles)')" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-black text-xs rounded-2xl transition-all shadow-lg shadow-purple-600/30 active:scale-95">Payer Maintenant</button>
       </div>
 
       <!-- Option 3 : Premium -->
@@ -180,33 +170,28 @@
         <div>
           <span class="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">Pro Premium</span>
           <h3 class="text-2xl font-extrabold text-white mt-4">10 000 FCFA</h3>
-          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 30 Jours (1 Mois)</p>
+          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 6 Mois (180 Jours)</p>
 
           <ul class="space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-4 mb-6">
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Publiez jusqu'à <strong>80 Articles</strong></span>
+              <span>Publiez jusqu'à <strong>30 Articles</strong></span>
             </li>
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Badge Vendeur Certifié VIP</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Accès statistiques détaillées</span>
+              <span>Badge Vendeur Vérifié</span>
             </li>
           </ul>
         </div>
-
-        <button onclick="ouvrirModalPaiement(10000, 80, 30, 'Plan Premium (80 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">S'abonner (10 000 FCFA)</button>
+        <button onclick="ouvrirModalPaiement(10000, 30, 180, 'Plan Premium (30 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">Payer Maintenant</button>
       </div>
 
-      <!-- Option 4 : Ultra Grossiste -->
+      <!-- Option 4 : Grossiste -->
       <div class="glass-card rounded-3xl p-6 border border-slate-800 hover:border-emerald-500/50 transition-all flex flex-col justify-between group">
         <div>
-          <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Grossiste Unlimited</span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Grossiste</span>
           <h3 class="text-2xl font-extrabold text-white mt-4">20 000 FCFA</h3>
-          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 30 Jours (1 Mois)</p>
+          <p class="text-xs text-slate-400 font-semibold mb-6">Valable 6 Mois (180 Jours)</p>
 
           <ul class="space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-4 mb-6">
             <li class="flex items-center gap-2">
@@ -215,33 +200,28 @@
             </li>
             <li class="flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Maximum de visibilité réseau</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Assistance dédiée 24/7</span>
+              <span>Priorité absolue sur le réseau</span>
             </li>
           </ul>
         </div>
-
-        <button onclick="ouvrirModalPaiement(20000, 300, 30, 'Plan Grossiste (300 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">S'abonner (20 000 FCFA)</button>
+        <button onclick="ouvrirModalPaiement(20000, 300, 180, 'Plan Grossiste (300 Articles)')" class="w-full py-3 bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white font-bold text-xs rounded-2xl transition-all shadow-md active:scale-95">Payer Maintenant</button>
       </div>
 
     </div>
 
-    <!-- Modal de Paiement Sécurisé -->
+    <!-- Modal de Confirmation & Règlement -->
     <div id="modalPaiement" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-purple-500/40 shadow-2xl relative">
         <button onclick="fermerModalPaiement()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
-        <h3 class="text-lg font-bold text-white mb-1" id="modalPlanTitre">Paiement Abonnement</h3>
-        <p class="text-xs text-slate-400 mb-6">Sélectionnez le mode de règlement sécurisé</p>
+        <h3 class="text-lg font-bold text-white mb-1" id="modalPlanTitre">Confirmation de l'Abonnement</h3>
+        <p class="text-xs text-slate-400 mb-6">Confirmez votre numéro pour lancer le guichet de paiement sécurisé.</p>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Paiement Réseau & Carte *</label>
+            <label class="block text-xs font-bold uppercase text-slate-300 mb-2">Méthode de Paiement *</label>
             <select id="selectModePaiement" class="w-full bg-slate-900 border border-slate-700 focus:border-purple-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
               <option value="momo">MTN Mobile Money / Moov Money / Wave</option>
               <option value="carte">Carte Bancaire Visa / Mastercard</option>
@@ -254,7 +234,7 @@
           </div>
 
           <button id="btnValiderPaiement" onclick="validerEtPayerAbonnement()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-black text-sm rounded-2xl shadow-xl shadow-purple-600/30 active:scale-95 transition-all mt-4 flex items-center justify-center gap-2">
-            <span>Confirmer & Valider mon Abonnement</span>
+            <span>Procéder au Paiement</span>
           </button>
         </div>
       </div>
@@ -262,12 +242,12 @@
 
   </main>
 
-  <!-- Module Firebase SDK v9+ & Gardien Realtime Database -->
+  <!-- Firebase v9 & Logique Métier -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, get, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Clé publique Checkout fournie
+    // Clé publique de règlement Checkout
     const CHECKOUT_PUBLIC_KEY = "pk_live_DUGntocyIWTtfHBOvFpPtq54";
 
     const firebaseConfig = {
@@ -284,10 +264,11 @@
     const db = getDatabase(app);
 
     const currentVendeurId = sessionStorage.getItem('vendeur_id') || 'vendeur_defaut';
+    const userRef = ref(db, `users/${currentVendeurId}`);
     const aboRef = ref(db, `abonnements/${currentVendeurId}`);
     const produitsRef = ref(db, 'produits_vendeurs');
 
-    let planSelectionne = { prix: 0, maxArticles: 2, jours: 60, nom: '' };
+    let planSelectionne = { prix: 0, maxArticles: 2, jours: 180, nom: '' };
 
     function afficherToast(msg) {
       const toast = document.getElementById('toastNotification');
@@ -296,10 +277,9 @@
       setTimeout(() => { toast.classList.add('hidden'); }, 3500);
     }
 
-    // Contrôle Modal
     window.ouvrirModalPaiement = function(prix, maxArticles, jours, nom) {
       planSelectionne = { prix, maxArticles, jours, nom };
-      document.getElementById('modalPlanTitre').innerText = `Souscrire à : ${nom}`;
+      document.getElementById('modalPlanTitre').innerText = `Souscrire : ${nom}`;
       document.getElementById('modalPaiement').classList.remove('hidden');
     };
 
@@ -307,24 +287,30 @@
       document.getElementById('modalPaiement').classList.add('hidden');
     };
 
-    // Chargement Abonnement Vendeur & Logique du Gardien
+    // Chargement & Vérification en temps réel
     onValue(aboRef, async (snapshot) => {
       let aboData = snapshot.val();
       const maintenant = Date.now();
 
+      // Vérification du rôle utilisateur (Admin)
+      const snapUser = await get(userRef);
+      const isUserAdmin = snapUser.exists() && snapUser.val().role === 'admin';
+
+      // 1. Initialisation automatique de l'essai gratuit (6 mois / 2 articles) lors du 1er jour
       if (!aboData) {
-        const dateFin = maintenant + (60 * 24 * 60 * 60 * 1000);
+        const dateFinEssai = maintenant + (180 * 24 * 60 * 60 * 1000); // 6 Mois
         aboData = {
-          nomPlan: "Essai Gratuit",
+          nomPlan: "Essai Gratuit (6 Mois)",
           maxArticles: 2,
           dateDebut: maintenant,
-          dateFin: dateFin,
+          dateFin: dateFinEssai,
           statut: "actif",
           vendeurId: currentVendeurId
         };
         await set(aboRef, aboData);
       }
 
+      // Décompte des articles publiés
       const snapProduits = await get(produitsRef);
       let nbArticlesPublies = 0;
       if (snapProduits.exists()) {
@@ -335,6 +321,24 @@
         });
       }
 
+      // Si administrateur : Quota illimité
+      if (isUserAdmin) {
+        document.getElementById('banniereAlerteAbo').classList.add('hidden');
+        document.getElementById('badgeNomPlan').innerText = "Compte Administrateur VIP";
+        document.getElementById('badgeStatutAbo').innerText = "Illimité";
+        document.getElementById('badgeStatutAbo').className = "px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-full";
+        document.getElementById('quotaArticlesPublies').innerText = `${nbArticlesPublies} / Illimité`;
+        document.getElementById('compteurTempsRestant').innerText = "Permanent";
+        document.getElementById('dateFinAbo').innerText = "Sans expiration";
+
+        await update(ref(db, `configuration/visibilite_vendeurs/${currentVendeurId}`), {
+          accessiblePublic: true,
+          estAdmin: true
+        });
+        return;
+      }
+
+      // Logique pour vendeurs normaux
       const estExpiré = maintenant >= aboData.dateFin;
       const quotaAtteint = nbArticlesPublies > aboData.maxArticles;
 
@@ -369,26 +373,70 @@
       if (!estExpiré) {
         const diffMs = aboData.dateFin - maintenant;
         const joursRestants = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        const heuresRestantes = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        document.getElementById('compteurTempsRestant').innerText = `${joursRestants}j ${heuresRestantes}h`;
+        document.getElementById('compteurTempsRestant').innerText = `${joursRestants} Jours`;
       } else {
-        document.getElementById('compteurTempsRestant').innerText = "0j 0h";
+        document.getElementById('compteurTempsRestant').innerText = "0 Jour";
       }
     });
 
-    // Intégration du guichet de paiement intégré Checkout
+    // Enregistrement des transactions et notifications après paiement
+    async function enregistrerPaiementEtNotification(donneesPaiement) {
+      const maintenant = Date.now();
+      const dateExpiration = maintenant + (planSelectionne.jours * 24 * 60 * 60 * 1000);
+
+      // 1. Mise à jour de l'Abonnement Vendeur
+      const nouvelAbo = {
+        nomPlan: planSelectionne.nom,
+        maxArticles: planSelectionne.maxArticles,
+        dateDebut: maintenant,
+        dateFin: dateExpiration,
+        statut: "actif",
+        prixPaye: planSelectionne.prix,
+        moyenPaiement: donneesPaiement.mode,
+        telephonePaiement: donneesPaiement.telephone || 'N/A',
+        transactionId: donneesPaiement.transactionId,
+        vendeurId: currentVendeurId
+      };
+      await set(aboRef, nouvelAbo);
+
+      // 2. Écriture dans transactions_paiements
+      const txRef = push(ref(db, 'transactions_paiements'));
+      await set(txRef, {
+        idTransaction: donneesPaiement.transactionId,
+        vendeurId: currentVendeurId,
+        montant: planSelectionne.prix,
+        devise: "XOF",
+        plan: planSelectionne.nom,
+        mode: donneesPaiement.mode,
+        telephone: donneesPaiement.telephone || 'N/A',
+        statut: "SUCCES",
+        horodatage: maintenant,
+        dateLisible: new Date(maintenant).toLocaleString('fr-FR')
+      });
+
+      // 3. Écriture dans notifications_utilisateurs
+      const notifRef = push(ref(db, `notifications_utilisateurs/${currentVendeurId}`));
+      await set(notifRef, {
+        titre: "🎉 Abonnement Activé !",
+        message: `Votre formule ${planSelectionne.nom} (${planSelectionne.maxArticles} articles pour 6 mois) a été validée avec succès.`,
+        lu: false,
+        horodatage: maintenant,
+        type: "abonnement"
+      });
+    }
+
+    // Lancement du Checkout
     window.validerEtPayerAbonnement = function() {
       const tel = document.getElementById('inputTelephone').value.trim();
       const mode = document.getElementById('selectModePaiement').value;
 
       if (mode === 'momo' && !tel) {
-        afficherToast("Veuillez renseigner votre numéro de téléphone Mobile Money.");
+        afficherToast("Veuillez saisir votre numéro de téléphone Mobile Money.");
         return;
       }
 
-      afficherToast("Initialisation du paiement sécurisé...");
+      afficherToast("Ouverture du guichet de paiement...");
 
-      // Configuration de la transaction
       const paymentConfig = {
         key: CHECKOUT_PUBLIC_KEY,
         amount: planSelectionne.prix,
@@ -397,71 +445,51 @@
           phone: tel,
           id: currentVendeurId
         },
-        description: `Paiement ${planSelectionne.nom} - DAKPROELITE`,
+        description: `Souscription ${planSelectionne.nom} - DAKPROELITE`,
         metadata: {
           vendeurId: currentVendeurId,
           plan: planSelectionne.nom,
-          jours: planSelectionne.jours
+          dureeJours: planSelectionne.jours
         },
-        // Callback si paiement réussi
-        onSuccess: function(response) {
-          const maintenant = Date.now();
-          const nouvelleDateFin = maintenant + (planSelectionne.jours * 24 * 60 * 60 * 1000);
-
-          const nouvelAbo = {
-            nomPlan: planSelectionne.nom,
-            maxArticles: planSelectionne.maxArticles,
-            dateDebut: maintenant,
-            dateFin: nouvelleDateFin,
-            statut: "actif",
-            prixPaye: planSelectionne.prix,
-            moyenPaiement: mode,
-            telephonePaiement: tel || 'N/A',
-            transactionId: response.transactionId || 'TX_' + Date.now(),
-            vendeurId: currentVendeurId
-          };
-
-          // Écriture direct dans Firebase
-          set(aboRef, nouvelAbo)
-            .then(() => {
-              afficherToast("🎉 Abonnement activé avec succès ! Votre compte est débloqué.");
-              fermerModalPaiement();
-            })
-            .catch((err) => {
-              afficherToast("Erreur d'activation : " + err.message);
+        onSuccess: async function(response) {
+          try {
+            const txId = response.transactionId || 'TX_' + Date.now();
+            await enregistrerPaiementEtNotification({
+              mode: mode,
+              telephone: tel,
+              transactionId: txId
             });
+            afficherToast("🎉 Abonnement activé ! Redirection...");
+            fermerModalPaiement();
+            setTimeout(() => {
+              window.location.href = 'index.html';
+            }, 1500);
+          } catch (err) {
+            afficherToast("Erreur lors de l'enregistrement : " + err.message);
+          }
         },
-        // Callback si fermeture ou annulation
         onClose: function() {
-          afficherToast("Paiement annulé ou interrompu.");
+          afficherToast("Procédure de paiement annulée.");
         },
-        // Callback si erreur technique
         onError: function(error) {
-          afficherToast("Erreur lors du paiement : " + (error.message || "Échec réseau"));
+          afficherToast("Erreur de traitement : " + (error.message || "Échec réseau"));
         }
       };
 
-      // Si le SDK est disponible, on lance le Checkout
       if (window.Checkout) {
         const checkoutInstance = new window.Checkout(paymentConfig);
         checkoutInstance.open();
       } else {
-        // Fallback si le SDK externe ne charge pas : validation directe
-        const maintenant = Date.now();
-        const nouvelleDateFin = maintenant + (planSelectionne.jours * 24 * 60 * 60 * 1000);
-        set(aboRef, {
-          nomPlan: planSelectionne.nom,
-          maxArticles: planSelectionne.maxArticles,
-          dateDebut: maintenant,
-          dateFin: nouvelleDateFin,
-          statut: "actif",
-          prixPaye: planSelectionne.prix,
-          moyenPaiement: mode,
-          telephonePaiement: tel || 'N/A',
-          vendeurId: currentVendeurId
+        // Mode dégradé si le SDK externe ne charge pas
+        const txId = 'TX_DIRECT_' + Date.now();
+        enregistrerPaiementEtNotification({
+          mode: mode,
+          telephone: tel,
+          transactionId: txId
         }).then(() => {
           afficherToast("🎉 Abonnement activé avec succès !");
           fermerModalPaiement();
+          setTimeout(() => { window.location.href = 'index.html'; }, 1500);
         });
       }
     };
