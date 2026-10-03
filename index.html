@@ -323,6 +323,12 @@
     function redirigerVersProduit(produitId) {
       window.location.href = `produit.html?id=${produitId}`;
     }
+
+    function contacterVendeurWhatsApp(phone, nomProduit) {
+      const cleanPhone = (phone || '2290197455309').replace(/[^0-9]/g, '');
+      const msg = `Bonjour, je suis intéressé(e) par votre article "${nomProduit}" sur DAKPROÉLITE. Est-il toujours disponible ?`;
+      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
   </script>
 
   <!-- Module Firebase SDK v10+ & Logique Authentification/Données -->
@@ -346,6 +352,7 @@
     const auth = getAuth(app);
 
     let listeProduits = [];
+    const cacheVendeursWhatsApp = {};
 
     // Protection de l'accès & initialisation
     onAuthStateChanged(auth, async (user) => {
@@ -388,23 +395,64 @@
       }
     };
 
-    function chargerProduits(currentVendeurId) {
-      const publicationsRef = ref(db, 'publications');
-      onValue(publicationsRef, (snapshot) => {
-        listeProduits = [];
-        const data = snapshot.val();
+    // Obtenir le numéro WhatsApp d'un vendeur spécifié
+    async function obtenirWhatsAppVendeur(uid) {
+      if (!uid) return '2290197455309';
+      if (cacheVendeursWhatsApp[uid]) return cacheVendeursWhatsApp[uid];
 
-        if (data) {
-          Object.keys(data).forEach(key => {
-            const item = data[key];
-            const ownerUid = item.vendeurUid || item.vendeurId || item.vendeur_id;
-
-            if (currentVendeurId && ownerUid === currentVendeurId) {
-              listeProduits.push({ id: key, ...item });
-            }
-          });
+      try {
+        const snap = await get(ref(db, `users/${uid}`));
+        if (snap.exists()) {
+          const data = snap.val();
+          const phone = data.whatsapp || data.telephone || data.phone || data.numero || '2290197455309';
+          cacheVendeursWhatsApp[uid] = phone;
+          return phone;
         }
+      } catch (e) {
+        console.warn("Erreur lors de la récupération du numéro du vendeur :", e);
+      }
+      return '2290197455309';
+    }
+
+    // Chargement dynamique combiné : 'publications' et 'vendeur_publications'
+    function chargerProduits(currentVendeurId) {
+      const mapProduits = new Map();
+
+      const alimenterDepuisSnapshot = async (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        for (const key of Object.keys(data)) {
+          const item = data[key];
+          const ownerUid = item.createdBy || item.vendeurUid || item.vendeurId || item.vendeur_id;
+
+          if (currentVendeurId && ownerUid === currentVendeurId) {
+            const numWhatsapp = await obtenirWhatsAppVendeur(ownerUid);
+
+            mapProduits.set(key, {
+              id: key,
+              nom: item.nom || item.titre || 'Sans Titre',
+              description: item.description || '',
+              prixNormal: item.prixNormal || item.prix || 0,
+              prixPromo: item.prixPromo || item.prix || 0,
+              image: item.image || item.imageUrl || item.imageUrl60 || 'https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png',
+              createdBy: ownerUid,
+              whatsappNumber: numWhatsapp
+            });
+          }
+        }
+        listeProduits = Array.from(mapProduits.values());
         afficherProduits(listeProduits);
+      };
+
+      // Écoute du nœud 'publications'
+      onValue(ref(db, 'publications'), (snapshot) => {
+        alimenterDepuisSnapshot(snapshot);
+      });
+
+      // Écoute du nœud 'vendeur_publications'
+      onValue(ref(db, 'vendeur_publications'), (snapshot) => {
+        alimenterDepuisSnapshot(snapshot);
       });
     }
 
@@ -468,7 +516,8 @@
           ? Math.round(((p.prixNormal - p.prixPromo) / p.prixNormal) * 100) 
           : 0;
 
-        const imageSource = p.imageUrl60 || p.imageUrl || 'https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png';
+        const imageSource = p.image || 'https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png';
+        const nomSecurise = (p.nom || '').replace(/'/g, "\\'");
         
         container.innerHTML += `
           <div class="sharp-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
@@ -476,7 +525,7 @@
               <div class="relative h-52 bg-slate-100 overflow-hidden flex items-center justify-center border-b border-slate-200">
                 <img 
                   src="${imageSource}" 
-                  alt="${p.nom || 'Produit Vendeur'}" 
+                  alt="${p.nom}" 
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   onerror="this.onerror=null; this.src='https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png';"
                 >
@@ -485,8 +534,8 @@
               </div>
 
               <div class="p-4">
-                <h2 class="text-base font-bold text-slate-900 truncate">${p.nom || 'Sans Titre'}</h2>
-                <p class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">${p.description || ''}</p>
+                <h2 class="text-base font-bold text-slate-900 truncate">${p.nom}</h2>
+                <p class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">${p.description}</p>
               </div>
             </div>
 
@@ -508,9 +557,9 @@
                   <span>Voir article</span>
                 </button>
 
-                <button onclick="copierPartageSocial('${p.id}')" class="py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 active:scale-95 shadow-md shadow-blue-600/20">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                  <span>Copier texte</span>
+                <button onclick="contacterVendeurWhatsApp('${p.whatsappNumber}', '${nomSecurise}')" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 active:scale-95 shadow-md shadow-emerald-600/20">
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.842-1.001z"/></svg>
+                  <span>WhatsApp</span>
                 </button>
               </div>
             </div>
