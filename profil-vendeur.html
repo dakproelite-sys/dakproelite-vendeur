@@ -94,8 +94,7 @@
       transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
     }
     .btn-action:hover { background-color: #000; }
-    .btn-copy { background: var(--primary-gold); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
-    .btn-copy:hover { background: var(--secondary-gold); color: #fff; }
+    .btn-copy { background: var(--primary-gold); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
 
     .table-container { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; min-width: 600px; }
@@ -303,35 +302,9 @@
         <div class="stat-card"><div class="title">Commentaires</div><div class="amount" id="statCommentaires">0</div></div>
         <div class="stat-card"><div class="title">Mentions J'aime</div><div class="amount" id="statLikes">0</div></div>
       </div>
-
       <div class="content-card">
         <h3>Aperçu des performances de ventes & visites</h3>
         <canvas id="performanceChart" style="max-height: 250px; margin-top: 15px;"></canvas>
-      </div>
-
-      <!-- TABLEAU DES PRODUITS PUBLIÉS EN RTDB (vendeur_publications) -->
-      <div class="content-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-          <h3><i class="fa-solid fa-list-check" style="color: var(--primary-gold);"></i> Mes Publications Actives (vendeur_publications)</h3>
-          <button class="btn-action" style="margin-top: 0; font-size: 12px; padding: 8px 14px;" onclick="window.showTab('publier')"><i class="fa-solid fa-plus"></i> Nouveau Produit</button>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Aperçu</th>
-                <th>Nom du Produit</th>
-                <th>Catégorie</th>
-                <th>Prix Promo / Normal</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="dashboardProductsList">
-              <tr><td colspan="6" style="text-align:center;">Chargement de vos publications réelles...</td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </section>
 
@@ -350,11 +323,11 @@
                 <option value="lien">Lien Externe / Produit Copié</option>
               </select>
             </div>
-            <div class="form-group"><label>Catégorie</label><input type="text" id="pCategorie" placeholder="Ex: VÉHICULE, Mode, Informatique..." required></div>
-            <div class="form-group"><label>Titre de la publication</label><input type="text" id="pNom" required placeholder="Ex: MERCEDES 2026 / Cours JS"></div>
-            <div class="form-group"><label>Auteur / Vendeur</label><input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE"></div>
-            <div class="form-group"><label>Prix Normal (FCFA)</label><input type="number" id="pPrixNormal" required placeholder="150000000"></div>
-            <div class="form-group"><label>Prix Promo (FCFA)</label><input type="number" id="pPrixPromo" placeholder="140000000"></div>
+            <div class="form-group"><label>Catégorie</label><input type="text" id="pCategorie" placeholder="Ex: Mode, Informatique..." required></div>
+            <div class="form-group"><label>Titre de la publication</label><input type="text" id="pNom" required placeholder="Ex: Chaussures / Cours JS"></div>
+            <div class="form-group"><label>Auteur / Vendeur</label><input type="text" id="pAuteur" required placeholder="Ex: Jean Marc"></div>
+            <div class="form-group"><label>Prix Normal (FCFA)</label><input type="number" id="pPrixNormal" required placeholder="30000"></div>
+            <div class="form-group"><label>Prix Promo (FCFA)</label><input type="number" id="pPrixPromo" placeholder="25000"></div>
             <div class="form-group"><label>Stock</label><input type="number" id="pStock" value="100" required></div>
             
             <div class="form-group" style="grid-column: 1 / -1;">
@@ -375,7 +348,7 @@
 
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>Description détaillée</label>
-              <textarea id="pDescription" rows="4" required placeholder="Description complète du produit..."></textarea>
+              <textarea id="pDescription" rows="4" required placeholder="Description complète..."></textarea>
             </div>
           </div>
           <button type="submit" class="btn-action" id="btnPublierSubmit"><i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource</button>
@@ -412,9 +385,6 @@
     <section id="affiliation" class="tab-section">
       <div class="content-card">
         <h3>Produits Éligibles à l'Affiliation</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
-          Générez vos revenus en partageant vos liens affiliés. La commission de 10% sera créditée sur votre solde à chaque achat validé.
-        </p>
         <div class="table-container">
           <table class="data-table">
             <thead>
@@ -423,11 +393,11 @@
                 <th>Produit / Cours</th>
                 <th>Prix</th>
                 <th>Gains (10%)</th>
-                <th>Action</th>
+                <th>Mon Lien Affilié</th>
               </tr>
             </thead>
             <tbody id="affiliationProductsList">
-              <tr><td colspan="5" style="text-align:center;">Chargement des opportunités d'affiliation...</td></tr>
+              <tr><td colspan="5" style="text-align:center;">Chargement...</td></tr>
             </tbody>
           </table>
         </div>
@@ -612,12 +582,7 @@
       document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
 
       document.getElementById(tabId).classList.add('active');
-      if (element) {
-        element.classList.add('active');
-      } else {
-        const matchingNav = document.querySelector(`.sidebar-menu li[onclick*="'${tabId}'"]`);
-        if (matchingNav) matchingNav.classList.add('active');
-      }
+      if (element) element.classList.add('active');
     };
 
     window.handleDirectUrlInput = function(url) {
@@ -856,14 +821,10 @@
       }
     };
 
-    /* CHARGEMENT DES PRODUITS DE LA BOUTIQUE VENDEUR (vendeur_publications) */
+    /* CHARGEMENT STRICT DE LA BOUTIQUE & CALCUL EXCLUSIF POUR LE TABLEAU DE BORD */
     async function chargerMesProduits(uid) {
       const grid = document.getElementById('boutiqueGrid');
-      const dashTbody = document.getElementById('dashboardProductsList');
-      
       grid.innerHTML = "";
-      if (dashTbody) dashTbody.innerHTML = "";
-
       let totalMesProduits = 0;
       let totalVisiteurs = 0;
       let totalCommentaires = 0;
@@ -875,6 +836,7 @@
           const prod = child.val();
           const prodKey = prod.id || child.key;
 
+          // COMPTAGE EXCLUSIF : Seuls les articles publiés par le vendeur courant sous 'vendeur_publications'
           if (prod.vendeurUid === uid || prod.createdBy === uid) {
             totalMesProduits++;
 
@@ -891,19 +853,14 @@
             const mType = prod.mediaType || 'image';
             
             let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
-            let thumbHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-
             if (mType === 'video') {
               mediaHtml = `<video src="${mediaSrc}" controls></video>`;
-              thumbHtml = `<video src="${mediaSrc}" class="prod-thumb"></video>`;
             } else if (mType === 'document') {
               mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
-              thumbHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
             }
 
             const pageProduitUrl = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
-            const prixNormalAffiche = prod.prixNormal || prod.prix || 0;
-            const prixPromoAffiche = prod.prixPromo || prixNormalAffiche;
+            const prixAffiche = prod.prixPromo || prod.prix || prod.prixNormal || 0;
 
             grid.innerHTML += `
               <div class="boutique-prod-card">
@@ -914,7 +871,7 @@
                   <div>
                     <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
                     <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Sans nom'}</div>
-                    <div class="boutique-prod-price">${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</div>
+                    <div class="boutique-prod-price">${Number(prixAffiche).toLocaleString('fr-FR')} FCFA</div>
                   </div>
                   <div class="boutique-prod-actions">
                     <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-eye"></i> Voir Produit</a>
@@ -923,32 +880,15 @@
                 </div>
               </div>
             `;
-
-            if (dashTbody) {
-              dashTbody.innerHTML += `
-                <tr>
-                  <td>${thumbHtml}</td>
-                  <td><strong>${prod.nom || prod.title || 'Produit'}</strong><br><small style="color:var(--text-muted);">Auteur: ${prod.auteur || prod.vendeurNom || 'N/A'}</small></td>
-                  <td><span class="status-badge" style="background:#e2e8f0; color:#334155;">${prod.categorie || 'GÉNÉRAL'}</span></td>
-                  <td><strong>${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</strong> <br><small style="text-decoration:line-through; color:var(--text-muted);">${Number(prixNormalAffiche).toLocaleString('fr-FR')} FCFA</small></td>
-                  <td><span class="status-badge status-success">${prod.stock !== undefined ? prod.stock : 100} en stock</span></td>
-                  <td>
-                    <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Lien</button>
-                  </td>
-                </tr>
-              `;
-            }
           }
         });
       }
 
       if (totalMesProduits === 0) {
         grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article publié dans votre boutique (vendeur_publications).</p>`;
-        if (dashTbody) {
-          dashTbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun produit publié pour le moment. Cliquez sur "Publier Produit/Cours" pour ajouter votre première offre.</td></tr>`;
-        }
       }
 
+      // Mise à jour exacte du tableau de bord
       document.getElementById('statProduits').innerText = totalMesProduits;
       document.getElementById('statVisiteurs').innerText = totalVisiteurs;
       document.getElementById('statCommentaires').innerText = totalCommentaires;
@@ -964,92 +904,65 @@
     };
 
     window.copierLien = function(lien) {
-      navigator.clipboard.writeText(lien).then(() => alert("Lien d'affiliation copié avec succès !"));
+      navigator.clipboard.writeText(lien).then(() => alert("Lien copié dans le presse-papier !"));
     };
 
-    /* CHARGEMENT OPTIMISÉ DU TABLEAU D'AFFILIATION */
+    /* NE PAS TOUCHER : CONSERVÉ STRICTEMENT INTÉGRALEMENT POUR L'AFFILIATION */
     async function chargerAffiliationGlobal() {
       const tbody = document.getElementById('affiliationProductsList');
-      if (!tbody) return;
-      
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Chargement des opportunités d\'affiliation...</td></tr>';
-      
+      tbody.innerHTML = "";
       let count = 0;
       const seenIds = new Set();
+
       const sources = ['publications', 'vendeur_publications'];
-      let htmlContent = "";
 
       for (const src of sources) {
-        try {
-          const snapshot = await get(ref(database, src));
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              const prod = child.val();
-              const prodKey = prod.id || child.key;
+        const snapshot = await get(ref(database, src));
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const prod = child.val();
+            const prodKey = prod.id || child.key;
 
-              // Élimination des doublons entre publications et vendeur_publications
-              if (!seenIds.has(prodKey)) {
-                seenIds.add(prodKey);
-                count++;
+            if (!seenIds.has(prodKey)) {
+              seenIds.add(prodKey);
+              count++;
 
-                // 1. Nom du produit
-                const nomProduit = prod.nom || prod.title || 'Produit sans titre';
-
-                // 2. Traitement du Prix (Gestion promo / normal / prix standard)
-                let prixEffectif = 0;
-                if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
-                  prixEffectif = Number(prod.prixPromo);
-                } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
-                  prixEffectif = Number(prod.prix);
-                } else if (prod.prixNormal !== undefined && prod.prixNormal !== null && Number(prod.prixNormal) > 0) {
-                  prixEffectif = Number(prod.prixNormal);
-                }
-
-                // 3. Calcul des gains d'affiliation (10%)
-                const gains = Math.round(prixEffectif * 0.10);
-
-                // 4. Gestion des visuels / médias (Images base64, URL, Vidéo, PDF)
-                const mediaSrc = prod.image || prod.imageUrl || '477912.png';
-                let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-
-                if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
-                  mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
-                } else if (prod.mediaType === 'document') {
-                  mediaHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
-                }
-
-                // 5. Génération du lien d'affiliation spécifique pour produit.html
-                const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
-
-                htmlContent += `
-                  <tr>
-                    <td>${mediaHtml}</td>
-                    <td>
-                      <strong>${nomProduit}</strong><br>
-                      <small style="color:var(--text-muted);">Auteur/Vendeur: ${prod.vendeurNom || prod.auteur || 'DAKPRO ÉLITE'}</small>
-                    </td>
-                    <td><strong>${prixEffectif.toLocaleString('fr-FR')} FCFA</strong></td>
-                    <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
-                    <td>
-                      <button class="btn-copy" onclick="window.copierLien('${affLink}')">
-                        <i class="fa-solid fa-link"></i> Copier Lien
-                      </button>
-                    </td>
-                  </tr>
-                `;
+              const nomProduit = prod.nom || prod.title || 'Sans titre';
+              
+              let prixEffectif = 0;
+              if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
+                prixEffectif = Number(prod.prixPromo);
+              } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
+                prixEffectif = Number(prod.prix);
+              } else if (prod.prixNormal !== undefined && prod.prixNormal !== null) {
+                prixEffectif = Number(prod.prixNormal);
               }
-            });
-          }
-        } catch (err) {
-          console.error(`Erreur lors du chargement de ${src}:`, err);
+
+              const gains = Math.round(prixEffectif * 0.10);
+              const mediaSrc = prod.imageUrl || prod.image || '477912.png';
+              
+              let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
+              if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
+                mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
+              }
+
+              const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
+
+              tbody.innerHTML += `
+                <tr>
+                  <td>${mediaHtml}</td>
+                  <td><strong>${nomProduit}</strong></td>
+                  <td>${prixEffectif.toLocaleString('fr-FR')} FCFA</td>
+                  <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
+                  <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien</button></td>
+                </tr>
+              `;
+            }
+          });
         }
       }
 
-      if (count === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible pour le moment.</td></tr>`;
-      } else {
-        tbody.innerHTML = htmlContent;
-      }
+      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible.</td></tr>`;
     }
 
     function chargerStats(uid) {
