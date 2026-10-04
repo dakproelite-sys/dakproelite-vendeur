@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,7 +94,8 @@
       transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
     }
     .btn-action:hover { background-color: #000; }
-    .btn-copy { background: var(--primary-gold); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
+    .btn-copy { background: var(--primary-gold); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-copy:hover { background: var(--secondary-gold); color: #fff; }
 
     .table-container { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; min-width: 600px; }
@@ -412,6 +412,9 @@
     <section id="affiliation" class="tab-section">
       <div class="content-card">
         <h3>Produits Éligibles à l'Affiliation</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+          Générez vos revenus en partageant vos liens affiliés. La commission de 10% sera créditée sur votre solde à chaque achat validé.
+        </p>
         <div class="table-container">
           <table class="data-table">
             <thead>
@@ -420,7 +423,7 @@
                 <th>Produit / Cours</th>
                 <th>Prix</th>
                 <th>Gains (10%)</th>
-                <th>Mon Lien Affilié</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="affiliationProductsList">
@@ -843,8 +846,6 @@
         document.getElementById('previewImage').style.display = 'none';
         document.getElementById('previewVideo').style.display = 'none';
         document.getElementById('previewDoc').style.display = 'none';
-        chargerMesProduits(currentVendeurUid);
-        chargerAffiliationGlobal();
       } catch (err) {
         alert("Erreur lors de l'enregistrement : " + err.message);
       } finally {
@@ -853,103 +854,104 @@
       }
     };
 
-    /* CHARGEMENT DES PRODUITS DE LA BOUTIQUE VENDEUR (vendeur_publications) */
-    async function chargerMesProduits(uid) {
-      const grid = document.getElementById('boutiqueGrid');
-      const dashTbody = document.getElementById('dashboardProductsList');
-      
-      grid.innerHTML = "";
-      if (dashTbody) dashTbody.innerHTML = "";
+    /* CHARGEMENT TEMPS RÉEL (onValue) DES PRODUITS ET STATS DE LA BOUTIQUE */
+    function chargerMesProduits(uid) {
+      onValue(ref(database, 'vendeur_publications'), (snapshot) => {
+        const grid = document.getElementById('boutiqueGrid');
+        const dashTbody = document.getElementById('dashboardProductsList');
+        
+        grid.innerHTML = "";
+        if (dashTbody) dashTbody.innerHTML = "";
 
-      let totalMesProduits = 0;
-      let totalVisiteurs = 0;
-      let totalCommentaires = 0;
-      let totalLikes = 0;
+        let totalMesProduits = 0;
+        let totalVisiteurs = 0;
+        let totalCommentaires = 0;
+        let totalLikes = 0;
 
-      const snapshot = await get(ref(database, 'vendeur_publications'));
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          const prod = child.val();
-          const prodKey = prod.id || child.key;
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const prod = child.val();
+            const prodKey = prod.id || child.key;
 
-          if (prod.vendeurUid === uid || prod.createdBy === uid) {
-            totalMesProduits++;
+            if (prod.vendeurUid === uid || prod.createdBy === uid) {
+              totalMesProduits++;
 
-            totalVisiteurs += Number(prod.visiteurs || prod.views || 0);
-            totalLikes += Number(prod.likes || 0);
-            
-            if (prod.commentaires) {
-              totalCommentaires += Object.keys(prod.commentaires).length;
-            } else if (prod.commentairesCount) {
-              totalCommentaires += Number(prod.commentairesCount);
-            }
+              totalVisiteurs += Number(prod.visiteurs || prod.views || prod.clics || 0);
+              totalLikes += Number(prod.likes || 0);
+              
+              if (prod.commentaires && typeof prod.commentaires === 'object') {
+                totalCommentaires += Object.keys(prod.commentaires).length;
+              } else if (prod.commentairesCount) {
+                totalCommentaires += Number(prod.commentairesCount);
+              }
 
-            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
-            const mType = prod.mediaType || 'image';
-            
-            let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
-            let thumbHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
+              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+              const mType = prod.mediaType || 'image';
+              
+              let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
+              let thumbHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
 
-            if (mType === 'video') {
-              mediaHtml = `<video src="${mediaSrc}" controls></video>`;
-              thumbHtml = `<video src="${mediaSrc}" class="prod-thumb"></video>`;
-            } else if (mType === 'document') {
-              mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
-              thumbHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
-            }
+              if (mType === 'video') {
+                mediaHtml = `<video src="${mediaSrc}" controls></video>`;
+                thumbHtml = `<video src="${mediaSrc}" class="prod-thumb"></video>`;
+              } else if (mType === 'document') {
+                mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
+                thumbHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
+              }
 
-            const pageProduitUrl = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
-            const prixNormalAffiche = prod.prixNormal || prod.prix || 0;
-            const prixPromoAffiche = prod.prixPromo || prixNormalAffiche;
+              const pageProduitUrl = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
+              const prixNormalAffiche = prod.prixNormal || prod.prix || 0;
+              const prixPromoAffiche = prod.prixPromo || prixNormalAffiche;
 
-            grid.innerHTML += `
-              <div class="boutique-prod-card">
-                <div class="boutique-prod-media">
-                  ${mediaHtml}
-                </div>
-                <div class="boutique-prod-body">
-                  <div>
-                    <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
-                    <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Sans nom'}</div>
-                    <div class="boutique-prod-price">${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</div>
+              grid.innerHTML += `
+                <div class="boutique-prod-card">
+                  <div class="boutique-prod-media">
+                    ${mediaHtml}
                   </div>
-                  <div class="boutique-prod-actions">
-                    <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-eye"></i> Voir Produit</a>
-                    <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Copier Lien</button>
+                  <div class="boutique-prod-body">
+                    <div>
+                      <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
+                      <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Sans nom'}</div>
+                      <div class="boutique-prod-price">${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</div>
+                    </div>
+                    <div class="boutique-prod-actions">
+                      <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-eye"></i> Voir Produit</a>
+                      <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Copier Lien</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            `;
-
-            if (dashTbody) {
-              dashTbody.innerHTML += `
-                <tr>
-                  <td>${thumbHtml}</td>
-                  <td><strong>${prod.nom || prod.title || 'Produit'}</strong><br><small style="color:var(--text-muted);">Auteur: ${prod.auteur || prod.vendeurNom || 'N/A'}</small></td>
-                  <td><span class="status-badge" style="background:#e2e8f0; color:#334155;">${prod.categorie || 'GÉNÉRAL'}</span></td>
-                  <td><strong>${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</strong> <br><small style="text-decoration:line-through; color:var(--text-muted);">${Number(prixNormalAffiche).toLocaleString('fr-FR')} FCFA</small></td>
-                  <td><span class="status-badge status-success">${prod.stock !== undefined ? prod.stock : 100} en stock</span></td>
-                  <td>
-                    <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Lien</button>
-                  </td>
-                </tr>
               `;
+
+              if (dashTbody) {
+                dashTbody.innerHTML += `
+                  <tr>
+                    <td>${thumbHtml}</td>
+                    <td><strong>${prod.nom || prod.title || 'Produit'}</strong><br><small style="color:var(--text-muted);">Auteur: ${prod.auteur || prod.vendeurNom || 'N/A'}</small></td>
+                    <td><span class="status-badge" style="background:#e2e8f0; color:#334155;">${prod.categorie || 'GÉNÉRAL'}</span></td>
+                    <td><strong>${Number(prixPromoAffiche).toLocaleString('fr-FR')} FCFA</strong> <br><small style="text-decoration:line-through; color:var(--text-muted);">${Number(prixNormalAffiche).toLocaleString('fr-FR')} FCFA</small></td>
+                    <td><span class="status-badge status-success">${prod.stock !== undefined ? prod.stock : 100} en stock</span></td>
+                    <td>
+                      <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Lien</button>
+                    </td>
+                  </tr>
+                `;
+              }
             }
-          }
-        });
-      }
-
-      if (totalMesProduits === 0) {
-        grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article publié dans votre boutique (vendeur_publications).</p>`;
-        if (dashTbody) {
-          dashTbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun produit publié pour le moment. Cliquez sur "Publier Produit/Cours" pour ajouter votre première offre.</td></tr>`;
+          });
         }
-      }
 
-      document.getElementById('statProduits').innerText = totalMesProduits;
-      document.getElementById('statVisiteurs').innerText = totalVisiteurs;
-      document.getElementById('statCommentaires').innerText = totalCommentaires;
-      document.getElementById('statLikes').innerText = totalLikes;
+        if (totalMesProduits === 0) {
+          grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article publié dans votre boutique (vendeur_publications).</p>`;
+          if (dashTbody) {
+            dashTbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun produit publié pour le moment. Cliquez sur "Publier Produit/Cours" pour ajouter votre première offre.</td></tr>`;
+          }
+        }
+
+        document.getElementById('statProduits').innerText = totalMesProduits;
+        document.getElementById('statVisiteurs').innerText = totalVisiteurs;
+        document.getElementById('statCommentaires').innerText = totalCommentaires;
+        document.getElementById('statLikes').innerText = totalLikes;
+      });
     }
 
     window.copierLienMaBoutique = function() {
@@ -961,77 +963,82 @@
     };
 
     window.copierLien = function(lien) {
-      navigator.clipboard.writeText(lien).then(() => alert("Lien copié dans le presse-papier !"));
+      navigator.clipboard.writeText(lien).then(() => alert("Lien d'affiliation copié avec succès !"));
     };
 
-    /* CHARGEMENT HARMONISÉ DES DEUX NOEUDS ("publications" ET "vendeur_publications") */
-    async function chargerAffiliationGlobal() {
+    /* CHARGEMENT TEMPS RÉEL DU TABLEAU D'AFFILIATION */
+    function chargerAffiliationGlobal() {
       const tbody = document.getElementById('affiliationProductsList');
-      tbody.innerHTML = "";
-      let count = 0;
-      const seenIds = new Set();
+      if (!tbody) return;
 
-      const sources = ['publications', 'vendeur_publications'];
+      onValue(ref(database, 'vendeur_publications'), (snapshot) => {
+        let count = 0;
+        let htmlContent = "";
 
-      for (const src of sources) {
-        const snapshot = await get(ref(database, src));
         if (snapshot.exists()) {
           snapshot.forEach((child) => {
             const prod = child.val();
             const prodKey = prod.id || child.key;
+            count++;
 
-            if (!seenIds.has(prodKey)) {
-              seenIds.add(prodKey);
-              count++;
+            const nomProduit = prod.nom || prod.title || 'Produit sans titre';
 
-              const nomProduit = prod.nom || prod.title || 'Sans titre';
-              
-              let prixEffectif = 0;
-              if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
-                prixEffectif = Number(prod.prixPromo);
-              } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
-                prixEffectif = Number(prod.prix);
-              } else if (prod.prixNormal !== undefined && prod.prixNormal !== null) {
-                prixEffectif = Number(prod.prixNormal);
-              }
-
-              const gains = Math.round(prixEffectif * 0.10);
-              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
-              
-              let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-              if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
-                mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
-              } else if (prod.mediaType === 'document') {
-                mediaHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
-              }
-
-              const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
-
-              tbody.innerHTML += `
-                <tr>
-                  <td>${mediaHtml}</td>
-                  <td><strong>${nomProduit}</strong></td>
-                  <td>${prixEffectif.toLocaleString('fr-FR')} FCFA</td>
-                  <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
-                  <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien</button></td>
-                </tr>
-              `;
+            let prixEffectif = 0;
+            if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
+              prixEffectif = Number(prod.prixPromo);
+            } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
+              prixEffectif = Number(prod.prix);
+            } else if (prod.prixNormal !== undefined && prod.prixNormal !== null && Number(prod.prixNormal) > 0) {
+              prixEffectif = Number(prod.prixNormal);
             }
+
+            const gains = Math.round(prixEffectif * 0.10);
+
+            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+            let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
+
+            if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
+              mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
+            } else if (prod.mediaType === 'document') {
+              mediaHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#0f172a;color:#d4af37;"><i class="fa-solid fa-file-pdf"></i></div>`;
+            }
+
+            const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
+
+            htmlContent += `
+              <tr>
+                <td>${mediaHtml}</td>
+                <td>
+                  <strong>${nomProduit}</strong><br>
+                  <small style="color:var(--text-muted);">Auteur/Vendeur: ${prod.vendeurNom || prod.auteur || 'DAKPRO ÉLITE'}</small>
+                </td>
+                <td><strong>${prixEffectif.toLocaleString('fr-FR')} FCFA</strong></td>
+                <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
+                <td>
+                  <button class="btn-copy" onclick="window.copierLien('${affLink}')">
+                    <i class="fa-solid fa-link"></i> Copier Lien
+                  </button>
+                </td>
+              </tr>
+            `;
           });
         }
-      }
 
-      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible.</td></tr>`;
+        if (count === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible pour le moment.</td></tr>`;
+        } else {
+          tbody.innerHTML = htmlContent;
+        }
+      });
     }
 
     function chargerStats(uid) {
       onValue(ref(database, 'vendeurs_stats/' + uid), (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          document.getElementById('statSolde').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('statGainsAffiliation').innerText = (data.gainsAffiliation || 0) + " FCFA";
-          document.getElementById('statVentes').innerText = (data.ventesTotales || 0) + " FCFA";
+          document.getElementById('statSolde').innerText = (data.solde || 0).toLocaleString('fr-FR') + " FCFA";
+          document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0).toLocaleString('fr-FR') + " FCFA";
+          document.getElementById('statGainsAffiliation').innerText = (data.gainsAffiliation || 0).toLocaleString('fr-FR') + " FCFA";
         }
       });
     }
@@ -1078,7 +1085,7 @@
                 <tr>
                   <td>${new Date(ret.dateDemande || Date.now()).toLocaleDateString('fr-FR')}</td>
                   <td><strong>${ret.vendeurNomPrenom}</strong></td>
-                  <td><strong>${ret.montant} FCFA</strong></td>
+                  <td><strong>${ret.montant ? Number(ret.montant).toLocaleString('fr-FR') : 0} FCFA</strong></td>
                   <td>${ret.moyenPaiement}</td>
                   <td>${ret.numeroReceiver}</td>
                   <td><span class="status-badge status-pending">${ret.statut}</span></td>
@@ -1087,33 +1094,43 @@
             }
           });
         }
-        if (count === 0) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun retrait.</td></tr>`;
+        if (count === 0) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucune demande.</td></tr>`;
       });
     }
 
+    /* CHARGEMENT ET CALCUL EN TEMPS RÉEL DES COMMANDES ET VENTES TOTALES */
     function chargerCommandes(uid) {
       onValue(ref(database, 'commandes'), (snapshot) => {
         const tbody = document.getElementById('commandesList');
         tbody.innerHTML = "";
         let count = 0;
+        let totalVentesCumulees = 0;
 
         if (snapshot.exists()) {
           snapshot.forEach((child) => {
             const cmd = child.val();
-            if (cmd.vendeurUid === uid) {
+            if (cmd.vendeurUid === uid || cmd.vendeurID === uid) {
               count++;
+              const montantCmd = Number(cmd.montantTotal || cmd.montant || cmd.prix || 0);
+              
+              if (cmd.statut === "Payé" || cmd.statut === "Libré" || cmd.statut === "Validé" || !cmd.statut) {
+                totalVentesCumulees += montantCmd;
+              }
+
               tbody.innerHTML += `
                 <tr>
-                  <td>#${cmd.id ? cmd.id.substring(0, 6) : 'CMD'}</td>
-                  <td><strong>${cmd.nomClient || 'Client'}</strong></td>
-                  <td>${cmd.montantTotal || 0} FCFA</td>
-                  <td><span class="status-badge status-success">${cmd.statut || 'En attente'}</span></td>
-                  <td>${new Date(cmd.dateCommande || Date.now()).toLocaleDateString('fr-FR')}</td>
+                  <td>#${cmd.id ? cmd.id.substring(0, 6) : child.key.substring(0, 6)}</td>
+                  <td><strong>${cmd.nomClient || cmd.client || 'Client'}</strong></td>
+                  <td>${montantCmd.toLocaleString('fr-FR')} FCFA</td>
+                  <td><span class="status-badge status-success">${cmd.statut || 'Validé'}</span></td>
+                  <td>${new Date(cmd.dateCommande || cmd.createdAt || Date.now()).toLocaleDateString('fr-FR')}</td>
                 </tr>
               `;
             }
           });
         }
+
+        document.getElementById('statVentes').innerText = totalVentesCumulees.toLocaleString('fr-FR') + " FCFA";
         if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune commande.</td></tr>`;
       });
     }
