@@ -112,10 +112,142 @@
 
     .info-locked-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 16px; border-radius: 12px; margin-bottom: 16px; }
 
+    /* DESIGN BOUTIQUE PROFESSIONNEL MULTI-COLONNES */
+    .boutique-header-banner {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+      color: #fff;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--primary-gold);
+    }
+    .boutique-avatar-wrapper {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-gold);
+      overflow: hidden;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .boutique-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .boutique-avatar-wrapper .avatar-fallback {
+      font-size: 28px; font-weight: 800; color: var(--dark-bg);
+    }
+    .boutique-info h2 { font-size: 22px; color: var(--primary-gold); margin-bottom: 4px; font-weight: 800; }
+    .boutique-info p { font-size: 13px; color: #cbd5e1; }
+
+    /* RESPONSIVE GRID CONFIGURATION */
+    .boutique-products-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 640px) {
+      .boutique-products-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 768px) {
+      .boutique-products-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 1200px) {
+      .boutique-products-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+    @media (min-width: 1600px) {
+      .boutique-products-grid { grid-template-columns: repeat(8, 1fr); }
+    }
+
+    .boutique-prod-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .boutique-prod-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .boutique-prod-media {
+      width: 100%;
+      height: 140px;
+      background: #f1f5f9;
+      position: relative;
+      overflow: hidden;
+    }
+    .boutique-prod-media img, .boutique-prod-media video {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .boutique-prod-media .doc-icon-box {
+      display: flex; align-items: center; justify-content: center; height: 100%;
+      font-size: 36px; color: var(--primary-gold); background: var(--dark-bg);
+    }
+    .boutique-prod-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+    .boutique-prod-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .boutique-prod-category {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .boutique-prod-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--secondary-gold);
+      margin-bottom: 10px;
+    }
+    .boutique-prod-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .btn-view-prod {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--dark-bg);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+    .btn-view-prod:hover { background: #000; color: var(--primary-gold); }
+
     @media (max-width: 768px) {
       .sidebar { width: 70px; }
       .sidebar-header h2, .menu-text { display: none; }
       .main-content { margin-left: 70px; padding: 15px; }
+      .boutique-header-banner { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
@@ -165,8 +297,10 @@
         <div class="stat-card"><div class="title">Solde Disponible</div><div class="amount" id="statSolde">0 FCFA</div></div>
         <div class="stat-card"><div class="title">Gains d'Affiliation</div><div class="amount" id="statGainsAffiliation">0 FCFA</div></div>
         <div class="stat-card"><div class="title">Ventes Totales</div><div class="amount" id="statVentes">0 FCFA</div></div>
+        <div class="stat-card"><div class="title">Mes Produits Publiés</div><div class="amount" id="statProduits">0</div></div>
         <div class="stat-card"><div class="title">Visiteurs / Clics</div><div class="amount" id="statVisiteurs">0</div></div>
-        <div class="stat-card"><div class="title">Produits / Cours</div><div class="amount" id="statProduits">0</div></div>
+        <div class="stat-card"><div class="title">Commentaires</div><div class="amount" id="statCommentaires">0</div></div>
+        <div class="stat-card"><div class="title">Mentions J'aime</div><div class="amount" id="statLikes">0</div></div>
       </div>
       <div class="content-card">
         <h3>Aperçu des performances de ventes & visites</h3>
@@ -225,26 +359,24 @@
     <!-- 3. MA BOUTIQUE -->
     <section id="boutique" class="tab-section">
       <div class="content-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <h3>Catalogue de Ma Boutique</h3>
-          <button class="btn-copy" onclick="window.copierLienMaBoutique()"><i class="fa-solid fa-share-nodes"></i> Copier le Lien de Ma Boutique</button>
+        <div class="boutique-header-banner">
+          <div class="boutique-avatar-wrapper" id="boutiqueAvatarDisplay">
+            <span class="avatar-fallback" id="boutiqueInitial">V</span>
+          </div>
+          <div class="boutique-info">
+            <h2 id="boutiqueTitleDisplay">Ma Boutique DAKPRO ÉLITE</h2>
+            <p><i class="fa-solid fa-store"></i> Espace d'exposition officiel vendeur & affilié</p>
+          </div>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Partagez ce lien unique pour que vos clients voient exclusivement votre boutique.</p>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Visuel / Média</th>
-                <th>Titre & Catégorie</th>
-                <th>Prix</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="boutiqueProductsList">
-              <tr><td colspan="5" style="text-align:center;">Chargement des articles...</td></tr>
-            </tbody>
-          </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+          <h3>Catalogue Exclusif (vendeur_publications)</h3>
+          <button class="btn-copy" onclick="window.copierLienMaBoutique()"><i class="fa-solid fa-share-nodes"></i> Copier le Lien de Ma Boutique Complète</button>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted);">Partagez votre lien de boutique pour que vos clients voient exclusivement vos produits.</p>
+
+        <div class="boutique-products-grid" id="boutiqueGrid">
+          <p style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted);">Chargement des publications de votre boutique...</p>
         </div>
       </div>
     </section>
@@ -417,11 +549,11 @@
     </section>
   </main>
 
-  <!-- FIREBASE LOGIQUE COMPLÈTE -->
+  <!-- LOGIQUE FIREBASE COMPLÈTE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
@@ -440,6 +572,7 @@
     let currentVendeurUid = null;
     let currentVendeurPhone = "";
     let currentVendeurNom = "";
+    let currentVendeurAvatar = "";
     let profilRetraitEnregistre = null;
 
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -564,16 +697,29 @@
         const data = snapshot.val();
         currentVendeurNom = data.nomComplet || data.nomBoutique || "Vendeur";
         currentVendeurPhone = data.telephone || "";
+        currentVendeurAvatar = data.imageUrl || "";
 
         document.getElementById('headerBoutiqueName').innerText = currentVendeurNom;
         document.getElementById('profBoutique').value = currentVendeurNom;
         document.getElementById('profPhone').value = currentVendeurPhone;
 
         const avatarContainer = document.getElementById('vendeurAvatar');
-        if (data.imageUrl) {
-          avatarContainer.innerHTML = `<img src="${data.imageUrl}" alt="Avatar">`;
+        const boutiqueAvatarContainer = document.getElementById('boutiqueAvatarDisplay');
+        const boutiqueTitle = document.getElementById('boutiqueTitleDisplay');
+
+        if (boutiqueTitle) boutiqueTitle.innerText = currentVendeurNom;
+
+        if (currentVendeurAvatar) {
+          avatarContainer.innerHTML = `<img src="${currentVendeurAvatar}" alt="Avatar">`;
+          if (boutiqueAvatarContainer) {
+            boutiqueAvatarContainer.innerHTML = `<img src="${currentVendeurAvatar}" alt="Boutique Avatar">`;
+          }
         } else {
-          avatarContainer.innerText = currentVendeurNom[0].toUpperCase();
+          const initial = currentVendeurNom[0] ? currentVendeurNom[0].toUpperCase() : 'V';
+          avatarContainer.innerText = initial;
+          if (boutiqueAvatarContainer) {
+            boutiqueAvatarContainer.innerHTML = `<span class="avatar-fallback">${initial}</span>`;
+          }
         }
       }
     }
@@ -653,7 +799,10 @@
           description: document.getElementById('pDescription').value,
           vendeurPhone: currentVendeurPhone,
           vendeurNom: currentVendeurNom,
-          createdAt: Date.now()
+          createdAt: Date.now(),
+          visiteurs: 0,
+          likes: 0,
+          commentairesCount: 0
         };
 
         await set(newRef, itemData);
@@ -672,53 +821,78 @@
       }
     };
 
+    /* CHARGEMENT STRICT DE LA BOUTIQUE & CALCUL EXCLUSIF POUR LE TABLEAU DE BORD */
     async function chargerMesProduits(uid) {
-      const tbody = document.getElementById('boutiqueProductsList');
-      tbody.innerHTML = "";
-      let count = 0;
-      const seenIds = new Set();
+      const grid = document.getElementById('boutiqueGrid');
+      grid.innerHTML = "";
+      let totalMesProduits = 0;
+      let totalVisiteurs = 0;
+      let totalCommentaires = 0;
+      let totalLikes = 0;
 
-      const sources = ['vendeur_publications', 'publications'];
-      
-      for (const src of sources) {
-        const snapshot = await get(ref(database, src));
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const prod = child.val();
-            const prodKey = prod.id || child.key;
+      const snapshot = await get(ref(database, 'vendeur_publications'));
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          const prod = child.val();
+          const prodKey = prod.id || child.key;
 
-            if (!seenIds.has(prodKey) && (prod.vendeurUid === uid || prod.createdBy === uid)) {
-              seenIds.add(prodKey);
-              count++;
+          // COMPTAGE EXCLUSIF : Seuls les articles publiés par le vendeur courant sous 'vendeur_publications'
+          if (prod.vendeurUid === uid || prod.createdBy === uid) {
+            totalMesProduits++;
 
-              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
-              const mType = prod.mediaType || 'image';
-              let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-
-              if (mType === 'video') {
-                mediaHtml = `<video src="${mediaSrc}" class="prod-thumb" controls></video>`;
-              } else if (mType === 'document') {
-                mediaHtml = `<div class="prod-thumb" style="display:flex;align-items:center;justify-content:center;background:#cbd5e1;"><i class="fa-solid fa-file-pdf"></i></div>`;
-              }
-
-              const link = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
-
-              tbody.innerHTML += `
-                <tr>
-                  <td>${mediaHtml}</td>
-                  <td><strong>${prod.nom || prod.title || 'Produit'}</strong><br><small>${prod.categorie || 'GÉNÉRAL'}</small></td>
-                  <td><strong>${prod.prixPromo || prod.prix || 0} FCFA</strong></td>
-                  <td>${prod.stock !== undefined ? prod.stock : 'N/A'}</td>
-                  <td><button class="btn-copy" onclick="window.copierLien('${link}')"><i class="fa-solid fa-copy"></i> Copier Lien</button></td>
-                </tr>
-              `;
+            totalVisiteurs += Number(prod.visiteurs || prod.views || 0);
+            totalLikes += Number(prod.likes || 0);
+            
+            if (prod.commentaires) {
+              totalCommentaires += Object.keys(prod.commentaires).length;
+            } else if (prod.commentairesCount) {
+              totalCommentaires += Number(prod.commentairesCount);
             }
-          });
-        }
+
+            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+            const mType = prod.mediaType || 'image';
+            
+            let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
+            if (mType === 'video') {
+              mediaHtml = `<video src="${mediaSrc}" controls></video>`;
+            } else if (mType === 'document') {
+              mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
+            }
+
+            const pageProduitUrl = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
+            const prixAffiche = prod.prixPromo || prod.prix || prod.prixNormal || 0;
+
+            grid.innerHTML += `
+              <div class="boutique-prod-card">
+                <div class="boutique-prod-media">
+                  ${mediaHtml}
+                </div>
+                <div class="boutique-prod-body">
+                  <div>
+                    <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
+                    <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Sans nom'}</div>
+                    <div class="boutique-prod-price">${Number(prixAffiche).toLocaleString('fr-FR')} FCFA</div>
+                  </div>
+                  <div class="boutique-prod-actions">
+                    <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-eye"></i> Voir Produit</a>
+                    <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Copier Lien</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        });
       }
 
-      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun article dans votre boutique.</td></tr>`;
-      document.getElementById('statProduits').innerText = count;
+      if (totalMesProduits === 0) {
+        grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article publié dans votre boutique (vendeur_publications).</p>`;
+      }
+
+      // Mise à jour exacte du tableau de bord
+      document.getElementById('statProduits').innerText = totalMesProduits;
+      document.getElementById('statVisiteurs').innerText = totalVisiteurs;
+      document.getElementById('statCommentaires').innerText = totalCommentaires;
+      document.getElementById('statLikes').innerText = totalLikes;
     }
 
     window.copierLienMaBoutique = function() {
@@ -733,13 +907,13 @@
       navigator.clipboard.writeText(lien).then(() => alert("Lien copié dans le presse-papier !"));
     };
 
+    /* NE PAS TOUCHER : CONSERVÉ STRICTEMENT INTÉGRALEMENT POUR L'AFFILIATION */
     async function chargerAffiliationGlobal() {
       const tbody = document.getElementById('affiliationProductsList');
       tbody.innerHTML = "";
       let count = 0;
       const seenIds = new Set();
 
-      // Fusion des deux nœuds Firebase : publications (ancienne version) et vendeur_publications (nouvelle)
       const sources = ['publications', 'vendeur_publications'];
 
       for (const src of sources) {
@@ -753,20 +927,33 @@
               seenIds.add(prodKey);
               count++;
 
-              const prix = prod.prixPromo || prod.prix || prod.prixNormal || 0;
-              const gains = Math.round(prix * 0.10);
-              const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid}`;
+              const nomProduit = prod.nom || prod.title || 'Sans titre';
+              
+              let prixEffectif = 0;
+              if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
+                prixEffectif = Number(prod.prixPromo);
+              } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
+                prixEffectif = Number(prod.prix);
+              } else if (prod.prixNormal !== undefined && prod.prixNormal !== null) {
+                prixEffectif = Number(prod.prixNormal);
+              }
 
-              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+              const gains = Math.round(prixEffectif * 0.10);
+              const mediaSrc = prod.imageUrl || prod.image || '477912.png';
+              
               let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-              if (prod.mediaType === 'video') mediaHtml = `<video src="${mediaSrc}" class="prod-thumb"></video>`;
+              if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
+                mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
+              }
+
+              const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
 
               tbody.innerHTML += `
                 <tr>
                   <td>${mediaHtml}</td>
-                  <td><strong>${prod.nom || prod.title || 'Produit'}</strong></td>
-                  <td>${prix} FCFA</td>
-                  <td><strong style="color:var(--success-color);">+${gains} FCFA</strong></td>
+                  <td><strong>${nomProduit}</strong></td>
+                  <td>${prixEffectif.toLocaleString('fr-FR')} FCFA</td>
+                  <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
                   <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien</button></td>
                 </tr>
               `;
@@ -775,7 +962,7 @@
         }
       }
 
-      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation.</td></tr>`;
+      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible.</td></tr>`;
     }
 
     function chargerStats(uid) {
@@ -786,7 +973,6 @@
           document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0) + " FCFA";
           document.getElementById('statGainsAffiliation').innerText = (data.gainsAffiliation || 0) + " FCFA";
           document.getElementById('statVentes').innerText = (data.ventesTotales || 0) + " FCFA";
-          document.getElementById('statVisiteurs').innerText = (data.visiteurs || 0);
         }
       });
     }
