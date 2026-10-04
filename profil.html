@@ -4,445 +4,473 @@
 <!-- SERVEUR / PROJET : DAKPRO ELITE PLATFORM                      -->
 <!-- ============================================================ -->
 
-<!-- STYLES SPECIFIQUES DU MODULE PROFIL -->
 <style>
   :root {
-    --pf-primary: #1e293b;
+    --pf-primary: #0f172a;
+    --pf-card-bg: #ffffff;
     --pf-accent-gold: #d97706;
-    --pf-success: #16a34a;
-    --pf-danger: #dc2626;
+    --pf-accent-hover: #b45309;
     --pf-border: #e2e8f0;
-    --pf-bg-card: #ffffff;
     --pf-text-main: #0f172a;
     --pf-text-muted: #64748b;
-    --pf-input-bg: #f8fafc;
+    --pf-bg-input: #f8fafc;
+    --pf-success: #16a34a;
   }
 
-  .profil-container {
-    max-width: 900px;
+  .profil-wrapper {
+    max-width: 920px;
     margin: 0 auto;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--pf-text-main);
   }
 
-  /* En-tête de la section */
+  /* Carte Profil Principale */
+  .profil-card-main {
+    background: var(--pf-card-bg);
+    border: 1px solid var(--pf-border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Bannière supérieure */
   .profil-header-banner {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 32px 28px;
     color: #ffffff;
-    padding: 24px 28px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 16px;
   }
 
-  .profil-header-banner h2 {
+  .profil-header-title h2 {
     margin: 0;
     font-size: 22px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 12px;
-    letter-spacing: -0.3px;
+    gap: 10px;
   }
 
-  .profil-header-banner p {
+  .profil-header-title p {
     margin: 6px 0 0 0;
     font-size: 13px;
     color: #94a3b8;
   }
 
-  .profil-badge-status {
-    background: rgba(217, 119, 6, 0.15);
-    border: 1px solid rgba(217, 119, 6, 0.4);
-    color: #f59e0b;
+  .profil-role-badge {
+    background: rgba(217, 119, 6, 0.2);
+    border: 1px solid rgba(217, 119, 6, 0.5);
+    color: #fbbf24;
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Corps de la carte */
+  .profil-body {
+    padding: 28px;
+  }
+
+  /* Avatar & Header Profil */
+  .profil-identity-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--pf-border);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .profil-avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--pf-accent-gold);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #0f172a;
+    flex-shrink: 0;
+  }
+
+  .profil-avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .avatar-edit-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--pf-accent-gold);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+  }
+
+  .avatar-edit-overlay:hover {
+    transform: scale(1.1);
+  }
+
+  .profil-user-details h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--pf-text-main);
+  }
+
+  .profil-user-details p {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: var(--pf-text-muted);
+  }
+
+  /* Grille des champs de formulaire */
+  .profil-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .profil-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .profil-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .profil-field.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .profil-field label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pf-text-muted);
     display: flex;
     align-items: center;
     gap: 6px;
   }
 
-  /* Cartes de contenu */
-  .profil-card {
-    background: var(--pf-bg-card);
-    border: 1px solid var(--pf-border);
-    border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    margin-bottom: 24px;
-  }
-
-  .profil-card-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--pf-text-main);
-    margin-top: 0;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* Grille de Formulaire */
-  .profil-form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  @media (max-width: 768px) {
-    .profil-form-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .profil-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .profil-form-group.full-width {
-    grid-column: 1 / -1;
-  }
-
-  .profil-form-group label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-  }
-
-  .profil-form-group input,
-  .profil-form-group select {
+  .profil-field input {
     width: 100%;
     padding: 12px 14px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--pf-border);
     border-radius: 10px;
     font-size: 14px;
-    background-color: #ffffff;
-    transition: all 0.2s ease;
+    color: var(--pf-text-main);
+    background-color: var(--pf-bg-input);
     box-sizing: border-box;
+    transition: all 0.2s ease;
   }
 
-  .profil-form-group input:focus,
-  .profil-form-group select:focus {
+  .profil-field input:focus {
     outline: none;
+    background-color: #ffffff;
     border-color: var(--pf-accent-gold);
     box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
   }
 
-  .profil-form-group input[readonly] {
+  .profil-field input[readonly] {
     background-color: #f1f5f9;
     color: #64748b;
     cursor: not-allowed;
+    border-color: #e2e8f0;
   }
 
-  /* Section Photo / Avatar Upload */
-  .avatar-upload-wrapper {
+  /* Actions en bas */
+  .profil-actions {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--pf-border);
     display: flex;
-    align-items: center;
-    gap: 20px;
-    background: var(--pf-input-bg);
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px dashed #cbd5e1;
+    justify-content: flex-end;
   }
 
-  .avatar-preview-box {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 3px solid var(--pf-accent-gold);
-    overflow: hidden;
-    background: #0f172a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .avatar-preview-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Boutons */
-  .btn-profil-submit {
-    width: 100%;
-    padding: 14px;
+  .btn-save-profil {
     background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
     color: #ffffff;
     border: none;
+    padding: 12px 28px;
     border-radius: 10px;
+    font-size: 14px;
     font-weight: 700;
-    font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    gap: 8px;
     box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+    transition: all 0.2s ease;
   }
 
-  .btn-profil-submit:hover {
+  .btn-save-profil:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
   }
 
-  .btn-profil-support {
-    background: #f1f5f9;
-    color: #334155;
-    border: 1px solid #cbd5e1;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .btn-profil-support:hover {
-    background: #e2e8f0;
-  }
-
-  /* Structure Profil Verrouillé */
-  .locked-profile-display {
-    display: flex;
-    gap: 28px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .locked-avatar-circle {
-    width: 110px;
-    height: 110px;
+  /* Loader interne */
+  .profil-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
     border-radius: 50%;
-    border: 4px solid var(--pf-accent-gold);
-    overflow: hidden;
-    background: #0f172a;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    flex-shrink: 0;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
   }
 
-  .locked-avatar-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .locked-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-top: 16px;
-    background: #f8fafc;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid #f1f5f9;
-  }
-
-  @media (max-width: 600px) {
-    .locked-info-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .locked-info-item {
-    font-size: 13px;
-    color: var(--pf-text-main);
-  }
-
-  .locked-info-item strong {
-    color: #475569;
-  }
-
-  .info-locked-box {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 10px;
-    padding: 16px;
-    margin-top: 20px;
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>
 
-<!-- SECTION PRINCIPALE PROFIL -->
-<section id="profil" class="tab-section profil-container">
-  
-  <!-- BANNIÈRE D'EN-TÊTE PERMANENTE -->
-  <div class="profil-header-banner">
-    <div>
-      <h2><i class="fa-solid fa-id-card" style="color: var(--pf-accent-gold);"></i> Profil Vendeur Officiel</h2>
-      <p>Gérez vos identifiants, la marque de votre boutique et vos informations de contact enregistrées.</p>
-    </div>
-    <div class="profil-badge-status" id="badgeProfilEtat">
-      <i class="fa-solid fa-clock-rotate-left"></i> Statut : En attente de finalisation
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 1. FORMULAIRE D'ÉDITION (AFFICHE TANT QUE NON VERROUILLÉ)     -->
-  <!-- ============================================================ -->
-  <div class="profil-card" id="cardProfilEdition">
-    <h3 class="profil-card-title">
-      <i class="fa-solid fa-user-pen" style="color: var(--pf-accent-gold);"></i>
-      Renseigner Vos Informations Vendeur
-    </h3>
+<section id="profil" class="tab-section profil-wrapper">
+  <div class="profil-card-main">
     
-    <p style="font-size: 13px; color: var(--pf-text-muted); margin-bottom: 20px; line-height: 1.5;">
-      Veuillez compléter l'ensemble des champs ci-dessous avec des données exactes. Une fois soumises, vos informations de profil seront synchronisées et <strong>verrouillées</strong> pour des raisons de sécurité et d'authentification de votre boutique.
-    </p>
+    <!-- EN-TÊTE PROFESSIONNEL -->
+    <div class="profil-header-banner">
+      <div class="profil-header-title">
+        <h2><i class="fa-solid fa-user-gear" style="color: var(--pf-accent-gold);"></i> Espace Profil Vendeur</h2>
+        <p>Gérez vos informations personnelles et l'identité visuelle de votre boutique.</p>
+      </div>
+      <div class="profil-role-badge" id="profBadgeRole">
+        <i class="fa-solid fa-store"></i> <span id="lblRole">Vendeur Officiel</span>
+      </div>
+    </div>
 
-    <form onsubmit="window.sauvegarderEtVerrouillerProfil(event)">
-      <div class="profil-form-grid">
+    <!-- CORPS DU MODULE -->
+    <div class="profil-body">
+      <form id="formProfilVendeur" onsubmit="sauvegarderProfil(event)">
         
-        <!-- Téléversement Logo / Avatar -->
-        <div class="profil-form-group full-width">
-          <label>Photo de Profil / Logo Officiel de la Boutique *</label>
-          <div class="avatar-upload-wrapper">
-            <div class="avatar-preview-box">
-              <img id="previewAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>" alt="Aperçu Profil">
-            </div>
-            <div style="flex: 1;">
-              <input type="file" id="pInputAvatar" accept="image/*" required onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
-              <input type="hidden" id="base64Avatar">
-              <span style="font-size: 11px; color: var(--pf-text-muted); display: block; margin-top: 6px;">Format recommandé : PNG, JPG ou WEBP (max 2 Mo).</span>
-            </div>
+        <!-- PHOTO DE PROFIL & NOM EN-TÊTE -->
+        <div class="profil-identity-box">
+          <div class="profil-avatar-wrapper">
+            <img id="imgAvatarProfil" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>" alt="Avatar">
+            <label for="inputAvatarFile" class="avatar-edit-overlay" title="Changer la photo">
+              <i class="fa-solid fa-camera"></i>
+            </label>
+            <input type="file" id="inputAvatarFile" accept="image/*" style="display: none;" onchange="traiterImageProfil(event)">
+            <input type="hidden" id="profBase64Avatar">
+          </div>
+          
+          <div class="profil-user-details">
+            <h3 id="txtHeaderNomComplet">Chargement du profil...</h3>
+            <p id="txtHeaderEmail">-</p>
           </div>
         </div>
 
-        <!-- Identité Réelle -->
-        <div class="profil-form-group">
-          <label for="profNomReel">Nom Réel *</label>
-          <input type="text" id="profNomReel" required placeholder="Ex: AGLIGNAMOU">
+        <!-- GRILLE DES INFORMATIONS -->
+        <div class="profil-grid">
+
+          <!-- Nom de la boutique -->
+          <div class="profil-field">
+            <label for="profNomBoutique"><i class="fa-solid fa-shop" style="color: var(--pf-accent-gold);"></i> Nom de la Boutique</label>
+            <input type="text" id="profNomBoutique" placeholder="Ex: DAKJUBILE STORE" required>
+          </div>
+
+          <!-- Nom Complet -->
+          <div class="profil-field">
+            <label for="profNomComplet"><i class="fa-solid fa-id-card" style="color: var(--pf-accent-gold);"></i> Nom Complet</label>
+            <input type="text" id="profNomComplet" placeholder="Ex: DAKJUBILE" required>
+          </div>
+
+          <!-- Email (Lecture seule) -->
+          <div class="profil-field">
+            <label for="profEmail"><i class="fa-solid fa-envelope" style="color: var(--pf-accent-gold);"></i> Adresse E-mail</label>
+            <input type="email" id="profEmail" readonly title="L'adresse e-mail associée au compte d'accès ne peut pas être modifiée ici.">
+          </div>
+
+          <!-- Numéro de téléphone / WhatsApp -->
+          <div class="profil-field">
+            <label for="profTelephone"><i class="fa-solid fa-phone" style="color: var(--pf-accent-gold);"></i> Téléphone / WhatsApp</label>
+            <input type="tel" id="profTelephone" placeholder="Ex: +2290197455309" required>
+          </div>
+
+          <!-- Pays -->
+          <div class="profil-field">
+            <label for="profPays"><i class="fa-solid fa-earth-africa" style="color: var(--pf-accent-gold);"></i> Pays</label>
+            <input type="text" id="profPays" placeholder="Ex: Bénin" required>
+          </div>
+
+          <!-- Ville / Commune / Adresse -->
+          <div class="profil-field">
+            <label for="profCommune"><i class="fa-solid fa-location-dot" style="color: var(--pf-accent-gold);"></i> Ville / Commune / Adresse</label>
+            <input type="text" id="profCommune" placeholder="Ex: Cotonou, Akpakpa" required>
+          </div>
+
         </div>
 
-        <div class="profil-form-group">
-          <label for="profPrenomReel">Prénom Réel *</label>
-          <input type="text" id="profPrenomReel" required placeholder="Ex: Marc">
+        <!-- BOUTON DE SAUVEGARDE EN BAS -->
+        <div class="profil-actions">
+          <button type="submit" class="btn-save-profil" id="btnSubmitProfil">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span id="btnTextProfil">Mettre à jour mon profil</span>
+          </button>
         </div>
 
-        <div class="profil-form-group full-width">
-          <label for="profEmail">Adresse E-mail Compte *</label>
-          <input type="email" id="profEmail" readonly title="Cette adresse e-mail est liée à votre compte d'accès.">
-        </div>
-
-        <!-- Boutique & Contact -->
-        <div class="profil-form-group">
-          <label for="profNomBoutique">Nom de la Boutique / Marque *</label>
-          <input type="text" id="profNomBoutique" required placeholder="Ex: DAKPRO ELITE STORE">
-        </div>
-
-        <div class="profil-form-group">
-          <label for="profPhoneWhatsapp">Numéro WhatsApp Pro *</label>
-          <input type="tel" id="profPhoneWhatsapp" required placeholder="Ex: +2290197455309">
-        </div>
-
-        <!-- Localisation -->
-        <div class="profil-form-group">
-          <label for="profPays">Pays de Résidence *</label>
-          <select id="profPays" required>
-            <option value="">-- Sélectionnez votre pays --</option>
-            <option value="Bénin" selected>Bénin</option>
-            <option value="Togo">Togo</option>
-            <option value="Côte d'Ivoire">Côte d'Ivoire</option>
-            <option value="Sénégal">Sénégal</option>
-            <option value="Burkina Faso">Burkina Faso</option>
-            <option value="Mali">Mali</option>
-            <option value="Niger">Niger</option>
-            <option value="Cameroun">Cameroun</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </div>
-
-        <div class="profil-form-group">
-          <label for="profCommune">Ville / Commune *</label>
-          <input type="text" id="profCommune" required placeholder="Ex: Cotonou, Calavi, Parakou...">
-        </div>
-
-      </div>
-
-      <div style="margin-top: 28px;">
-        <button type="submit" class="btn-profil-submit" id="btnSaveProfil">
-          <i class="fa-solid fa-lock"></i> Valider et Verrouiller Mon Profil
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-
-
-  <!-- ============================================================ -->
-  <!-- 2. VUE COMPTE VERROUILLÉ (AFFICHE UNE FOIS ENREGISTRÉ)       -->
-  <!-- ============================================================ -->
-  <div class="profil-card" id="cardProfilLocked" style="display: none;">
-    
-    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--pf-border); padding-bottom: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
-      <h3 class="profil-card-title" style="margin: 0; color: var(--pf-success);">
-        <i class="fa-solid fa-circle-check"></i> Profil Vendeur Certifié
-      </h3>
-      <span class="profil-badge-status" style="background: rgba(22, 163, 74, 0.1); border-color: rgba(22, 163, 74, 0.3); color: var(--pf-success);">
-        <i class="fa-solid fa-shield-halved"></i> Identité Vérifiée
-      </span>
-    </div>
-
-    <div class="locked-profile-display">
-      <!-- Photo enregistrée -->
-      <div class="locked-avatar-circle">
-        <img id="dispProfilAvatar" src="" alt="Avatar Vendeur">
-      </div>
-
-      <!-- Informations récapitulatives -->
-      <div style="flex: 1; min-width: 260px;">
-        <h2 id="dispProfilBoutique" style="font-size: 22px; font-weight: 800; color: var(--pf-text-main); margin: 0 0 6px 0;">-</h2>
-        <p style="font-size: 14px; color: var(--pf-text-muted); margin: 0 0 16px 0;">
-          <i class="fa-solid fa-user-check" style="color: var(--pf-accent-gold);"></i> Titulaire du Compte : <strong id="dispProfilNomComplet" style="color: var(--pf-text-main);">-</strong>
-        </p>
-
-        <div class="locked-info-grid">
-          <div class="locked-info-item">
-            <i class="fa-solid fa-envelope" style="color: var(--pf-accent-gold);"></i> 
-            <strong>E-mail :</strong> <span id="dispProfilEmail">-</span>
-          </div>
-          <div class="locked-info-item">
-            <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> 
-            <strong>WhatsApp :</strong> <span id="dispProfilPhone">-</span>
-          </div>
-          <div class="locked-info-item">
-            <i class="fa-solid fa-earth-africa" style="color: var(--pf-accent-gold);"></i> 
-            <strong>Pays :</strong> <span id="dispProfilPays">-</span>
-          </div>
-          <div class="locked-info-item">
-            <i class="fa-solid fa-location-dot" style="color: var(--pf-accent-gold);"></i> 
-            <strong>Ville / Commune :</strong> <span id="dispProfilCommune">-</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Message d'information sur le verrouillage -->
-    <div class="info-locked-box">
-      <p style="font-size: 13px; color: var(--pf-danger); font-weight: 600; margin: 0; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-lock"></i> Ces données de profil ont été enregistrées et verrouillées sur le serveur.
-      </p>
-      <p style="font-size: 12px; color: #64748b; margin: 6px 0 0 0;">
-        Pour toute correction ou modification de votre identité et de votre boutique, merci de formuler une demande explicite à l'équipe technique.
-      </p>
-      <button class="btn-profil-support" onclick="window.contacterSupportProfil()">
-        <i class="fa-solid fa-headset" style="color: var(--pf-accent-gold);"></i> Demander une modification au Support
-      </button>
-    </div>
-
-  </div>
-
 </section>
+
+<!-- SCRIPT DE SYNCHRONISATION DYNAMIQUE FIREBASE -->
+<script>
+  // Conversion & Compression de l'image sélectionnée en Base64
+  function traiterImageProfil(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      alert("L'image est trop lourde. Veuillez choisir une image de moins de 3 Mo.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const max_size = 400; // Format carré optimisé pour l'avatar
+
+        if (width > height) {
+          if (width > max_size) {
+            height *= max_size / width;
+            width = max_size;
+          }
+        } else {
+          if (height > max_size) {
+            width *= max_size / height;
+            height = max_size;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const base64Str = canvas.toDataURL('image/jpeg', 0.85);
+        document.getElementById('imgAvatarProfil').src = base64Str;
+        document.getElementById('profBase64Avatar').value = base64Str;
+      };
+      img.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Écouteur d'état d'authentification Firebase
+  if (typeof firebase !== 'undefined' && firebase.auth) {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        chargerProfilFirebase(user.uid, user.email);
+      } else {
+        console.warn("Aucun utilisateur connecté.");
+      }
+    });
+  }
+
+  // Chargement dynamique des données depuis Realtime Database
+  function chargerProfilFirebase(uid, emailAuth) {
+    const userRef = firebase.database().ref('users/' + uid);
+    
+    userRef.on('value', function(snapshot) {
+      const data = snapshot.val() || {};
+
+      // Récupération des champs (fallback si certains sont absents)
+      const nomComplet = data.nomComplet || data.nom || "Nom non défini";
+      const nomBoutique = data.nomBoutique || nomComplet;
+      const email = data.email || emailAuth || "";
+      const telephone = data.telephone || data.phone || "";
+      const pays = data.pays || "Bénin";
+      const commune = data.commune || data.ville || data.adresse || "";
+      const role = data.role || "vendeur";
+      const avatar = data.imageUrl || data.photoURL || data.photo60 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>";
+
+      // Injection dans le HTML
+      document.getElementById('txtHeaderNomComplet').textContent = nomBoutique;
+      document.getElementById('txtHeaderEmail').textContent = email;
+      document.getElementById('lblRole').textContent = role.toUpperCase();
+
+      document.getElementById('profNomBoutique').value = nomBoutique;
+      document.getElementById('profNomComplet').value = nomComplet;
+      document.getElementById('profEmail').value = email;
+      document.getElementById('profTelephone').value = telephone;
+      document.getElementById('profPays').value = pays;
+      document.getElementById('profCommune').value = commune;
+
+      document.getElementById('imgAvatarProfil').src = avatar;
+      document.getElementById('profBase64Avatar').value = avatar;
+    });
+  }
+
+  // Sauvegarde des modifications sur Firebase Realtime Database
+  function sauvegarderProfil(e) {
+    e.preventDefault();
+
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert("Erreur : Aucun utilisateur connecté.");
+      return;
+    }
+
+    const btn = document.getElementById('btnSubmitProfil');
+    const btnText = document.getElementById('btnTextProfil');
+    btn.disabled = true;
+    btnText.innerHTML = '<span class="profil-spinner"></span> Enregistrement...';
+
+    const updatedData = {
+      nomBoutique: document.getElementById('profNomBoutique').value.trim(),
+      nomComplet: document.getElementById('profNomComplet').value.trim(),
+      telephone: document.getElementById('profTelephone').value.trim(),
+      pays: document.getElementById('profPays').value.trim(),
+      commune: document.getElementById('profCommune').value.trim(),
+      imageUrl: document.getElementById('profBase64Avatar').value,
+      photo60: document.getElementById('profBase64Avatar').value, // Synchronisation rétrocompatible
+      dateModification: new Date().toISOString()
+    };
+
+    firebase.database().ref('users/' + user.uid).update(updatedData)
+      .then(function() {
+        btn.disabled = false;
+        btnText.innerHTML = '<i class="fa-solid fa-check"></i> Enregistré avec succès !';
+        setTimeout(() => {
+          btnText.innerHTML = 'Mettre à jour mon profil';
+        }, 3000);
+      })
+      .catch(function(error) {
+        console.error("Erreur de sauvegarde :", error);
+        alert("Erreur lors de la mise à jour du profil : " + error.message);
+        btn.disabled = false;
+        btnText.innerHTML = 'Mettre à jour mon profil';
+      });
+  }
+</script>
