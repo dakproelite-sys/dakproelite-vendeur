@@ -74,180 +74,10 @@
     }
     .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-    .tab-section { display: none; }
-    .tab-section.active { display: block; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 25px; }
-    .stat-card { background: var(--card-bg); padding: 18px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
-    .stat-card .title { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
-    .stat-card .amount { font-size: 20px; font-weight: 800; color: var(--text-main); }
-
-    .content-card { background: var(--card-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 24px; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 13px; font-weight: 600; color: var(--text-main); }
-    .form-group input, .form-group select, .form-group textarea { padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-size: 14px; }
-
-    .btn-action {
-      background-color: var(--dark-bg); color: var(--primary-gold); border: 1px solid var(--primary-gold);
-      padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 16px;
-      transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-    }
-    .btn-action:hover { background-color: #000; }
-    .btn-copy { background: var(--primary-gold); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
-
-    .table-container { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; min-width: 600px; }
-    .data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 13.5px; vertical-align: middle; }
-    .data-table th { background: #f1f5f9; color: var(--text-muted); font-weight: 700; }
-
-    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-    .status-success { background: #d1fae5; color: #065f46; }
-    .status-pending { background: #fef3c7; color: #92400e; }
-
-    .preview-container { margin-top: 10px; }
-    .image-preview, .video-preview { max-width: 200px; max-height: 150px; border-radius: 8px; border: 1px dashed var(--primary-gold); object-fit: cover; display: none; }
-    .doc-preview { display: none; font-weight: 600; color: var(--info-color); padding: 8px; border: 1px dashed var(--border-color); border-radius: 8px; }
-    .prod-thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #e2e8f0; border: 1px solid var(--border-color); }
-
-    .info-locked-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 16px; border-radius: 12px; margin-bottom: 16px; }
-
-    /* DESIGN BOUTIQUE PROFESSIONNEL MULTI-COLONNES */
-    .boutique-header-banner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
-      color: #fff;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      border-bottom: 3px solid var(--primary-gold);
-    }
-    .boutique-avatar-wrapper {
-      width: 75px;
-      height: 75px;
-      border-radius: 50%;
-      border: 3px solid var(--primary-gold);
-      overflow: hidden;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .boutique-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .boutique-avatar-wrapper .avatar-fallback {
-      font-size: 28px; font-weight: 800; color: var(--dark-bg);
-    }
-    .boutique-info h2 { font-size: 22px; color: var(--primary-gold); margin-bottom: 4px; font-weight: 800; }
-    .boutique-info p { font-size: 13px; color: #cbd5e1; }
-
-    /* RESPONSIVE GRID CONFIGURATION */
-    .boutique-products-grid {
-      display: grid;
-      gap: 16px;
-      margin-top: 20px;
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (min-width: 640px) {
-      .boutique-products-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (min-width: 768px) {
-      .boutique-products-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-    @media (min-width: 1200px) {
-      .boutique-products-grid { grid-template-columns: repeat(6, 1fr); }
-    }
-    @media (min-width: 1600px) {
-      .boutique-products-grid { grid-template-columns: repeat(8, 1fr); }
-    }
-
-    .boutique-prod-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative;
-    }
-    .boutique-prod-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-    .boutique-prod-media {
-      width: 100%;
-      height: 140px;
-      background: #f1f5f9;
-      position: relative;
-      overflow: hidden;
-    }
-    .boutique-prod-media img, .boutique-prod-media video {
-      width: 100%; height: 100%; object-fit: cover;
-    }
-    .boutique-prod-media .doc-icon-box {
-      display: flex; align-items: center; justify-content: center; height: 100%;
-      font-size: 36px; color: var(--primary-gold); background: var(--dark-bg);
-    }
-    .boutique-prod-body {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-    }
-    .boutique-prod-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .boutique-prod-category {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .boutique-prod-price {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--secondary-gold);
-      margin-bottom: 10px;
-    }
-    .boutique-prod-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .btn-view-prod {
-      display: block;
-      width: 100%;
-      text-align: center;
-      background: var(--dark-bg);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      transition: background 0.2s;
-    }
-    .btn-view-prod:hover { background: #000; color: var(--primary-gold); }
-
     @media (max-width: 768px) {
       .sidebar { width: 70px; }
       .sidebar-header h2, .menu-text { display: none; }
       .main-content { margin-left: 70px; padding: 15px; }
-      .boutique-header-banner { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
@@ -259,19 +89,54 @@
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
-      <li><a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">Accueil</span></a></li>
-      <li class="active" onclick="window.showTab('dashboard', this)"><a><i class="fa-solid fa-chart-line"></i><span class="menu-text">Tableau de bord</span></a></li>
-      <li onclick="window.showTab('publier', this)"><a><i class="fa-solid fa-plus-circle"></i><span class="menu-text">Publier Produit/Cours</span></a></li>
-      <li onclick="window.showTab('boutique', this)"><a><i class="fa-solid fa-store"></i><span class="menu-text">Ma Boutique</span></a></li>
-      <li onclick="window.showTab('affiliation', this)"><a><i class="fa-solid fa-link"></i><span class="menu-text">Liens d'Affiliation</span></a></li>
-      <li onclick="window.showTab('commandes', this)"><a><i class="fa-solid fa-box-open"></i><span class="menu-text">Commandes</span></a></li>
-      <li onclick="window.showTab('retrait', this)"><a><i class="fa-solid fa-wallet"></i><span class="menu-text">Retraits</span></a></li>
-      <li onclick="window.showTab('analytics', this)"><a><i class="fa-solid fa-chart-pie"></i><span class="menu-text">Analytiques</span></a></li>
-      <li onclick="window.showTab('avis', this)"><a><i class="fa-solid fa-star"></i><span class="menu-text">Avis Clients</span></a></li>
-      <li onclick="window.showTab('profil', this)"><a><i class="fa-solid fa-user-gear"></i><span class="menu-text">Mon Profil</span></a></li>
+      <li>
+        <a href="index.html">
+          <i class="fa-solid fa-house"></i>
+          <span class="menu-text">Accueil</span>
+        </a>
+      </li>
+      <li>
+        <a href="dashboard-vendeur.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span class="menu-text">Tableau de bord</span>
+        </a>
+      </li>
+      <li>
+        <a href="vendeur_publication.html">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span class="menu-text">Publier Produit/Cours</span>
+        </a>
+      </li>
+      <li>
+        <a href="boutique.html">
+          <i class="fa-solid fa-store"></i>
+          <span class="menu-text">Ma Boutique</span>
+        </a>
+      </li>
+      <li>
+        <a href="affiliation.html">
+          <i class="fa-solid fa-link"></i>
+          <span class="menu-text">Liens d'Affiliation</span>
+        </a>
+      </li>
+      <li>
+        <a href="retrait-vendeur.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span class="menu-text">Retraits</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="profil.html">
+          <i class="fa-solid fa-user-gear"></i>
+          <span class="menu-text">Mon Profil</span>
+        </a>
+      </li>
     </ul>
     <div class="sidebar-footer">
-      <button class="logout-btn" onclick="window.deconnexionVendeur()"><i class="fa-solid fa-right-from-bracket"></i><span class="menu-text">Déconnexion</span></button>
+      <button class="logout-btn" onclick="window.deconnexionVendeur()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="menu-text">Déconnexion</span>
+      </button>
     </div>
   </aside>
 
@@ -279,7 +144,7 @@
   <main class="main-content">
     <div class="top-bar">
       <div>
-        <h2 id="pageTitle">Tableau de Bord Vendeur</h2>
+        <h2 id="pageTitle">Espace Vendeur</h2>
         <p style="font-size: 13px; color: var(--text-muted);" id="currentDate"></p>
       </div>
       <div class="vendeur-info-summary">
@@ -291,269 +156,15 @@
       </div>
     </div>
 
-    <!-- 1. DASHBOARD -->
-    <section id="dashboard" class="tab-section active">
-      <div class="stats-grid">
-        <div class="stat-card"><div class="title">Solde Disponible</div><div class="amount" id="statSolde">0 FCFA</div></div>
-        <div class="stat-card"><div class="title">Gains d'Affiliation</div><div class="amount" id="statGainsAffiliation">0 FCFA</div></div>
-        <div class="stat-card"><div class="title">Ventes Totales</div><div class="amount" id="statVentes">0 FCFA</div></div>
-        <div class="stat-card"><div class="title">Mes Produits Publiés</div><div class="amount" id="statProduits">0</div></div>
-        <div class="stat-card"><div class="title">Visiteurs / Clics</div><div class="amount" id="statVisiteurs">0</div></div>
-        <div class="stat-card"><div class="title">Commentaires</div><div class="amount" id="statCommentaires">0</div></div>
-        <div class="stat-card"><div class="title">Mentions J'aime</div><div class="amount" id="statLikes">0</div></div>
-      </div>
-      <div class="content-card">
-        <h3>Aperçu des performances de ventes & visites</h3>
-        <canvas id="performanceChart" style="max-height: 250px; margin-top: 15px;"></canvas>
-      </div>
-    </section>
-
-    <!-- 2. PUBLIER -->
-    <section id="publier" class="tab-section">
-      <div class="content-card">
-        <h3>Publier un Produit, un Cours, une Vidéo ou un Document</h3>
-        <form onsubmit="window.publierElement(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Type de Publication</label>
-              <select id="pType" required>
-                <option value="produit">Produit Physique / Numérique</option>
-                <option value="cours">Cours en ligne / Formation</option>
-                <option value="epreuve">Épreuve / Document d'étude</option>
-                <option value="lien">Lien Externe / Produit Copié</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Catégorie</label><input type="text" id="pCategorie" placeholder="Ex: Mode, Informatique..." required></div>
-            <div class="form-group"><label>Titre de la publication</label><input type="text" id="pNom" required placeholder="Ex: Chaussures / Cours JS"></div>
-            <div class="form-group"><label>Auteur / Vendeur</label><input type="text" id="pAuteur" required placeholder="Ex: Jean Marc"></div>
-            <div class="form-group"><label>Prix Normal (FCFA)</label><input type="number" id="pPrixNormal" required placeholder="30000"></div>
-            <div class="form-group"><label>Prix Promo (FCFA)</label><input type="number" id="pPrixPromo" placeholder="25000"></div>
-            <div class="form-group"><label>Stock</label><input type="number" id="pStock" value="100" required></div>
-            
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Fichier Média (Image, Vidéo ou Document) OU URL Hébergée</label>
-              <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
-              <small style="color: var(--text-muted); margin-top: 4px;">Ou coller directement l'URL d'un média hébergé :</small>
-              <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" onchange="window.handleDirectUrlInput(this.value)">
-              
-              <input type="hidden" id="base64Publish">
-              <input type="hidden" id="mediaTypePublish" value="image">
-              
-              <div class="preview-container">
-                <img id="previewImage" class="image-preview" alt="Aperçu Image">
-                <video id="previewVideo" class="video-preview" controls></video>
-                <div id="previewDoc" class="doc-preview"><i class="fa-solid fa-file-lines"></i> <span id="docName">Document prêt</span></div>
-              </div>
-            </div>
-
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Description détaillée</label>
-              <textarea id="pDescription" rows="4" required placeholder="Description complète..."></textarea>
-            </div>
-          </div>
-          <button type="submit" class="btn-action" id="btnPublierSubmit"><i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- 3. MA BOUTIQUE -->
-    <section id="boutique" class="tab-section">
-      <div class="content-card">
-        <div class="boutique-header-banner">
-          <div class="boutique-avatar-wrapper" id="boutiqueAvatarDisplay">
-            <span class="avatar-fallback" id="boutiqueInitial">V</span>
-          </div>
-          <div class="boutique-info">
-            <h2 id="boutiqueTitleDisplay">Ma Boutique DAKPRO ÉLITE</h2>
-            <p><i class="fa-solid fa-store"></i> Espace d'exposition officiel vendeur & affilié</p>
-          </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-          <h3>Catalogue Exclusif (vendeur_publications)</h3>
-          <button class="btn-copy" onclick="window.copierLienMaBoutique()"><i class="fa-solid fa-share-nodes"></i> Copier le Lien de Ma Boutique Complète</button>
-        </div>
-        <p style="font-size: 12px; color: var(--text-muted);">Partagez votre lien de boutique pour que vos clients voient exclusivement vos produits.</p>
-
-        <div class="boutique-products-grid" id="boutiqueGrid">
-          <p style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted);">Chargement des publications de votre boutique...</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. LIENS D'AFFILIATION -->
-    <section id="affiliation" class="tab-section">
-      <div class="content-card">
-        <h3>Produits Éligibles à l'Affiliation</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Visuel</th>
-                <th>Produit / Cours</th>
-                <th>Prix</th>
-                <th>Gains (10%)</th>
-                <th>Mon Lien Affilié</th>
-              </tr>
-            </thead>
-            <tbody id="affiliationProductsList">
-              <tr><td colspan="5" style="text-align:center;">Chargement...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. COMMANDES -->
-    <section id="commandes" class="tab-section">
-      <div class="content-card">
-        <h3>Commandes & Achats Clients</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID Commande</th>
-                <th>Client / Contact</th>
-                <th>Montant</th>
-                <th>Statut</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="commandesList">
-              <tr><td colspan="5" style="text-align:center;">Aucune commande.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. RETRAIT SOLDE -->
-    <section id="retrait" class="tab-section">
-      <div class="content-card" id="cardProfilRetrait">
-        <h3>1. Enregistrement des Coordonnées de Retrait</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Renseignez obligatoirement le nom et le numéro de téléphone exacts sur lesquels recevoir vos fonds.</p>
-        
-        <form id="formProfilRetrait" onsubmit="window.enregistrerProfilRetrait(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Nom & Prénom sur la carte d'identité *</label>
-              <input type="text" id="rProfilNom" required placeholder="Ex: Marc Aglignamou">
-            </div>
-            <div class="form-group">
-              <label>Numéro Téléphone Mobile Money *</label>
-              <input type="text" id="rProfilNumero" required placeholder="Ex: +2290197455309">
-            </div>
-          </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-lock"></i> Enregistrer mes Identifiants de Retrait</button>
-        </form>
-
-        <div id="boxProfilLocked" class="info-locked-box" style="display:none;">
-          <h4 style="color: var(--success-color); font-size: 14px;"><i class="fa-solid fa-circle-check"></i> Coordonnées de Retrait Enregistrées</h4>
-          <p style="font-size: 13px; margin-top: 6px;"><strong>Nom du Bénéficiaire :</strong> <span id="dispProfilNom"></span></p>
-          <p style="font-size: 13px;"><strong>Numéro de Réception :</strong> <span id="dispProfilNum"></span></p>
-          <p style="font-size: 11px; color: var(--danger-color); margin-top: 8px;"><i class="fa-solid fa-lock"></i> Ces données sont verrouillées en base de données.</p>
-          <button class="btn-action" style="background:#e2e8f0; color:#334155; border:none; margin-top:10px;" onclick="window.contacterSupportModif()"><i class="fa-solid fa-headset"></i> Demander la modification au Support</button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <h3>2. Demander un Retrait de Solde</h3>
-        <p style="font-size: 14px; margin-bottom: 15px;">Solde disponible : <strong id="retraitSoldeDispo" style="color: var(--success-color); font-size: 18px;">0 FCFA</strong></p>
-        
-        <form onsubmit="window.demanderRetrait(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Montant à retirer (FCFA) *</label>
-              <input type="number" id="rMontant" required min="1000" placeholder="Ex: 5000">
-            </div>
-            <div class="form-group">
-              <label>Réseau / Moyen de Paiement *</label>
-              <select id="rMoyen" required>
-                <option value="MTN MoMo">MTN Mobile Money</option>
-                <option value="Moov Money">Moov Money / Flooz</option>
-                <option value="Celtiis Cash">Celtiis Cash</option>
-                <option value="Wave">Wave</option>
-              </select>
-            </div>
-          </div>
-          <button type="submit" class="btn-action" id="btnLancerRetrait"><i class="fa-solid fa-paper-plane"></i> Lancer le Retrait</button>
-        </form>
-      </div>
-
-      <div class="content-card">
-        <h3>Historique des Demandes de Retrait</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Bénéficiaire</th>
-                <th>Montant</th>
-                <th>Réseau</th>
-                <th>Numéro</th>
-                <th>Statut</th>
-              </tr>
-            </thead>
-            <tbody id="retraitsList">
-              <tr><td colspan="6" style="text-align:center;">Aucune demande.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. ANALYTIQUES -->
-    <section id="analytics" class="tab-section">
-      <div class="content-card">
-        <h3>Statistiques d'Audience et Revenus</h3>
-        <canvas id="analyticsChart" style="max-height: 280px; margin-top: 15px;"></canvas>
-      </div>
-    </section>
-
-    <!-- 8. AVIS CLIENTS -->
-    <section id="avis" class="tab-section">
-      <div class="content-card">
-        <h3>Avis & Commentaires Clients</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr><th>Produit</th><th>Note</th><th>Commentaire</th><th>Date</th></tr>
-            </thead>
-            <tbody id="avisList">
-              <tr><td colspan="4" style="text-align:center;">Aucun avis pour le moment.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 9. PROFIL VENDEUR -->
-    <section id="profil" class="tab-section">
-      <div class="content-card">
-        <h3>Modifier Mon Profil</h3>
-        <form onsubmit="window.mettreAJourProfil(event)">
-          <div class="form-grid">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Photo de Profil</label>
-              <input type="file" id="pInputAvatar" accept="image/*" onchange="window.handleImageCompress(event, 'previewAvatar', 'base64Avatar')">
-              <input type="hidden" id="base64Avatar">
-              <img id="previewAvatar" class="image-preview" alt="Aperçu Profil">
-            </div>
-            <div class="form-group"><label>Nom Complet / Boutique</label><input type="text" id="profBoutique" required></div>
-            <div class="form-group"><label>E-mail</label><input type="email" id="profEmail" readonly style="background: #f1f5f9;"></div>
-            <div class="form-group"><label>Téléphone Support / WhatsApp</label><input type="tel" id="profPhone"></div>
-          </div>
-          <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Enregistrer Profil</button>
-        </form>
-      </div>
-    </section>
+    <!-- CONTENEUR PRINCIPAL DYNAMIQUE OU SPÉCIFIQUE À LA PAGE -->
+    <div id="contentContainer"></div>
   </main>
 
   <!-- LOGIQUE FIREBASE COMPLÈTE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
@@ -569,509 +180,41 @@
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    let currentVendeurUid = null;
-    let currentVendeurPhone = "";
-    let currentVendeurNom = "";
-    let currentVendeurAvatar = "";
-    let profilRetraitEnregistre = null;
-
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-    window.showTab = function(tabId, element) {
-      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
-      document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-
-      document.getElementById(tabId).classList.add('active');
-      if (element) element.classList.add('active');
-    };
-
-    window.handleDirectUrlInput = function(url) {
-      if(!url) return;
-      document.getElementById('base64Publish').value = url;
-      if(url.match(/\.(mp4|webm|ogg)$/i)) {
-        document.getElementById('mediaTypePublish').value = 'video';
-        const vPreview = document.getElementById('previewVideo');
-        vPreview.src = url;
-        vPreview.style.display = 'block';
-      } else {
-        document.getElementById('mediaTypePublish').value = 'image';
-        const imgPreview = document.getElementById('previewImage');
-        imgPreview.src = url;
-        imgPreview.style.display = 'block';
-      }
-    };
-
-    window.handleMediaUpload = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const imgPreview = document.getElementById('previewImage');
-      const videoPreview = document.getElementById('previewVideo');
-      const docPreview = document.getElementById('previewDoc');
-
-      imgPreview.style.display = 'none';
-      videoPreview.style.display = 'none';
-      docPreview.style.display = 'none';
-
-      if (file.type.startsWith('image/')) {
-        document.getElementById('mediaTypePublish').value = 'image';
-        window.handleImageCompress(event, 'previewImage', 'base64Publish');
-      } else if (file.type.startsWith('video/')) {
-        document.getElementById('mediaTypePublish').value = 'video';
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          videoPreview.src = e.target.result;
-          videoPreview.style.display = 'block';
-          document.getElementById('base64Publish').value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        document.getElementById('mediaTypePublish').value = 'document';
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('docName').innerText = file.name;
-          docPreview.style.display = 'block';
-          document.getElementById('base64Publish').value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-
-    window.handleImageCompress = function(event, previewId, hiddenInputId) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxDimension = 650;
-
-          if (width > maxDimension || height > maxDimension) {
-            if (width > height) {
-              height = Math.round((height * maxDimension) / width);
-              width = maxDimension;
-            } else {
-              width = Math.round((width * maxDimension) / height);
-              height = maxDimension;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-          document.getElementById(previewId).src = dataUrl;
-          document.getElementById(previewId).style.display = 'block';
-          document.getElementById(hiddenInputId).value = dataUrl;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    };
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        currentVendeurUid = user.uid;
-        document.getElementById('profEmail').value = user.email;
         document.getElementById('headerEmail').innerText = user.email;
-
         await chargerProfilVendeur(user.uid);
-        await verifierProfilRetrait(user.uid);
-        chargerMesProduits(user.uid);
-        chargerAffiliationGlobal();
-        chargerStats(user.uid);
-        chargerRetraits(user.uid);
-        chargerCommandes(user.uid);
       }
     });
 
     async function chargerProfilVendeur(uid) {
-      const snapshot = await get(ref(database, 'users/' + uid));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        currentVendeurNom = data.nomComplet || data.nomBoutique || "Vendeur";
-        currentVendeurPhone = data.telephone || "";
-        currentVendeurAvatar = data.imageUrl || "";
-
-        document.getElementById('headerBoutiqueName').innerText = currentVendeurNom;
-        document.getElementById('profBoutique').value = currentVendeurNom;
-        document.getElementById('profPhone').value = currentVendeurPhone;
-
-        const avatarContainer = document.getElementById('vendeurAvatar');
-        const boutiqueAvatarContainer = document.getElementById('boutiqueAvatarDisplay');
-        const boutiqueTitle = document.getElementById('boutiqueTitleDisplay');
-
-        if (boutiqueTitle) boutiqueTitle.innerText = currentVendeurNom;
-
-        if (currentVendeurAvatar) {
-          avatarContainer.innerHTML = `<img src="${currentVendeurAvatar}" alt="Avatar">`;
-          if (boutiqueAvatarContainer) {
-            boutiqueAvatarContainer.innerHTML = `<img src="${currentVendeurAvatar}" alt="Boutique Avatar">`;
-          }
-        } else {
-          const initial = currentVendeurNom[0] ? currentVendeurNom[0].toUpperCase() : 'V';
-          avatarContainer.innerText = initial;
-          if (boutiqueAvatarContainer) {
-            boutiqueAvatarContainer.innerHTML = `<span class="avatar-fallback">${initial}</span>`;
-          }
-        }
-      }
-    }
-
-    async function verifierProfilRetrait(uid) {
-      const snapshot = await get(ref(database, 'vendeurs_profil_retrait/' + uid));
-      if (snapshot.exists()) {
-        profilRetraitEnregistre = snapshot.val();
-        document.getElementById('formProfilRetrait').style.display = 'none';
-        document.getElementById('boxProfilLocked').style.display = 'block';
-        document.getElementById('dispProfilNom').innerText = profilRetraitEnregistre.nom;
-        document.getElementById('dispProfilNum').innerText = profilRetraitEnregistre.numero;
-      } else {
-        document.getElementById('formProfilRetrait').style.display = 'block';
-        document.getElementById('boxProfilLocked').style.display = 'none';
-      }
-    }
-
-    window.enregistrerProfilRetrait = async function(e) {
-      e.preventDefault();
-      const nom = document.getElementById('rProfilNom').value.trim();
-      const numero = document.getElementById('rProfilNumero').value.trim();
-
-      if (!nom || !numero) {
-        alert("Veuillez renseigner votre nom et votre numéro.");
-        return;
-      }
-
-      await set(ref(database, 'vendeurs_profil_retrait/' + currentVendeurUid), {
-        nom: nom,
-        numero: numero,
-        dateEnregistrement: new Date().toISOString()
-      });
-
-      alert("Vos identifiants de retrait ont été enregistrés avec succès.");
-      verifierProfilRetrait(currentVendeurUid);
-    };
-
-    window.contacterSupportModif = function() {
-      alert("Pour modifier vos identifiants de retrait verrouillés, veuillez contacter le Support DAKPRO ÉLITE.");
-      window.open('https://wa.me/2290197455309?text=' + encodeURIComponent("Bonjour Support DAKPRO ÉLITE, je souhaite demander le déverrouillage de mes identifiants de retrait."), '_blank');
-    };
-
-    window.publierElement = async function(e) {
-      e.preventDefault();
-      if (!currentVendeurUid) return;
-
-      const mediaUrl = document.getElementById('base64Publish').value;
-      if (!mediaUrl) {
-        alert("Veuillez sélectionner un fichier ou renseigner un lien de média valide.");
-        return;
-      }
-
-      const btn = document.getElementById('btnPublierSubmit');
-      btn.disabled = true;
-      btn.innerText = "Publication en cours...";
-
       try {
-        const newRef = push(ref(database, 'vendeur_publications'));
-        const idProd = newRef.key;
-
-        const itemData = {
-          id: idProd,
-          createdBy: currentVendeurUid,
-          vendeurUid: currentVendeurUid,
-          type: document.getElementById('pType').value,
-          categorie: document.getElementById('pCategorie').value,
-          nom: document.getElementById('pNom').value,
-          auteur: document.getElementById('pAuteur').value,
-          prix: Number(document.getElementById('pPrixNormal').value),
-          prixNormal: Number(document.getElementById('pPrixNormal').value),
-          prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
-          stock: Number(document.getElementById('pStock').value),
-          mediaType: document.getElementById('mediaTypePublish').value,
-          image: mediaUrl,
-          imageUrl: mediaUrl,
-          description: document.getElementById('pDescription').value,
-          vendeurPhone: currentVendeurPhone,
-          vendeurNom: currentVendeurNom,
-          createdAt: Date.now(),
-          visiteurs: 0,
-          likes: 0,
-          commentairesCount: 0
-        };
-
-        await set(newRef, itemData);
-        alert("Publication effectuée avec succès dans l'espace vendeur !");
-        e.target.reset();
-        document.getElementById('previewImage').style.display = 'none';
-        document.getElementById('previewVideo').style.display = 'none';
-        document.getElementById('previewDoc').style.display = 'none';
-        chargerMesProduits(currentVendeurUid);
-        chargerAffiliationGlobal();
-      } catch (err) {
-        alert("Erreur lors de l'enregistrement : " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource';
-      }
-    };
-
-    /* CHARGEMENT STRICT DE LA BOUTIQUE & CALCUL EXCLUSIF POUR LE TABLEAU DE BORD */
-    async function chargerMesProduits(uid) {
-      const grid = document.getElementById('boutiqueGrid');
-      grid.innerHTML = "";
-      let totalMesProduits = 0;
-      let totalVisiteurs = 0;
-      let totalCommentaires = 0;
-      let totalLikes = 0;
-
-      const snapshot = await get(ref(database, 'vendeur_publications'));
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          const prod = child.val();
-          const prodKey = prod.id || child.key;
-
-          // COMPTAGE EXCLUSIF : Seuls les articles publiés par le vendeur courant sous 'vendeur_publications'
-          if (prod.vendeurUid === uid || prod.createdBy === uid) {
-            totalMesProduits++;
-
-            totalVisiteurs += Number(prod.visiteurs || prod.views || 0);
-            totalLikes += Number(prod.likes || 0);
-            
-            if (prod.commentaires) {
-              totalCommentaires += Object.keys(prod.commentaires).length;
-            } else if (prod.commentairesCount) {
-              totalCommentaires += Number(prod.commentairesCount);
-            }
-
-            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
-            const mType = prod.mediaType || 'image';
-            
-            let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
-            if (mType === 'video') {
-              mediaHtml = `<video src="${mediaSrc}" controls></video>`;
-            } else if (mType === 'document') {
-              mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
-            }
-
-            const pageProduitUrl = `${window.location.origin}/produit.html?id=${prodKey}&aff=${uid}`;
-            const prixAffiche = prod.prixPromo || prod.prix || prod.prixNormal || 0;
-
-            grid.innerHTML += `
-              <div class="boutique-prod-card">
-                <div class="boutique-prod-media">
-                  ${mediaHtml}
-                </div>
-                <div class="boutique-prod-body">
-                  <div>
-                    <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
-                    <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Sans nom'}</div>
-                    <div class="boutique-prod-price">${Number(prixAffiche).toLocaleString('fr-FR')} FCFA</div>
-                  </div>
-                  <div class="boutique-prod-actions">
-                    <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-eye"></i> Voir Produit</a>
-                    <button class="btn-copy" onclick="window.copierLien('${pageProduitUrl}')"><i class="fa-solid fa-link"></i> Copier Lien</button>
-                  </div>
-                </div>
-              </div>
-            `;
-          }
-        });
-      }
-
-      if (totalMesProduits === 0) {
-        grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article publié dans votre boutique (vendeur_publications).</p>`;
-      }
-
-      // Mise à jour exacte du tableau de bord
-      document.getElementById('statProduits').innerText = totalMesProduits;
-      document.getElementById('statVisiteurs').innerText = totalVisiteurs;
-      document.getElementById('statCommentaires').innerText = totalCommentaires;
-      document.getElementById('statLikes').innerText = totalLikes;
-    }
-
-    window.copierLienMaBoutique = function() {
-      if (!currentVendeurUid) return;
-      const lienBoutique = `${window.location.origin}/boutique.html?vendeur=${currentVendeurUid}`;
-      navigator.clipboard.writeText(lienBoutique).then(() => {
-        alert("Lien de votre boutique copié dans le presse-papier !");
-      });
-    };
-
-    window.copierLien = function(lien) {
-      navigator.clipboard.writeText(lien).then(() => alert("Lien copié dans le presse-papier !"));
-    };
-
-    /* NE PAS TOUCHER : CONSERVÉ STRICTEMENT INTÉGRALEMENT POUR L'AFFILIATION */
-    async function chargerAffiliationGlobal() {
-      const tbody = document.getElementById('affiliationProductsList');
-      tbody.innerHTML = "";
-      let count = 0;
-      const seenIds = new Set();
-
-      const sources = ['publications', 'vendeur_publications'];
-
-      for (const src of sources) {
-        const snapshot = await get(ref(database, src));
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const prod = child.val();
-            const prodKey = prod.id || child.key;
-
-            if (!seenIds.has(prodKey)) {
-              seenIds.add(prodKey);
-              count++;
-
-              const nomProduit = prod.nom || prod.title || 'Sans titre';
-              
-              let prixEffectif = 0;
-              if (prod.prixPromo !== undefined && prod.prixPromo !== null && Number(prod.prixPromo) > 0) {
-                prixEffectif = Number(prod.prixPromo);
-              } else if (prod.prix !== undefined && prod.prix !== null && Number(prod.prix) > 0) {
-                prixEffectif = Number(prod.prix);
-              } else if (prod.prixNormal !== undefined && prod.prixNormal !== null) {
-                prixEffectif = Number(prod.prixNormal);
-              }
-
-              const gains = Math.round(prixEffectif * 0.10);
-              const mediaSrc = prod.imageUrl || prod.image || '477912.png';
-              
-              let mediaHtml = `<img src="${mediaSrc}" class="prod-thumb" onerror="this.src='477912.png'">`;
-              if (prod.mediaType === 'video' || (prod.video && prod.video !== "")) {
-                mediaHtml = `<video src="${prod.video || mediaSrc}" class="prod-thumb"></video>`;
-              }
-
-              const affLink = `${window.location.origin}/produit.html?id=${prodKey}&aff=${currentVendeurUid || ''}`;
-
-              tbody.innerHTML += `
-                <tr>
-                  <td>${mediaHtml}</td>
-                  <td><strong>${nomProduit}</strong></td>
-                  <td>${prixEffectif.toLocaleString('fr-FR')} FCFA</td>
-                  <td><strong style="color:var(--success-color);">+${gains.toLocaleString('fr-FR')} FCFA</strong></td>
-                  <td><button class="btn-copy" onclick="window.copierLien('${affLink}')"><i class="fa-solid fa-link"></i> Copier Lien</button></td>
-                </tr>
-              `;
-            }
-          });
-        }
-      }
-
-      if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucun produit d'affiliation disponible.</td></tr>`;
-    }
-
-    function chargerStats(uid) {
-      onValue(ref(database, 'vendeurs_stats/' + uid), (snapshot) => {
+        const snapshot = await get(ref(database, 'users/' + uid));
         if (snapshot.exists()) {
           const data = snapshot.val();
-          document.getElementById('statSolde').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0) + " FCFA";
-          document.getElementById('statGainsAffiliation').innerText = (data.gainsAffiliation || 0) + " FCFA";
-          document.getElementById('statVentes').innerText = (data.ventesTotales || 0) + " FCFA";
-        }
-      });
-    }
+          const nom = data.nomComplet || data.nomBoutique || "Vendeur";
+          const avatar = data.imageUrl || "";
 
-    window.demanderRetrait = async function(e) {
-      e.preventDefault();
-      if (!profilRetraitEnregistre) {
-        alert("Veuillez d'abord enregistrer vos identifiants de retrait (Nom & Numéro) dans la section '1' avant de lancer une demande.");
-        return;
+          document.getElementById('headerBoutiqueName').innerText = nom;
+          const avatarContainer = document.getElementById('vendeurAvatar');
+
+          if (avatar) {
+            avatarContainer.innerHTML = `<img src="${avatar}" alt="Avatar">`;
+          } else {
+            avatarContainer.innerText = nom[0] ? nom[0].toUpperCase() : 'V';
+          }
+        }
+      } catch (error) {
+        console.error("Erreur de chargement du profil:", error);
       }
-
-      const montant = Number(document.getElementById('rMontant').value);
-      const moyen = document.getElementById('rMoyen').value;
-
-      const newRetraitRef = push(ref(database, 'paiements'));
-      await set(newRetraitRef, {
-        id: newRetraitRef.key,
-        vendeurUid: currentVendeurUid,
-        vendeurNomPrenom: profilRetraitEnregistre.nom,
-        numeroReceiver: profilRetraitEnregistre.numero,
-        montant: montant,
-        moyenPaiement: moyen,
-        statut: "En attente",
-        type: "retrait_vendeur",
-        dateDemande: new Date().toISOString()
-      });
-
-      alert("Demande de retrait transmise avec succès !");
-      e.target.reset();
-    };
-
-    function chargerRetraits(uid) {
-      onValue(ref(database, 'paiements'), (snapshot) => {
-        const tbody = document.getElementById('retraitsList');
-        tbody.innerHTML = "";
-        let count = 0;
-
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const ret = child.val();
-            if (ret.vendeurUid === uid) {
-              count++;
-              tbody.innerHTML += `
-                <tr>
-                  <td>${new Date(ret.dateDemande || Date.now()).toLocaleDateString('fr-FR')}</td>
-                  <td><strong>${ret.vendeurNomPrenom}</strong></td>
-                  <td><strong>${ret.montant} FCFA</strong></td>
-                  <td>${ret.moyenPaiement}</td>
-                  <td>${ret.numeroReceiver}</td>
-                  <td><span class="status-badge status-pending">${ret.statut}</span></td>
-                </tr>
-              `;
-            }
-          });
-        }
-        if (count === 0) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucun retrait.</td></tr>`;
-      });
     }
-
-    function chargerCommandes(uid) {
-      onValue(ref(database, 'commandes'), (snapshot) => {
-        const tbody = document.getElementById('commandesList');
-        tbody.innerHTML = "";
-        let count = 0;
-
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const cmd = child.val();
-            if (cmd.vendeurUid === uid) {
-              count++;
-              tbody.innerHTML += `
-                <tr>
-                  <td>#${cmd.id ? cmd.id.substring(0, 6) : 'CMD'}</td>
-                  <td><strong>${cmd.nomClient || 'Client'}</strong></td>
-                  <td>${cmd.montantTotal || 0} FCFA</td>
-                  <td><span class="status-badge status-success">${cmd.statut || 'En attente'}</span></td>
-                  <td>${new Date(cmd.dateCommande || Date.now()).toLocaleDateString('fr-FR')}</td>
-                </tr>
-              `;
-            }
-          });
-        }
-        if (count === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Aucune commande.</td></tr>`;
-      });
-    }
-
-    window.mettreAJourProfil = async function(e) {
-      e.preventDefault();
-      const nom = document.getElementById('profBoutique').value;
-      const phone = document.getElementById('profPhone').value;
-      const avatar = document.getElementById('base64Avatar').value;
-
-      const updates = { nomComplet: nom, telephone: phone };
-      if (avatar) updates.imageUrl = avatar;
-
-      await update(ref(database, 'users/' + currentVendeurUid), updates);
-      alert("Profil mis à jour !");
-      chargerProfilVendeur(currentVendeurUid);
-    };
 
     window.deconnexionVendeur = function() {
       signOut(auth).then(() => {
@@ -1079,19 +222,6 @@
         window.location.href = "index.html";
       });
     };
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const ctx = document.getElementById('performanceChart')?.getContext('2d');
-      if (ctx) {
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-            datasets: [{ label: 'Ventes (FCFA)', data: [0, 50000, 100000, 150000, 250000, 400000], borderColor: '#d4af37', fill: false }]
-          }
-        });
-      }
-    });
   </script>
 </body>
 </html>

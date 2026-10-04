@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAKPRO ÉLITE - GESTION DES RETRAITS VENDEUR</title>
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --info-color: #3b82f6;
+      --bg-light: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); padding: 25px; }
+
+    .main-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: var(--card-bg);
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border-color);
+    }
+
+    .vendeur-info-summary { display: flex; align-items: center; gap: 12px; }
+    .avatar-circle {
+      width: 50px; height: 50px; background: var(--dark-bg); color: var(--primary-gold);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px; border: 2px solid var(--primary-gold); overflow: hidden;
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+    .content-card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      margin-bottom: 24px;
+    }
+
+    .content-card h3 {
+      font-size: 17px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary-gold);
+    }
+
+    .btn-action {
+      background-color: var(--dark-bg);
+      color: var(--primary-gold);
+      border: 1px solid var(--primary-gold);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-action:hover { background-color: #000; }
+
+    .info-locked-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .table-container { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; min-width: 600px; }
+    .data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 13.5px; vertical-align: middle; }
+    .data-table th { background: #f1f5f9; color: var(--text-muted); font-weight: 700; }
+
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .status-success { background: #d1fae5; color: #065f46; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+
+    .method-selector {
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-container">
+    
+    <!-- EN-TÊTE PAGE -->
+    <div class="top-bar">
+      <div>
+        <h2><i class="fa-solid fa-wallet" style="color: var(--primary-gold);"></i> Gestion des Retraits</h2>
+        <p style="font-size: 13px; color: var(--text-muted);" id="currentDate"></p>
+      </div>
+      <div class="vendeur-info-summary">
+        <div class="avatar-circle" id="vendeurAvatar">V</div>
+        <div>
+          <strong id="headerBoutiqueName">Chargement...</strong><br>
+          <small id="headerEmail" style="color: var(--text-muted);"></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. FORMULAIRE D'ENREGISTREMENT DES COORDONNÉES DE RETRAIT (MOBILE MONEY & CARTE BANCAIRE) -->
+    <div class="content-card" id="cardProfilRetrait">
+      <h3><i class="fa-solid fa-id-card" style="color: var(--primary-gold);"></i> 1. Enregistrement des Coordonnées de Retrait</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
+        Renseignez obligatoirement vos informations exactes (Mobile Money ou Carte Bancaire) pour recevoir vos revenus en toute sécurité.
+      </p>
+
+      <form id="formProfilRetrait" onsubmit="window.enregistrerProfilRetrait(event)">
+        <div class="form-grid">
+          
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Mode de Retrait Téléphonique / Bancaire *</label>
+            <select id="rProfilType" onchange="window.toggleRetraitFields(this.value)" required>
+              <option value="mobile_money">Mobile Money (MTN, Moov, Celtiis, Wave)</option>
+              <option value="carte_bancaire">Carte Bancaire / Virement Bancaire</option>
+            </select>
+          </div>
+
+          <!-- CHAMPS MOBILE MONEY -->
+          <div class="form-group field-momo">
+            <label>Nom & Prénom sur la carte d'identité *</label>
+            <input type="text" id="rProfilNom" placeholder="Ex: Marc Aglignamou">
+          </div>
+          <div class="form-group field-momo">
+            <label>Numéro Téléphone Mobile Money *</label>
+            <input type="text" id="rProfilNumero" placeholder="Ex: +2290197455309">
+          </div>
+
+          <!-- CHAMPS CARTE BANCAIRE -->
+          <div class="form-group field-bank" style="display: none;">
+            <label>Nom du Titulaire de la Carte / Compte *</label>
+            <input type="text" id="rProfilNomCarte" placeholder="Ex: MARC AGLIGNAMOU">
+          </div>
+          <div class="form-group field-bank" style="display: none;">
+            <label>Numéro de Carte Bancaire / IBAN *</label>
+            <input type="text" id="rProfilNumeroCarte" placeholder="Ex: 4532 XXXX XXXX 8901 ou BJ66...">
+          </div>
+          <div class="form-group field-bank" style="display: none;">
+            <label>Nom de la Banque *</label>
+            <input type="text" id="rProfilNomBanque" placeholder="Ex: Ecobank, UBA, BOA, NSIA...">
+          </div>
+
+        </div>
+        <button type="submit" class="btn-action"><i class="fa-solid fa-lock"></i> Enregistrer mes Identifiants de Retrait</button>
+      </form>
+
+      <!-- AFFICHAGE QUAND VERROUILLÉ -->
+      <div id="boxProfilLocked" class="info-locked-box" style="display:none;">
+        <h4 style="color: var(--success-color); font-size: 14px;"><i class="fa-solid fa-circle-check"></i> Coordonnées de Retrait Enregistrées</h4>
+        <div id="detailsProfilLocked" style="margin-top: 8px;"></div>
+        <p style="font-size: 11px; color: var(--danger-color); margin-top: 10px;"><i class="fa-solid fa-lock"></i> Ces données sont verrouillées pour éviter tout piratage.</p>
+        <button class="btn-action" style="background:#e2e8f0; color:#334155; border:none; margin-top:10px;" onclick="window.contacterSupportModif()"><i class="fa-solid fa-headset"></i> Demander la modification au Support</button>
+      </div>
+    </div>
+
+    <!-- 2. DEMANDER UN RETRAIT -->
+    <div class="content-card">
+      <h3><i class="fa-solid fa-hand-holding-dollar" style="color: var(--primary-gold);"></i> 2. Demander un Retrait de Solde</h3>
+      <p style="font-size: 14px; margin-bottom: 15px;">Solde disponible : <strong id="retraitSoldeDispo" style="color: var(--success-color); font-size: 18px;">0 FCFA</strong></p>
+      
+      <form onsubmit="window.demanderRetrait(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Montant à retirer (FCFA) *</label>
+            <input type="number" id="rMontant" required min="1000" placeholder="Ex: 5000">
+          </div>
+          <div class="form-group">
+            <label>Réseau / Moyen de Paiement *</label>
+            <select id="rMoyen" required>
+              <option value="MTN MoMo">MTN Mobile Money</option>
+              <option value="Moov Money">Moov Money / Flooz</option>
+              <option value="Celtiis Cash">Celtiis Cash</option>
+              <option value="Wave">Wave</option>
+              <option value="Carte Bancaire">Carte Bancaire / Virement</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-action" id="btnLancerRetrait"><i class="fa-solid fa-paper-plane"></i> Lancer la Demande de Retrait</button>
+      </form>
+    </div>
+
+    <!-- 3. HISTORIQUE DES RETRAITS -->
+    <div class="content-card">
+      <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-gold);"></i> Historique des Demandes de Retrait</h3>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Bénéficiaire / Carte</th>
+              <th>Montant</th>
+              <th>Réseau / Banque</th>
+              <th>Numéro / Compte</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody id="retraitsList">
+            <tr><td colspan="6" style="text-align:center;">Chargement de l'historique...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE MODULE LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    let currentVendeurUid = null;
+    let profilRetraitEnregistre = null;
+
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Basculement entre Mobile Money et Carte Bancaire
+    window.toggleRetraitFields = function(type) {
+      const momoFields = document.querySelectorAll('.field-momo');
+      const bankFields = document.querySelectorAll('.field-bank');
+
+      if (type === 'carte_bancaire') {
+        momoFields.forEach(f => f.style.display = 'none');
+        bankFields.forEach(f => f.style.display = 'flex');
+      } else {
+        momoFields.forEach(f => f.style.display = 'flex');
+        bankFields.forEach(f => f.style.display = 'none');
+      }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentVendeurUid = user.uid;
+        document.getElementById('headerEmail').innerText = user.email;
+
+        await chargerProfilVendeur(user.uid);
+        await verifierProfilRetrait(user.uid);
+        chargerStats(user.uid);
+        chargerRetraits(user.uid);
+      }
+    });
+
+    async function chargerProfilVendeur(uid) {
+      const snapshot = await get(ref(database, 'users/' + uid));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const name = data.nomComplet || data.nomBoutique || "Vendeur";
+        document.getElementById('headerBoutiqueName').innerText = name;
+        
+        const avatarContainer = document.getElementById('vendeurAvatar');
+        if (data.imageUrl) {
+          avatarContainer.innerHTML = `<img src="${data.imageUrl}" alt="Avatar">`;
+        } else {
+          avatarContainer.innerText = name[0] ? name[0].toUpperCase() : 'V';
+        }
+      }
+    }
+
+    async function verifierProfilRetrait(uid) {
+      const snapshot = await get(ref(database, 'vendeurs_profil_retrait/' + uid));
+      if (snapshot.exists()) {
+        profilRetraitEnregistre = snapshot.val();
+        document.getElementById('formProfilRetrait').style.display = 'none';
+        
+        const lockedBox = document.getElementById('boxProfilLocked');
+        const detailsContainer = document.getElementById('detailsProfilLocked');
+        lockedBox.style.display = 'block';
+
+        if (profilRetraitEnregistre.type === 'carte_bancaire') {
+          detailsContainer.innerHTML = `
+            <p style="font-size: 13px;"><strong>Mode :</strong> Carte Bancaire / Virement</p>
+            <p style="font-size: 13px;"><strong>Titulaire Carte :</strong> ${profilRetraitEnregistre.nomCarte}</p>
+            <p style="font-size: 13px;"><strong>Numéro Carte / IBAN :</strong> ${profilRetraitEnregistre.numeroCarte}</p>
+            <p style="font-size: 13px;"><strong>Banque :</strong> ${profilRetraitEnregistre.nomBanque}</p>
+          `;
+        } else {
+          detailsContainer.innerHTML = `
+            <p style="font-size: 13px;"><strong>Mode :</strong> Mobile Money</p>
+            <p style="font-size: 13px;"><strong>Nom Bénéficiaire :</strong> ${profilRetraitEnregistre.nom}</p>
+            <p style="font-size: 13px;"><strong>Numéro Téléphone :</strong> ${profilRetraitEnregistre.numero}</p>
+          `;
+        }
+      } else {
+        document.getElementById('formProfilRetrait').style.display = 'block';
+        document.getElementById('boxProfilLocked').style.display = 'none';
+      }
+    }
+
+    window.enregistrerProfilRetrait = async function(e) {
+      e.preventDefault();
+      const type = document.getElementById('rProfilType').value;
+      let dataToSave = {
+        type: type,
+        dateEnregistrement: new Date().toISOString()
+      };
+
+      if (type === 'carte_bancaire') {
+        const nomCarte = document.getElementById('rProfilNomCarte').value.trim();
+        const numeroCarte = document.getElementById('rProfilNumeroCarte').value.trim();
+        const nomBanque = document.getElementById('rProfilNomBanque').value.trim();
+
+        if (!nomCarte || !numeroCarte || !nomBanque) {
+          alert("Veuillez remplir tous les champs de la carte bancaire.");
+          return;
+        }
+
+        dataToSave.nomCarte = nomCarte;
+        dataToSave.numeroCarte = numeroCarte;
+        dataToSave.nomBanque = nomBanque;
+      } else {
+        const nom = document.getElementById('rProfilNom').value.trim();
+        const numero = document.getElementById('rProfilNumero').value.trim();
+
+        if (!nom || !numero) {
+          alert("Veuillez renseigner votre nom et votre numéro Mobile Money.");
+          return;
+        }
+
+        dataToSave.nom = nom;
+        dataToSave.numero = numero;
+      }
+
+      await set(ref(database, 'vendeurs_profil_retrait/' + currentVendeurUid), dataToSave);
+      alert("Vos identifiants de retrait ont été enregistrés avec succès !");
+      verifierProfilRetrait(currentVendeurUid);
+    };
+
+    window.contacterSupportModif = function() {
+      alert("Pour modifier vos identifiants de retrait verrouillés, veuillez contacter le Support DAKPRO ÉLITE.");
+      window.open('https://wa.me/2290197455309?text=' + encodeURIComponent("Bonjour Support DAKPRO ÉLITE, je souhaite demander la modification de mes coordonnées de retrait."), '_blank');
+    };
+
+    function chargerStats(uid) {
+      onValue(ref(database, 'vendeurs_stats/' + uid), (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById('retraitSoldeDispo').innerText = (data.solde || 0).toLocaleString('fr-FR') + " FCFA";
+        }
+      });
+    }
+
+    window.demanderRetrait = async function(e) {
+      e.preventDefault();
+      if (!profilRetraitEnregistre) {
+        alert("Veuillez d'abord enregistrer vos identifiants de retrait dans l'étape 1 avant de pouvoir faire une demande.");
+        return;
+      }
+
+      const montant = Number(document.getElementById('rMontant').value);
+      const moyen = document.getElementById('rMoyen').value;
+
+      let nomAffiche = profilRetraitEnregistre.nom || profilRetraitEnregistre.nomCarte || "Nom inconnu";
+      let numeroAffiche = profilRetraitEnregistre.numero || profilRetraitEnregistre.numeroCarte || "Compte inconnu";
+
+      const newRetraitRef = push(ref(database, 'paiements'));
+      await set(newRetraitRef, {
+        id: newRetraitRef.key,
+        vendeurUid: currentVendeurUid,
+        vendeurNomPrenom: nomAffiche,
+        numeroReceiver: numeroAffiche,
+        banque: profilRetraitEnregistre.nomBanque || "N/A",
+        montant: montant,
+        moyenPaiement: moyen,
+        statut: "En attente",
+        type: "retrait_vendeur",
+        dateDemande: new Date().toISOString()
+      });
+
+      alert("Demande de retrait envoyée avec succès !");
+      e.target.reset();
+    };
+
+    function chargerRetraits(uid) {
+      onValue(ref(database, 'paiements'), (snapshot) => {
+        const tbody = document.getElementById('retraitsList');
+        tbody.innerHTML = "";
+        let count = 0;
+
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const ret = child.val();
+            if (ret.vendeurUid === uid) {
+              count++;
+              tbody.innerHTML += `
+                <tr>
+                  <td>${new Date(ret.dateDemande || Date.now()).toLocaleDateString('fr-FR')}</td>
+                  <td><strong>${ret.vendeurNomPrenom}</strong></td>
+                  <td><strong style="color: var(--secondary-gold);">${Number(ret.montant).toLocaleString('fr-FR')} FCFA</strong></td>
+                  <td>${ret.moyenPaiement} ${ret.banque && ret.banque !== 'N/A' ? '(' + ret.banque + ')' : ''}</td>
+                  <td>${ret.numeroReceiver}</td>
+                  <td><span class="status-badge status-pending">${ret.statut}</span></td>
+                </tr>
+              `;
+            }
+          });
+        }
+        if (count === 0) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Aucune demande de retrait enregistrée.</td></tr>`;
+      });
+    }
+  </script>
+</body>
+</html>

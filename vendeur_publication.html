@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulaire de Publication - DAKPRO ÉLITE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --info-color: #3b82f6;
+      --bg-light: #f8fafc;
+      --success-color: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); padding: 20px; }
+
+    .content-card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .content-card h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary-gold);
+    }
+
+    .btn-action {
+      background-color: var(--dark-bg);
+      color: var(--primary-gold);
+      border: 1px solid var(--primary-gold);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .btn-action:hover {
+      background-color: #000;
+    }
+
+    .btn-action:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preview-container {
+      margin-top: 10px;
+    }
+
+    .image-preview, .video-preview {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 8px;
+      border: 1px dashed var(--primary-gold);
+      object-fit: contain;
+      display: none;
+      margin-top: 10px;
+      background: #000;
+    }
+
+    .doc-preview {
+      display: none;
+      font-weight: 600;
+      color: var(--info-color);
+      padding: 12px;
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
+      margin-top: 10px;
+      background: var(--bg-light);
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <div class="content-card">
+    <h3><i class="fa-solid fa-store" style="color: var(--primary-gold);"></i> Publier sur DAKPRO ÉLITE</h3>
+    
+    <div id="statusAlert" class="alert"></div>
+
+    <form onsubmit="window.publierElement(event)">
+      <div class="form-grid">
+        
+        <!-- TYPE DE PUBLICATION -->
+        <div class="form-group">
+          <label for="pType">Type de Publication</label>
+          <select id="pType" required>
+            <option value="produit">Produit Physique / Numérique</option>
+            <option value="cours">Cours en ligne / Formation</option>
+            <option value="epreuve">Épreuve / Document d'étude</option>
+            <option value="lien">Lien Externe / Produit Copié</option>
+          </select>
+        </div>
+
+        <!-- CATÉGORIES COMPLETES (JUMIA / AMAZON) -->
+        <div class="form-group">
+          <label for="pCategorie">Catégorie</label>
+          <select id="pCategorie" required>
+            <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
+            
+            <optgroup label="🚗 Véhicules & Auto-Moto">
+              <option value="VÉHICULE">Automobiles / Voitures</option>
+              <option value="MOTOS">Motos & Scooters</option>
+              <option value="PIECES_AUTO">Pièces détachées & Accessoires</option>
+              <option value="EQUIPEMENT_AUTO">Électronique Auto & GPS</option>
+            </optgroup>
+
+            <optgroup label="📱 Électronique & Informatique">
+              <option value="TELEPHONIE">Téléphones & Tablettes</option>
+              <option value="INFORMATIQUE">Ordinateurs & Laptops</option>
+              <option value="ACCESSOIRES_TECH">Accessoires High-Tech & Connectique</option>
+              <option value="TV_AUDIO">TV, Home Cinéma & Audio</option>
+              <option value="PHOTOGRAPHIE">Appareils Photo & Caméras</option>
+            </optgroup>
+
+            <optgroup label="👗 Mode, Vêtements & Chaussures">
+              <option value="MODE_HOMME">Mode Homme (Chaussures, Costumes...)</option>
+              <option value="MODE_FEMME">Mode Femme (Robes, Sacs...)</option>
+              <option value="MODE_ENFANT">Mode Enfant & Bébé</option>
+              <option value="BIJOUX_MONTRES">Montres, Bijoux & Lunettes</option>
+            </optgroup>
+
+            <optgroup label="🏠 Maison, Cuisine & Bureau">
+              <option value="ELECTROMENAGER">Électroménager</option>
+              <option value="MEUBLES">Meubles & Décoration</option>
+              <option value="CUISINE">Articles de Cuisine</option>
+              <option value="BRICOLAGE">Bricolage & Jardinage</option>
+              <option value="FOURNITURES_BUREAU">Fournitures de Bureau</option>
+            </optgroup>
+
+            <optgroup label="💄 Beauté, Santé & Hygiène">
+              <option value="BEAUTE">Cosmétiques & Maquillage</option>
+              <option value="PARFUMS">Parfums & Senteurs</option>
+              <option value="SOINS_CORPS">Soins du Visage & Corps</option>
+              <option value="SANTE">Santé & Compléments</option>
+            </optgroup>
+
+            <optgroup label="🛒 Épicerie & Supermarché">
+              <option value="EPICERIE">Produits Alimentaires</option>
+              <option value="BOISSONS">Boissons & Rafraîchissements</option>
+              <option value="PRODUITS_FRAIS">Produits Frais & Marché</option>
+            </optgroup>
+
+            <optgroup label="⚽ Sports, Loisirs & Éducation">
+              <option value="SPORT">Équipements Sportifs</option>
+              <option value="JOUETS">Jeux & Jouets</option>
+              <option value="LIVRES_COURS">Livres, Cours & Formations</option>
+              <option value="EPREUVES_EXAMENS">Épreuves & Annales d'examen</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- INFORMATIONS PRODUIT -->
+        <div class="form-group">
+          <label for="pNom">Titre de la publication</label>
+          <input type="text" id="pNom" required placeholder="Ex: MERCEDES 2026 / Chaussures Cuir">
+        </div>
+
+        <div class="form-group">
+          <label for="pAuteur">Auteur / Nom du Vendeur</label>
+          <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
+        </div>
+
+        <div class="form-group">
+          <label for="pPrixNormal">Prix Normal (FCFA)</label>
+          <input type="number" id="pPrixNormal" required placeholder="150000000">
+        </div>
+
+        <div class="form-group">
+          <label for="pPrixPromo">Prix Promo (FCFA)</label>
+          <input type="number" id="pPrixPromo" placeholder="140000000">
+        </div>
+
+        <div class="form-group">
+          <label for="pStock">Stock disponible</label>
+          <input type="number" id="pStock" value="100" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pVendeurPhone">Téléphone du Vendeur</label>
+          <input type="tel" id="pVendeurPhone" placeholder="+2290197455309" value="+2290197455309">
+        </div>
+
+        <!-- GESTION MÉDIA (FICHIER OU URL) -->
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="pInputMedia">Fichier Média (Image, Vidéo MP4 ou Document PDF/Word) OU URL Directe</label>
+          <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
+          
+          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé (Ex: Firebase Storage, Cloudinary...) :</small>
+          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" onchange="window.handleDirectUrlInput(this.value)">
+          
+          <input type="hidden" id="base64Publish">
+          <input type="hidden" id="mediaTypePublish" value="image">
+          
+          <div class="preview-container">
+            <img id="previewImage" class="image-preview" alt="Aperçu Image">
+            <video id="previewVideo" class="video-preview" controls></video>
+            <div id="previewDoc" class="doc-preview">
+              <i class="fa-solid fa-file-lines"></i> <span id="docName">Document sélectionné</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="pDescription">Description détaillée</label>
+          <textarea id="pDescription" rows="4" required placeholder="Décrivez clairement votre produit ou service..."></textarea>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn-action" id="btnPublierSubmit">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // 1. CONFIGURATION FIREBASE (À vérifier avec vos clés)
+    // ----------------------------------------------------
+    const firebaseConfig = {
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // ----------------------------------------------------
+    // 2. GESTION DE L'UPLOAD & CONVERSION EN BASE64 / URL
+    // ----------------------------------------------------
+    window.handleMediaUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const previewImg = document.getElementById('previewImage');
+      const previewVid = document.getElementById('previewVideo');
+      const previewDoc = document.getElementById('previewDoc');
+      const mediaTypeInput = document.getElementById('mediaTypePublish');
+      const base64Input = document.getElementById('base64Publish');
+
+      // Reinitialiser l'affichage des aperçus
+      previewImg.style.display = 'none';
+      previewVid.style.display = 'none';
+      previewDoc.style.display = 'none';
+
+      const fileType = file.type;
+
+      if (fileType.startsWith('image/')) {
+        mediaTypeInput.value = 'image';
+      } else if (fileType.startsWith('video/')) {
+        mediaTypeInput.value = 'video';
+      } else {
+        mediaTypeInput.value = 'document';
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const result = e.target.result;
+        base64Input.value = result; // Stocke la chaîne Base64 ou l'URL
+
+        if (mediaTypeInput.value === 'image') {
+          previewImg.src = result;
+          previewImg.style.display = 'block';
+        } else if (mediaTypeInput.value === 'video') {
+          previewVid.src = result;
+          previewVid.style.display = 'block';
+        } else {
+          document.getElementById('docName').innerText = file.name;
+          previewDoc.style.display = 'block';
+        }
+      };
+
+      reader.readAsDataURL(file);
+    };
+
+    window.handleDirectUrlInput = function(url) {
+      if (!url) return;
+
+      const previewImg = document.getElementById('previewImage');
+      const previewVid = document.getElementById('previewVideo');
+      const previewDoc = document.getElementById('previewDoc');
+      const mediaTypeInput = document.getElementById('mediaTypePublish');
+      const base64Input = document.getElementById('base64Publish');
+
+      previewImg.style.display = 'none';
+      previewVid.style.display = 'none';
+      previewDoc.style.display = 'none';
+
+      base64Input.value = url; // L'URL hébergée directement
+
+      if (url.match(/\.(mp4|webm|ogg)($\vert{}\?)/i)) {         mediaTypeInput.value = 'video';         previewVid.src = url;         previewVid.style.display = 'block';       } else if (url.match(/\.(pdf\vert{}doc\vert{}docx)($|\?)/i)) {
+        mediaTypeInput.value = 'document';
+        document.getElementById('docName').innerText = url.split('/').pop();
+        previewDoc.style.display = 'block';
+      } else {
+        mediaTypeInput.value = 'image';
+        previewImg.src = url;
+        previewImg.style.display = 'block';
+      }
+    };
+
+    // ----------------------------------------------------
+    // 3. PUBLICATION DANS FIREBASE (vendeurs_publications)
+    // ----------------------------------------------------
+    window.publierElement = async function(event) {
+      event.preventDefault();
+
+      const btnSubmit = document.getElementById('btnPublierSubmit');
+      const alertBox = document.getElementById('statusAlert');
+      
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+
+      try {
+        // Récupération de l'utilisateur Firebase (ou valeur par défaut si déconnecté)
+        const currentUser = firebase.auth().currentUser;
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82"; // ID vendeur par défaut
+        
+        const type = document.getElementById('pType').value;
+        const categorie = document.getElementById('pCategorie').value;
+        const nom = document.getElementById('pNom').value.trim();
+        const auteur = document.getElementById('pAuteur').value.trim();
+        const prixNormal = Number(document.getElementById('pPrixNormal').value);
+        const prixPromo = Number(document.getElementById('pPrixPromo').value) || prixNormal;
+        const stock = Number(document.getElementById('pStock').value) || 0;
+        const description = document.getElementById('pDescription').value.trim();
+        const vendorPhone = document.getElementById('pVendeurPhone').value.trim();
+        const mediaUrl = document.getElementById('base64Publish').value;
+        const mediaType = document.getElementById('mediaTypePublish').value;
+
+        if (!mediaUrl) {
+          throw new Error("Veuillez sélectionner un fichier média ou entrer une URL valide.");
+        }
+
+        // Création d'une clé unique dans la base de données
+        const newRef = db.ref('vendeurs_publications').push();
+        const publicationId = newRef.key;
+
+        // Structure exacte conforme à la Realtime Database DAKPRO ÉLITE
+        const publicationData = {
+          auteur: auteur,
+          categorie: categorie,
+          createdAt: Date.now(),
+          createdBy: vendorUid,
+          description: description,
+          id: publicationId,
+          image: mediaUrl,
+          imageUrl: mediaUrl,
+          mediaType: mediaType,
+          nom: nom,
+          prix: prixPromo,
+          prixNormal: prixNormal,
+          prixPromo: prixPromo,
+          stock: stock,
+          type: type,
+          vendeurNom: auteur,
+          vendeurPhone: vendorPhone,
+          vendeurUid: vendorUid
+        };
+
+        await newRef.set(publicationData);
+
+        // Afficher message de succès
+        alertBox.className = "alert alert-success";
+        alertBox.innerText = "Publication réussie avec succès !";
+        alertBox.style.display = "block";
+
+        // Réinitialiser le formulaire
+        event.target.reset();
+        document.getElementById('previewImage').style.display = 'none';
+        document.getElementById('previewVideo').style.display = 'none';
+        document.getElementById('previewDoc').style.display = 'none';
+        document.getElementById('base64Publish').value = '';
+
+      } catch (error) {
+        alertBox.className = "alert alert-error";
+        alertBox.innerText = "Erreur lors de la publication : " + error.message;
+        alertBox.style.display = "block";
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource`;
+      }
+    };
+  </script>
+</body>
+</html>

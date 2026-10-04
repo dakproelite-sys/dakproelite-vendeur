@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DAKPRO ÉLITE — Dashboard Vendeur</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success-color: #10b981;
+      --bg-light: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .dashboard-wrap {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    /* ================================
+       EN-TÊTE
+    ================================= */
+
+    .dashboard-header {
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 20px 24px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-header h1 {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .dashboard-header p {
+      color: #cbd5e1;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .refresh-btn {
+      background: var(--primary-gold);
+      color: #000;
+
+      border: 0;
+      padding: 10px 15px;
+
+      border-radius: 8px;
+
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .refresh-btn:hover {
+      background: var(--secondary-gold);
+      color: #fff;
+    }
+
+    /* ================================
+       STATISTIQUES
+    ================================= */
+
+    .stats-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+      gap: 16px;
+
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+
+      padding: 18px;
+
+      border-radius: 12px;
+
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.03);
+
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-card .title {
+      font-size: 11px;
+
+      color: var(--text-muted);
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+
+      text-transform: uppercase;
+    }
+
+    .stat-card .amount {
+      font-size: 20px;
+
+      font-weight: 800;
+
+      color: var(--text-main);
+    }
+
+    /* ================================
+       CARTES
+    ================================= */
+
+    .content-card {
+      background: var(--card-bg);
+
+      padding: 24px;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--border-color);
+
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.03);
+
+      margin-bottom: 24px;
+    }
+
+    .content-card h3 {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    /* ================================
+       TABLEAU
+    ================================= */
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+
+      border-collapse: collapse;
+
+      margin-top: 16px;
+
+      min-width: 700px;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 12px 16px;
+
+      text-align: left;
+
+      border-bottom:
+        1px solid var(--border-color);
+
+      font-size: 13.5px;
+
+      vertical-align: middle;
+    }
+
+    .data-table th {
+      background: #f1f5f9;
+
+      color: var(--text-muted);
+
+      font-weight: 700;
+    }
+
+    /* ================================
+       IMAGE PRODUIT
+    ================================= */
+
+    .prod-thumb {
+      width: 50px;
+      height: 50px;
+
+      border-radius: 8px;
+
+      object-fit: cover;
+
+      background: #e2e8f0;
+
+      border:
+        1px solid var(--border-color);
+    }
+
+    /* ================================
+       BADGES
+    ================================= */
+
+    .status-badge {
+      padding: 4px 10px;
+
+      border-radius: 20px;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      display: inline-block;
+    }
+
+    .status-success {
+      background: #d1fae5;
+
+      color: #065f46;
+    }
+
+    /* ================================
+       BOUTON COPIER
+    ================================= */
+
+    .btn-copy {
+      background: var(--primary-gold);
+
+      color: #000;
+
+      border: none;
+
+      padding: 8px 14px;
+
+      border-radius: 6px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      font-size: 12px;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: var(--secondary-gold);
+
+      color: #fff;
+    }
+
+    /* ================================
+       ÉTAT VIDE
+    ================================= */
+
+    .empty {
+      text-align: center;
+
+      padding: 30px !important;
+
+      color: var(--text-muted);
+    }
+
+    .loading {
+      opacity: .65;
+    }
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .content-card {
+        padding: 15px;
+      }
+
+      .dashboard-header {
+        padding: 16px;
+      }
+
+      .dashboard-header h1 {
+        font-size: 18px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="dashboard-wrap">
+
+    <!-- ==========================================
+         EN-TÊTE DU DASHBOARD
+    =========================================== -->
+
+    <header class="dashboard-header">
+
+      <div>
+
+        <h1>
+          <i
+            class="fa-solid fa-chart-line"
+            style="color:var(--primary-gold);"
+          ></i>
+
+          Dashboard Vendeur <span id="vendeurNameLabel" style="font-size: 14px; opacity: 0.8; font-weight: 400;"></span>
+        </h1>
+
+        <p id="vendeurSubText">
+          DAKPRO ÉLITE — Suivi de vos ventes, publications et performances
+        </p>
+
+      </div>
+
+      <button
+        class="refresh-btn"
+        id="refreshDashboard"
+      >
+
+        <i class="fa-solid fa-rotate"></i>
+
+        Actualiser
+
+      </button>
+
+    </header>
+
+
+    <!-- ==========================================
+         STATISTIQUES
+    =========================================== -->
+
+    <section class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="title">
+          Solde Disponible
+        </div>
+
+        <div
+          class="amount"
+          id="statSolde"
+        >
+          0 FCFA
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Gains d'Affiliation
+        </div>
+
+        <div
+          class="amount"
+          id="statGainsAffiliation"
+        >
+          0 FCFA
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Ventes Totales
+        </div>
+
+        <div
+          class="amount"
+          id="statVentes"
+        >
+          0 FCFA
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Mes Produits Publiés
+        </div>
+
+        <div
+          class="amount"
+          id="statProduits"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Visiteurs / Clics
+        </div>
+
+        <div
+          class="amount"
+          id="statVisiteurs"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Commentaires
+        </div>
+
+        <div
+          class="amount"
+          id="statCommentaires"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="title">
+          Mentions J'aime
+        </div>
+
+        <div
+          class="amount"
+          id="statLikes"
+        >
+          0
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         GRAPHIQUE
+    =========================================== -->
+
+    <section class="content-card">
+
+      <h3>
+        Aperçu des performances de ventes & visites
+      </h3>
+
+      <div
+        style="
+          position:relative;
+          height:250px;
+          margin-top:15px;
+        "
+      >
+
+        <canvas
+          id="performanceChart"
+        ></canvas>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         PUBLICATIONS VENDEUR
+    =========================================== -->
+
+    <section class="content-card">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          margin-bottom:12px;
+          flex-wrap:wrap;
+          gap:10px;
+        "
+      >
+
+        <h3>
+
+          <i
+            class="fa-solid fa-list-check"
+            style="color:var(--primary-gold);"
+          ></i>
+
+          Mes Publications Actives
+
+        </h3>
+
+
+        <button
+          class="btn-copy"
+          id="newProductBtn"
+          style="
+            font-size:12px;
+            padding:8px 14px;
+          "
+        >
+
+          <i class="fa-solid fa-plus"></i>
+
+          Nouveau Produit
+
+        </button>
+
+      </div>
+
+
+      <div class="table-container">
+
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Aperçu
+              </th>
+
+              <th>
+                Nom du Produit
+              </th>
+
+              <th>
+                Catégorie
+              </th>
+
+              <th>
+                Prix Promo / Normal
+              </th>
+
+              <th>
+                Stock
+              </th>
+
+              <th>
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody
+            id="dashboardProductsList"
+          >
+
+            <tr>
+
+              <td
+                colspan="6"
+                class="empty loading"
+              >
+
+                Chargement de vos publications...
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================
+       FIREBASE + JAVASCRIPT
+  =========================================== -->
+
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    /* ==========================================
+       CONFIGURATION FIREBASE DAKPRO ÉLITE
+    =========================================== */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    let currentVendeurUid = null;
+    let publicationsListener = null;
+    let statsListener = null;
+
+    /* ==========================================
+       FORMATAGE FCFA
+    =========================================== */
+
+    function money(value) {
+      return Number(value || 0).toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    /* ==========================================
+       PROTECTION TEXTE
+    =========================================== */
+
+    function safeText(value, fallback = '') {
+      return String(value ?? fallback)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    /* ==========================================
+       PROTECTION URL (Accepte aussi la base64)
+    =========================================== */
+
+    function safeUrl(value, fallback = '477912.png') {
+      const url = String(value || fallback);
+      if (url.startsWith('data:image')) {
+        return url; // Conserver le format data:image direct pour la base64
+      }
+      return url.replaceAll('"', '%22').replaceAll("'", '%27');
+    }
+
+    /* ==========================================
+       CHARGER PROFIL VENDEUR
+    =========================================== */
+
+    async function chargerProfilVendeur(uid) {
+      try {
+        const userRef = ref(database, `users/${uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          if (userData.nomComplet) {
+            document.getElementById('vendeurNameLabel').innerText = `(${userData.nomComplet})`;
+          }
+        }
+      } catch (err) {
+        console.error("Erreur chargement profil:", err);
+      }
+    }
+
+    /* ==========================================
+       CHARGER STATISTIQUES VENDEUR
+    =========================================== */
+
+    function chargerStats(uid) {
+      if (statsListener) {
+        statsListener();
+      }
+
+      statsListener = onValue(
+        ref(database, 'vendeurs_stats/' + uid),
+        snapshot => {
+          const data = snapshot.exists() ? snapshot.val() : {};
+
+          document.getElementById('statSolde').innerText = money(data.solde || 0);
+          document.getElementById('statGainsAffiliation').innerText = money(data.gainsAffiliation || 0);
+          document.getElementById('statVentes').innerText = money(data.ventesTotales || 0);
+        },
+        error => {
+          console.error('Erreur stats vendeur:', error);
+        }
+      );
+    }
+
+    /* ==========================================
+       CHARGER PUBLICATIONS (vendeur_publications)
+    =========================================== */
+
+    function chargerMesProduits(uid) {
+      if (publicationsListener) {
+        publicationsListener();
+      }
+
+      publicationsListener = onValue(
+        ref(database, 'vendeur_publications'),
+        snapshot => {
+          const tbody = document.getElementById('dashboardProductsList');
+
+          let totalMesProduits = 0;
+          let totalVisiteurs = 0;
+          let totalLikes = 0;
+          let totalCommentaires = 0;
+
+          tbody.innerHTML = '';
+
+          if (!snapshot.exists()) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="empty">
+                  Aucune publication trouvée dans la base de données.
+                </td>
+              </tr>
+            `;
+            mettreAJourCompteurs(0, 0, 0, 0);
+            return;
+          }
+
+          const publications = snapshot.val();
+
+          Object.entries(publications).forEach(([prodKey, prod]) => {
+            prod = prod || {};
+
+            /*
+             * Vérification exacte sur vendeurUid ou createdBy
+             */
+            if (prod.vendeurUid !== uid && prod.createdBy !== uid) {
+              return;
+            }
+
+            totalMesProduits++;
+
+            totalVisiteurs += Number(prod.visiteurs ?? prod.views ?? 0);
+            totalLikes += Number(prod.likes || 0);
+
+            if (prod.commentaires) {
+              totalCommentaires += Object.keys(prod.commentaires).length;
+            } else if (prod.commentairesCount) {
+              totalCommentaires += Number(prod.commentairesCount);
+            }
+
+            /* ================================
+               IMAGE / VIDEO / DOCUMENT
+            ================================= */
+            const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+            const mType = prod.mediaType || 'image';
+
+            let thumbHtml = `
+              <img
+                src="${safeUrl(mediaSrc)}"
+                class="prod-thumb"
+                alt="Produit"
+                onerror="this.src='477912.png'"
+              >
+            `;
+
+            if (mType === 'video') {
+              thumbHtml = `
+                <video
+                  src="${safeUrl(mediaSrc)}"
+                  class="prod-thumb"
+                  muted
+                  playsinline
+                ></video>
+              `;
+            } else if (mType === 'document') {
+              thumbHtml = `
+                <div
+                  class="prod-thumb"
+                  style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#0f172a;
+                    color:#d4af37;
+                  "
+                >
+                  <i class="fa-solid fa-file-pdf"></i>
+                </div>
+              `;
+            }
+
+            /* ================================
+               LIEN PRODUIT
+            ================================= */
+            const pageProduitUrl = `${window.location.origin}/produit.html?id=${encodeURIComponent(prodKey)}&aff=${encodeURIComponent(uid)}`;
+
+            /* ================================
+               PRIX (Gestion nom / prix / promo)
+            ================================= */
+            const prixNormalAffiche = prod.prixNormal ?? prod.prix ?? 0;
+            const prixPromoAffiche = prod.prixPromo ?? prod.prix ?? prixNormalAffiche;
+
+            /* ================================
+               STOCK
+            ================================= */
+            const stock = prod.stock !== undefined ? prod.stock : 100;
+
+            /* ================================
+               LIGNE TABLEAU
+            ================================= */
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+              <td>
+                ${thumbHtml}
+              </td>
+
+              <td>
+                <strong>
+                  ${safeText(prod.nom || prod.title || 'Produit sans nom')}
+                </strong>
+                <br>
+                <small style="color:var(--text-muted);">
+                  Auteur: ${safeText(prod.auteur || prod.vendeurNom || 'N/A')}
+                </small>
+              </td>
+
+              <td>
+                <span
+                  class="status-badge"
+                  style="background:#e2e8f0; color:#334155;"
+                >
+                  ${safeText(prod.categorie || 'GÉNÉRAL')}
+                </span>
+              </td>
+
+              <td>
+                <strong>
+                  ${money(prixPromoAffiche)}
+                </strong>
+                <br>
+                <small
+                  style="
+                    text-decoration: line-through;
+                    color: var(--text-muted);
+                  "
+                >
+                  ${money(prixNormalAffiche)}
+                </small>
+              </td>
+
+              <td>
+                <span class="status-badge status-success">
+                  ${safeText(stock)} en stock
+                </span>
+              </td>
+
+              <td>
+                <button class="btn-copy copy-product-link">
+                  <i class="fa-solid fa-link"></i> Lien
+                </button>
+              </td>
+            `;
+
+            const copyButton = tr.querySelector('.copy-product-link');
+            copyButton.addEventListener('click', () => {
+              copierLien(pageProduitUrl, copyButton);
+            });
+
+            tbody.appendChild(tr);
+          });
+
+          /* ==================================
+             AUCUN PRODUIT TROUVÉ
+          =================================== */
+          if (totalMesProduits === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="empty">
+                  Vous n'avez encore aucune publication active.
+                </td>
+              </tr>
+            `;
+          }
+
+          mettreAJourCompteurs(
+            totalMesProduits,
+            totalVisiteurs,
+            totalCommentaires,
+            totalLikes
+          );
+        },
+        error => {
+          console.error('Erreur publications:', error);
+
+          document.getElementById('dashboardProductsList').innerHTML = `
+            <tr>
+              <td colspan="6" class="empty">
+                Impossible de charger vos publications depuis Realtime Database.
+              </td>
+            </tr>
+          `;
+        }
+      );
+    }
+
+    /* ==========================================
+       COMPTEURS
+    =========================================== */
+
+    function mettreAJourCompteurs(produits, visiteurs, commentaires, likes) {
+      document.getElementById('statProduits').innerText = produits;
+      document.getElementById('statVisiteurs').innerText = visiteurs;
+      document.getElementById('statCommentaires').innerText = commentaires;
+      document.getElementById('statLikes').innerText = likes;
+    }
+
+    /* ==========================================
+       COPIER LIEN PRODUIT
+    =========================================== */
+
+    async function copierLien(url, button) {
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = button.innerHTML;
+        button.innerHTML = `<i class="fa-solid fa-check"></i> Copié`;
+        setTimeout(() => {
+          button.innerHTML = original;
+        }, 1500);
+      } catch (error) {
+        console.error('Copie impossible:', error);
+        prompt('Copiez manuellement le lien du produit :', url);
+      }
+    }
+
+    window.copierLien = copierLien;
+
+    /* ==========================================
+       GRAPHIQUE
+    =========================================== */
+
+    function initialiserGraphique() {
+      const canvas = document.getElementById('performanceChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const ctx = canvas.getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+          datasets: [{
+            label: 'Ventes (FCFA)',
+            data: [0, 50000, 100000, 150000, 250000, 400000],
+            borderColor: '#d4af37',
+            backgroundColor: 'rgba(212,175,55,0.08)',
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    /* ==========================================
+       AUTHENTIFICATION VENDEUR
+    =========================================== */
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        document.getElementById('dashboardProductsList').innerHTML = `
+          <tr>
+            <td colspan="6" class="empty">
+              Vous devez être connecté pour voir votre dashboard vendeur.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      currentVendeurUid = user.uid;
+
+      // Charger le nom d'utilisateur et les données
+      chargerProfilVendeur(user.uid);
+      chargerStats(user.uid);
+      chargerMesProduits(user.uid);
+    });
+
+    /* ==========================================
+       BOUTON ACTUALISER
+    =========================================== */
+
+    document.getElementById('refreshDashboard').addEventListener('click', () => {
+      if (!currentVendeurUid) {
+        alert('Veuillez vous connecter.');
+        return;
+      }
+      chargerProfilVendeur(currentVendeurUid);
+      chargerStats(currentVendeurUid);
+      chargerMesProduits(currentVendeurUid);
+    });
+
+    /* ==========================================
+       NOUVEAU PRODUIT
+    =========================================== */
+
+    document.getElementById('newProductBtn').addEventListener('click', () => {
+      window.location.href = 'publier.html';
+    });
+
+    /* ==========================================
+       INITIALISATION GRAPHIQUE
+    =========================================== */
+
+    window.addEventListener('DOMContentLoaded', initialiserGraphique);
+
+  </script>
+
+</body>
+</html>

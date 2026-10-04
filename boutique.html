@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boutique Officielle - DAKPRO ÉLITE</title>
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --bg-light: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* HEADER BOUTIQUE */
+    .header-nav {
+      background: var(--dark-bg);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--primary-gold);
+    }
+    .brand-logo { color: var(--primary-gold); font-size: 20px; font-weight: 800; text-decoration: none; letter-spacing: 1px; }
+    .btn-home { color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .btn-home:hover { color: var(--primary-gold); }
+
+    /* MAIN CONTAINER */
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; flex: 1; width: 100%; }
+
+    /* BANNIÈRE PROFIL VENDEUR */
+    .boutique-header-banner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 28px;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+      color: #fff;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border-bottom: 4px solid var(--primary-gold);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .boutique-avatar-wrapper {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-gold);
+      overflow: hidden;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .boutique-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .boutique-avatar-wrapper .avatar-fallback { font-size: 36px; font-weight: 800; color: var(--dark-bg); }
+    .boutique-info { flex: 1; }
+    .boutique-info h1 { font-size: 26px; color: var(--primary-gold); margin-bottom: 6px; font-weight: 800; }
+    .boutique-info p { font-size: 14px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .boutique-contact { font-size: 13px; color: #94a3b8; display: flex; align-items: center; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+    .boutique-contact span { display: inline-flex; align-items: center; gap: 6px; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    .action-bar h2 { font-size: 18px; color: var(--text-main); font-weight: 700; }
+    .btn-share {
+      background: var(--primary-gold);
+      color: #000;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-share:hover { background: var(--secondary-gold); color: #fff; }
+
+    /* GRILLE PRODUITS MULTI-COLONNES RESPONSIVE */
+    .boutique-products-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 640px) { .boutique-products-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 768px) { .boutique-products-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1200px) { .boutique-products-grid { grid-template-columns: repeat(5, 1fr); } }
+    @media (min-width: 1600px) { .boutique-products-grid { grid-template-columns: repeat(6, 1fr); } }
+
+    .boutique-prod-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .boutique-prod-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+    .boutique-prod-media {
+      width: 100%;
+      height: 180px;
+      background: #f1f5f9;
+      position: relative;
+      overflow: hidden;
+    }
+    .boutique-prod-media img, .boutique-prod-media video {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .boutique-prod-media .doc-icon-box {
+      display: flex; align-items: center; justify-content: center; height: 100%;
+      font-size: 48px; color: var(--primary-gold); background: var(--dark-bg);
+    }
+    .boutique-prod-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+    .boutique-prod-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .boutique-prod-category {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .boutique-prod-price {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--secondary-gold);
+      margin-bottom: 12px;
+    }
+    .boutique-prod-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .btn-view-prod {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--dark-bg);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+    .btn-view-prod:hover { background: #000; color: var(--primary-gold); }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .empty-state i { font-size: 48px; margin-bottom: 12px; color: var(--primary-gold); }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark-bg);
+      color: #94a3b8;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-nav">
+    <a href="index.html" class="brand-logo">DAKPRO ÉLITE</a>
+    <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i> Accueil</a>
+  </header>
+
+  <main class="container">
+    <!-- EN-TÊTE DE LA BOUTIQUE -->
+    <div class="boutique-header-banner">
+      <div class="boutique-avatar-wrapper" id="boutiqueAvatar">
+        <span class="avatar-fallback" id="boutiqueInitial">V</span>
+      </div>
+      <div class="boutique-info">
+        <h1 id="boutiqueNom">Chargement de la boutique...</h1>
+        <p><i class="fa-solid fa-store"></i> Boutique Officielle Vendeur & Affilié Partner</p>
+        <div class="boutique-contact">
+          <span id="boutiquePhoneDisplay"><i class="fa-solid fa-phone"></i> Contact non disponible</span>
+          <span id="boutiqueEmailDisplay"><i class="fa-solid fa-envelope"></i> Email non disponible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRE D'ACTION -->
+    <div class="action-bar">
+      <h2>Catalogue des Produits En Ligne</h2>
+      <button class="btn-share" onclick="window.copierLienBoutique()"><i class="fa-solid fa-share-nodes"></i> Partager cette Boutique</button>
+    </div>
+
+    <!-- GRILLE DES PRODUITS -->
+    <div class="boutique-products-grid" id="boutiqueGrid">
+      <div class="empty-state">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Chargement des articles de la boutique...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 DAKPRO ÉLITE - Tous droits réservés.</p>
+  </footer>
+
+  <!-- INTEGRATION FIREBASE LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Extraction de l'ID du vendeur depuis le paramètre de requête URL ?vendeur=UID
+    const urlParams = new URLSearchParams(window.location.search);
+    let targetVendeurUid = urlParams.get('vendeur');
+
+    window.copierLienBoutique = function() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Lien de la boutique copié dans le presse-papier !");
+      });
+    };
+
+    async function initialiserBoutique(vendeurUid) {
+      if (!vendeurUid) {
+        document.getElementById('boutiqueGrid').innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <p>Aucun vendeur n'a été spécifié. Veuillez accéder à une boutique via un lien valide.</p>
+          </div>
+        `;
+        document.getElementById('boutiqueNom').innerText = "Boutique Introuvable";
+        return;
+      }
+
+      await chargerProfilVendeur(vendeurUid);
+      await chargerProduitsBoutique(vendeurUid);
+    }
+
+    async function chargerProfilVendeur(uid) {
+      try {
+        const snapshot = await get(ref(database, 'users/' + uid));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const nomBoutique = data.nomComplet || data.nomBoutique || "Boutique Vendeur";
+          const phone = data.telephone || "";
+          const email = data.email || "";
+          const avatar = data.imageUrl || data.photoURL || "";
+
+          document.getElementById('boutiqueNom').innerText = nomBoutique;
+          
+          if (phone) {
+            document.getElementById('boutiquePhoneDisplay').innerHTML = `<i class="fa-solid fa-phone"></i> ${phone}`;
+          }
+          if (email) {
+            document.getElementById('boutiqueEmailDisplay').innerHTML = `<i class="fa-solid fa-envelope"></i> ${email}`;
+          }
+
+          const avatarContainer = document.getElementById('boutiqueAvatar');
+          if (avatar) {
+            avatarContainer.innerHTML = `<img src="${avatar}" alt="${nomBoutique}">`;
+          } else {
+            const initial = nomBoutique[0] ? nomBoutique[0].toUpperCase() : 'V';
+            avatarContainer.innerHTML = `<span class="avatar-fallback">${initial}</span>`;
+          }
+        } else {
+          document.getElementById('boutiqueNom').innerText = "Boutique Partenaire";
+        }
+      } catch (err) {
+        console.error("Erreur profil:", err);
+      }
+    }
+
+    async function chargerProduitsBoutique(uid) {
+      const grid = document.getElementById('boutiqueGrid');
+      grid.innerHTML = "";
+      let count = 0;
+
+      try {
+        const snapshot = await get(ref(database, 'vendeur_publications'));
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const prod = child.val();
+            const prodKey = prod.id || child.key;
+
+            if (prod.vendeurUid === uid || prod.createdBy === uid) {
+              count++;
+
+              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+              const mType = prod.mediaType || 'image';
+              
+              let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
+
+              if (mType === 'video') {
+                mediaHtml = `<video src="${mediaSrc}" controls></video>`;
+              } else if (mType === 'document') {
+                mediaHtml = `<div class="doc-icon-box"><i class="fa-solid fa-file-pdf"></i></div>`;
+              }
+
+              const pageProduitUrl = `produit.html?id=${prodKey}&aff=${uid}`;
+              const prixEffectif = prod.prixPromo || prod.prix || prod.prixNormal || 0;
+
+              grid.innerHTML += `
+                <div class="boutique-prod-card">
+                  <div class="boutique-prod-media">
+                    ${mediaHtml}
+                  </div>
+                  <div class="boutique-prod-body">
+                    <div>
+                      <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
+                      <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Produit sans nom'}</div>
+                      <div class="boutique-prod-price">${Number(prixEffectif).toLocaleString('fr-FR')} FCFA</div>
+                    </div>
+                    <div class="boutique-prod-actions">
+                      <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-cart-shopping"></i> Voir Produit / Acheter</a>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          });
+        }
+
+        if (count === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-box-open"></i>
+              <p>Cette boutique n'a aucun produit publié pour le moment.</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("Erreur chargement articles:", err);
+        grid.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>Une erreur s'est produite lors de la récupération des articles.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Gestion de la détection URL ou Auth State
+    if (targetVendeurUid) {
+      initialiserBoutique(targetVendeurUid);
+    } else {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          targetVendeurUid = user.uid;
+          initialiserBoutique(targetVendeurUid);
+        } else {
+          initialiserBoutique(null);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
