@@ -38,7 +38,6 @@
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     padding: 32px 28px;
     color: #ffffff;
-    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -81,7 +80,7 @@
     padding: 28px;
   }
 
-  /* Avatar & Header Profil */
+  /* Section Photo de Profil */
   .profil-identity-box {
     display: flex;
     align-items: center;
@@ -92,44 +91,53 @@
     flex-wrap: wrap;
   }
 
-  .profil-avatar-wrapper {
+  .profil-avatar-container {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 105px;
+    height: 105px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .profil-avatar-wrapper {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     border: 3px solid var(--pf-accent-gold);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     background: #0f172a;
-    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .profil-avatar-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
   }
 
   .avatar-edit-overlay {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 2px;
+    right: 2px;
     background: var(--pf-accent-gold);
-    color: #fff;
-    width: 32px;
-    height: 32px;
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     border: 2px solid #ffffff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  .avatar-edit-overlay:hover {
+  .profil-avatar-container:hover .avatar-edit-overlay {
     transform: scale(1.1);
+    background: var(--pf-accent-hover);
   }
 
   .profil-user-details h3 {
@@ -261,7 +269,7 @@
         <p>Gérez vos informations personnelles et l'identité visuelle de votre boutique.</p>
       </div>
       <div class="profil-role-badge" id="profBadgeRole">
-        <i class="fa-solid fa-store"></i> <span id="lblRole">Vendeur Officiel</span>
+        <i class="fa-solid fa-store"></i> <span id="lblRole">Vendeur</span>
       </div>
     </div>
 
@@ -269,20 +277,29 @@
     <div class="profil-body">
       <form id="formProfilVendeur" onsubmit="sauvegarderProfil(event)">
         
-        <!-- PHOTO DE PROFIL & NOM EN-TÊTE -->
+        <!-- PHOTO DE PROFIL & OUVERTURE GALERIE -->
         <div class="profil-identity-box">
-          <div class="profil-avatar-wrapper">
-            <img id="imgAvatarProfil" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>" alt="Avatar">
-            <label for="inputAvatarFile" class="avatar-edit-overlay" title="Changer la photo">
-              <i class="fa-solid fa-camera"></i>
-            </label>
-            <input type="file" id="inputAvatarFile" accept="image/*" style="display: none;" onchange="traiterImageProfil(event)">
-            <input type="hidden" id="profBase64Avatar">
-          </div>
           
+          <!-- Conteneur Cliquable pour la Galerie -->
+          <div class="profil-avatar-container" onclick="ouvrirGaleriePhoto()" title="Cliquez pour changer la photo de profil depuis la galerie">
+            <div class="profil-avatar-wrapper">
+              <img id="imgAvatarProfil" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>" alt="Avatar Vendeur">
+            </div>
+            <div class="avatar-edit-overlay">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+          </div>
+
+          <!-- Input masqué déclenché par JS pour ouvrir la galerie -->
+          <input type="file" id="inputAvatarFile" accept="image/*" style="display: none;" onchange="traiterImageProfil(event)">
+          <input type="hidden" id="profBase64Avatar">
+
           <div class="profil-user-details">
-            <h3 id="txtHeaderNomComplet">Chargement du profil...</h3>
+            <h3 id="txtHeaderNomComplet">Chargement en cours...</h3>
             <p id="txtHeaderEmail">-</p>
+            <span style="font-size: 11px; color: var(--pf-accent-gold); cursor: pointer; display: inline-block; margin-top: 4px;" onclick="ouvrirGaleriePhoto()">
+              <i class="fa-solid fa-image"></i> Changer la photo depuis la galerie
+            </span>
           </div>
         </div>
 
@@ -304,7 +321,7 @@
           <!-- Email (Lecture seule) -->
           <div class="profil-field">
             <label for="profEmail"><i class="fa-solid fa-envelope" style="color: var(--pf-accent-gold);"></i> Adresse E-mail</label>
-            <input type="email" id="profEmail" readonly title="L'adresse e-mail associée au compte d'accès ne peut pas être modifiée ici.">
+            <input type="email" id="profEmail" readonly title="L'adresse e-mail liée au compte d'accès ne peut pas être modifiée ici.">
           </div>
 
           <!-- Numéro de téléphone / WhatsApp -->
@@ -319,9 +336,9 @@
             <input type="text" id="profPays" placeholder="Ex: Bénin" required>
           </div>
 
-          <!-- Ville / Commune / Adresse -->
+          <!-- Ville / Commune -->
           <div class="profil-field">
-            <label for="profCommune"><i class="fa-solid fa-location-dot" style="color: var(--pf-accent-gold);"></i> Ville / Commune / Adresse</label>
+            <label for="profCommune"><i class="fa-solid fa-location-dot" style="color: var(--pf-accent-gold);"></i> Ville / Commune</label>
             <input type="text" id="profCommune" placeholder="Ex: Cotonou, Akpakpa" required>
           </div>
 
@@ -340,15 +357,21 @@
   </div>
 </section>
 
-<!-- SCRIPT DE SYNCHRONISATION DYNAMIQUE FIREBASE -->
+<!-- SCRIPT DE SYNCHRONISATION DYNAMIQUE FIREBASE REALTIME DATABASE -->
 <script>
-  // Conversion & Compression de l'image sélectionnée en Base64
+  // 1. Fonction pour ouvrir la galerie photo ou l'appareil photo du téléphone
+  function ouvrirGaleriePhoto() {
+    document.getElementById('inputAvatarFile').click();
+  }
+
+  // 2. Traitement, redimensionnement et compression de l'image sélectionnée
   function traiterImageProfil(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 3 * 1024 * 1024) {
-      alert("L'image est trop lourde. Veuillez choisir une image de moins de 3 Mo.");
+    // Validation du type de fichier
+    if (!file.type.match('image.*')) {
+      alert("Veuillez sélectionner un fichier image valide (JPG, PNG, WEBP).");
       return;
     }
 
@@ -359,7 +382,7 @@
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        const max_size = 400; // Format carré optimisé pour l'avatar
+        const max_size = 400; // Dimension optimale pour l'avatar
 
         if (width > height) {
           if (width > max_size) {
@@ -378,7 +401,10 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        const base64Str = canvas.toDataURL('image/jpeg', 0.85);
+        // Export en Base64 JPEG léger
+        const base64Str = canvas.toDataURL('image/jpeg', 0.82);
+        
+        // Mettre à jour l'aperçu et la valeur masquée
         document.getElementById('imgAvatarProfil').src = base64Str;
         document.getElementById('profBase64Avatar').value = base64Str;
       };
@@ -387,7 +413,7 @@
     reader.readAsDataURL(file);
   }
 
-  // Écouteur d'état d'authentification Firebase
+  // 3. Écouteur d'état d'authentification Firebase (Connecte chaque vendeur à son propre profil UID)
   if (typeof firebase !== 'undefined' && firebase.auth) {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
@@ -398,28 +424,31 @@
     });
   }
 
-  // Chargement dynamique des données depuis Realtime Database
+  // 4. Chargement dynamique des informations depuis la branche users/{uid}
   function chargerProfilFirebase(uid, emailAuth) {
     const userRef = firebase.database().ref('users/' + uid);
     
     userRef.on('value', function(snapshot) {
       const data = snapshot.val() || {};
 
-      // Récupération des champs (fallback si certains sont absents)
-      const nomComplet = data.nomComplet || data.nom || "Nom non défini";
-      const nomBoutique = data.nomBoutique || nomComplet;
+      // Extraction dynamique des champs présents dans Realtime Database
+      const nomComplet = data.nomComplet || data.nom || "";
+      const nomBoutique = data.nomBoutique || nomComplet || "Ma Boutique";
       const email = data.email || emailAuth || "";
       const telephone = data.telephone || data.phone || "";
       const pays = data.pays || "Bénin";
       const commune = data.commune || data.ville || data.adresse || "";
       const role = data.role || "vendeur";
-      const avatar = data.imageUrl || data.photoURL || data.photo60 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>";
+      
+      // Extraction de l'image (compatible imageUrl et photo60)
+      const avatar = data.imageUrl || data.photo60 || data.photoURL || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>";
 
-      // Injection dans le HTML
+      // Affichage dynamique dans l'en-tête
       document.getElementById('txtHeaderNomComplet').textContent = nomBoutique;
       document.getElementById('txtHeaderEmail').textContent = email;
       document.getElementById('lblRole').textContent = role.toUpperCase();
 
+      // Remplissage automatique des champs du formulaire
       document.getElementById('profNomBoutique').value = nomBoutique;
       document.getElementById('profNomComplet').value = nomComplet;
       document.getElementById('profEmail').value = email;
@@ -427,12 +456,13 @@
       document.getElementById('profPays').value = pays;
       document.getElementById('profCommune').value = commune;
 
+      // Affichage de la photo de profil
       document.getElementById('imgAvatarProfil').src = avatar;
       document.getElementById('profBase64Avatar').value = avatar;
     });
   }
 
-  // Sauvegarde des modifications sur Firebase Realtime Database
+  // 5. Sauvegarde et écriture directe dans Firebase Realtime Database
   function sauvegarderProfil(e) {
     e.preventDefault();
 
@@ -444,6 +474,8 @@
 
     const btn = document.getElementById('btnSubmitProfil');
     const btnText = document.getElementById('btnTextProfil');
+    
+    // Animation de chargement sur le bouton
     btn.disabled = true;
     btnText.innerHTML = '<span class="profil-spinner"></span> Enregistrement...';
 
@@ -458,17 +490,19 @@
       dateModification: new Date().toISOString()
     };
 
+    // Écriture sur la branche spécifique users/{uid}
     firebase.database().ref('users/' + user.uid).update(updatedData)
       .then(function() {
         btn.disabled = false;
         btnText.innerHTML = '<i class="fa-solid fa-check"></i> Enregistré avec succès !';
+        
         setTimeout(() => {
           btnText.innerHTML = 'Mettre à jour mon profil';
         }, 3000);
       })
       .catch(function(error) {
-        console.error("Erreur de sauvegarde :", error);
-        alert("Erreur lors de la mise à jour du profil : " + error.message);
+        console.error("Erreur d'enregistrement :", error);
+        alert("Erreur lors de la mise à jour : " + error.message);
         btn.disabled = false;
         btnText.innerHTML = 'Mettre à jour mon profil';
       });
