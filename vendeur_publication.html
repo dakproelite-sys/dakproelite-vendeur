@@ -42,6 +42,20 @@
       gap: 10px;
     }
 
+    .user-banner {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-banner strong { color: var(--secondary-gold); }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -92,18 +106,10 @@
       width: 100%;
     }
 
-    .btn-action:hover {
-      background-color: #000;
-    }
+    .btn-action:hover { background-color: #000; }
+    .btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .btn-action:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .preview-container {
-      margin-top: 10px;
-    }
+    .preview-container { margin-top: 10px; }
 
     .image-preview, .video-preview {
       max-width: 100%;
@@ -137,6 +143,7 @@
 
     .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
     .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert-warning { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
   </style>
 </head>
 <body>
@@ -144,6 +151,11 @@
   <div class="content-card">
     <h3><i class="fa-solid fa-store" style="color: var(--primary-gold);"></i> Publier sur DAKPRO ÉLITE</h3>
     
+    <div id="userBanner" class="user-banner" style="display: none;">
+      <span>Connecté en tant que : <strong id="userEmail">...</strong></span>
+      <span id="userRoleBadge" style="background: var(--primary-gold); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">VENDEUR</span>
+    </div>
+
     <div id="statusAlert" class="alert"></div>
 
     <form id="formPublication" onsubmit="window.publierElement(event)">
@@ -174,22 +186,22 @@
 
         <div class="form-group">
           <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: MERCEDES 2026">
+          <input type="text" id="pNom" required placeholder="Ex: Chaussure Italienne Cuir">
         </div>
 
         <div class="form-group">
-          <label for="pAuteur">Auteur / Nom du Vendeur</label>
+          <label for="pAuteur">Auteur / Nom de la Boutique</label>
           <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
         </div>
 
         <div class="form-group">
           <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="15000000">
+          <input type="number" id="pPrixNormal" required placeholder="120000">
         </div>
 
         <div class="form-group">
           <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="14000000">
+          <input type="number" id="pPrixPromo" placeholder="80000">
         </div>
 
         <div class="form-group">
@@ -236,8 +248,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -255,7 +267,53 @@
     const db = getDatabase(app);
     const storage = getStorage(app);
 
+    let currentConnectedUser = null;
     let selectedFile = null;
+
+    // Écoute dynamique de la session de l'utilisateur connecté
+    onAuthStateChanged(auth, async (user) => {
+      const alertBox = document.getElementById('statusAlert');
+      const btnSubmit = document.getElementById('btnPublierSubmit');
+      const userBanner = document.getElementById('userBanner');
+
+      if (user) {
+        currentConnectedUser = user;
+        document.getElementById('userEmail').innerText = user.email || user.uid;
+
+        try {
+          // Récupération du profil utilisateur sous /users/{uid}
+          const userSnapshot = await get(ref(db, `users/${user.uid}`));
+          
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.val();
+            
+            // Pré-remplir les champs avec les données enregistrées
+            if (userData.nom || userData.displayName || userData.nomBoutique) {
+              document.getElementById('pAuteur').value = userData.nomBoutique || userData.nom || userData.displayName || '';
+            }
+            if (userData.telephone || userData.phone) {
+              document.getElementById('pVendeurPhone').value = userData.telephone || userData.phone || '';
+            }
+
+            document.getElementById('userRoleBadge').innerText = (userData.role || 'VENDEUR').toUpperCase();
+          }
+
+          userBanner.style.display = 'flex';
+          btnSubmit.disabled = false;
+        } catch (e) {
+          console.warn("Impossible de charger les données du profil :", e);
+          userBanner.style.display = 'flex';
+        }
+
+      } else {
+        currentConnectedUser = null;
+        userBanner.style.display = 'none';
+        
+        alertBox.className = "alert alert-warning";
+        alertBox.innerText = "Attention : Aucun utilisateur connecté à Firebase Auth. Veuillez vous connecter avec votre compte vendeur pour pouvoir publier.";
+        alertBox.style.display = "block";
+      }
+    });
 
     function resetPreviews() {
       document.getElementById('previewImage').style.display = 'none';
@@ -266,7 +324,6 @@
       document.getElementById('docName').innerText = '';
     }
 
-    // Conversion d'un fichier en Base64
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -289,7 +346,6 @@
       const previewDoc = document.getElementById('previewDoc');
       const mediaTypeInput = document.getElementById('mediaTypePublish');
 
-      // Préparation de la valeur Base64 directe
       const base64Data = await fileToBase64(file);
       document.getElementById('base64Publish').value = base64Data;
 
@@ -343,30 +399,38 @@
 
       const btnSubmit = document.getElementById('btnPublierSubmit');
       const alertBox = document.getElementById('statusAlert');
-      
+
+      // Vérification impérative de la session Auth
+      if (!auth.currentUser) {
+        alertBox.className = "alert alert-error";
+        alertBox.innerText = "Erreur : Vous devez être connecté avec votre compte Vendeur pour soumettre une publication.";
+        alertBox.style.display = "block";
+        return;
+      }
+
       btnSubmit.disabled = true;
       btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi...`;
+      alertBox.style.display = "none";
 
       try {
-        const currentUser = auth.currentUser;
-        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
+        const vendorUid = auth.currentUser.uid;
         
         let finalMediaUrl = document.getElementById('base64Publish').value;
         const mediaType = document.getElementById('mediaTypePublish').value;
 
-        // Tentative d'upload de secours sur Firebase Storage si présent
+        // Si un fichier est sélectionné, tenter un téléversement dans Storage
         if (selectedFile) {
           try {
             const fileRef = storageRef(storage, `publications/${Date.now()}_${selectedFile.name}`);
             const snapshot = await uploadBytes(fileRef, selectedFile);
             finalMediaUrl = await getDownloadURL(snapshot.ref);
           } catch (storageErr) {
-            console.warn("Storage non utilisé ou indisponible, fallback vers Base64 :", storageErr);
+            console.warn("Storage indisponible ou restreint. Utilisation du format Base64 par défaut :", storageErr);
           }
         }
 
         if (!finalMediaUrl) {
-          throw new Error("Veuillez sélectionner un fichier ou coller une URL/Base64 valide.");
+          throw new Error("Veuillez charger une image ou indiquer un lien d'accès média valide.");
         }
 
         const type = document.getElementById('pType').value;
@@ -381,7 +445,7 @@
 
         const dateTimestamp = Date.now();
 
-        // Référence vers la collection principale selon votre schéma exact dans Firebase
+        // Référence unique sous la collection "vendeurs_publications"
         const mainRef = push(ref(db, 'vendeurs_publications'));
         const publicationId = mainRef.key;
 
@@ -399,6 +463,7 @@
           prix: prixPromo,
           prixNormal: prixNormal,
           prixPromo: prixPromo,
+          sellerId: vendorUid,
           stock: stock,
           type: type,
           vendeurNom: auteur,
@@ -406,14 +471,14 @@
           vendeurUid: vendorUid
         };
 
-        // Écriture directe simultanée dans les 2 collections
+        // Enregistrement simultané sous "vendeurs_publications" et "publications"
         await Promise.all([
           set(mainRef, publicationData),
           set(ref(db, `publications/${publicationId}`), publicationData)
         ]);
 
         alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication enregistrée avec succès sous " + publicationId;
+        alertBox.innerText = "Publication enregistrée avec succès sous l'ID : " + publicationId;
         alertBox.style.display = "block";
 
         document.getElementById('formPublication').reset();
