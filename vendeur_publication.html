@@ -1,494 +1,774 @@
-<!-- ========================================== -->
-<!-- 1. STYLES CSS                              -->
-<!-- ========================================== -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAKPROÉLITE — Publication vendeur</title>
+<meta name="theme-color" content="#007bff">
+
 <style>
-  :root {
-    --pub-primary: #d4af37;
-    --pub-primary-hover: #b8860b;
-    --pub-dark: #0f172a;
-    --pub-bg-card: #ffffff;
-    --pub-border: #cbd5e1;
-    --pub-text: #1e293b;
-    --pub-text-muted: #64748b;
-    --pub-radius: 12px;
-  }
-
-  .pub-card {
-    background: var(--pub-bg-card);
-    border-radius: var(--pub-radius);
-    padding: 28px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-    max-width: 900px;
-    margin: 20px auto;
-  }
-
-  .pub-card-header {
-    margin-bottom: 24px;
-    border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 12px;
-  }
-
-  .pub-card-header h3 {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--pub-dark);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-  }
-
-  .pub-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-  }
-
-  .pub-col-full {
-    grid-column: 1 / -1;
-  }
-
-  .pub-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .pub-group label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--pub-text);
-  }
-
-  .pub-input,
-  .pub-select,
-  .pub-textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--pub-border);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--pub-text);
-    background-color: #fff;
-    transition: all 0.2s ease-in-out;
-    outline: none;
-    box-sizing: border-box;
-  }
-
-  .pub-input:focus,
-  .pub-select:focus,
-  .pub-textarea:focus {
-    border-color: var(--pub-primary);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-  }
-
-  .pub-textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  .pub-dropzone {
-    border: 2px dashed var(--pub-border);
-    border-radius: var(--pub-radius);
-    padding: 24px;
-    text-align: center;
-    background-color: #f8fafc;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .pub-dropzone:hover,
-  .pub-dropzone.dragover {
-    border-color: var(--pub-primary);
-    background-color: rgba(212, 175, 55, 0.05);
-  }
-
-  .pub-dropzone-icon {
-    font-size: 38px;
-    color: var(--pub-primary);
-    margin-bottom: 8px;
-  }
-
-  .pub-dropzone p {
-    font-size: 13.5px;
-    color: var(--pub-text-muted);
-    margin: 0;
-  }
-
-  .pub-preview-box {
-    margin-top: 14px;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #0f172a;
-    border-radius: 8px;
-    padding: 14px;
-    max-height: 300px;
-    overflow: hidden;
-  }
-
-  .pub-preview-box img,
-  .pub-preview-box video {
-    max-width: 100%;
-    max-height: 220px;
-    border-radius: 6px;
-    object-fit: contain;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .pub-file-tag {
-    color: var(--pub-primary);
-    font-size: 12px;
-    font-weight: 700;
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .pub-btn-submit {
-    width: 100%;
-    background-color: var(--pub-dark);
-    color: var(--pub-primary);
-    border: 1.5px solid var(--pub-primary);
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .pub-btn-submit:hover {
-    background-color: #000000;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .pub-btn-submit:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 640px) {
-    .pub-grid { grid-template-columns: 1fr; }
-    .pub-card { padding: 18px; }
-  }
+:root{
+ --w:#fff;--bg:#050505;--blue:#007bff;--cyan:#00a8ff;
+ --red:#e50914;--text:#080b10;--muted:#64748b;
+ --border:#d7e5f2;--shadow:0 20px 55px #0008;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ font-family:Arial,sans-serif;min-height:100vh;padding:18px;color:var(--text);
+ background:
+ radial-gradient(circle at 10% 5%,#00a8ff38,transparent 28%),
+ radial-gradient(circle at 90% 5%,#e5091428,transparent 25%),
+ linear-gradient(135deg,#020202,#111318,#020202);
+}
+.wrap{max-width:850px;margin:auto}
+header{text-align:center;color:white;margin:10px 0 22px}
+header h1{font-size:29px;font-weight:900}
+header p{margin-top:8px;color:#dbeafe;font-size:14px}
+.logo{
+ width:75px;height:75px;object-fit:contain;border-radius:18px;
+ background:white;padding:7px;margin-bottom:10px;
+ border:2px solid var(--cyan);box-shadow:0 0 25px #00a8ff55
+}
+.card{
+ background:linear-gradient(145deg,#fff,#f1f8ff);
+ border-radius:20px;padding:22px;box-shadow:var(--shadow);
+ border-top:6px solid var(--blue)
+}
+.auth{
+ padding:12px 14px;border-radius:12px;background:#eef8ff;
+ border:1px solid #b7dcff;color:#07549a;font-weight:bold;margin-bottom:18px
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.full{grid-column:1/-1}
+label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}
+input,select,textarea{
+ width:100%;padding:12px;border:1px solid var(--border);border-radius:11px;
+ background:#fff;font-size:15px;outline:none
+}
+input:focus,select:focus,textarea:focus{
+ border-color:var(--blue);box-shadow:0 0 0 3px #007bff18
+}
+textarea{min-height:120px;resize:vertical}
+.drop{
+ padding:25px 15px;text-align:center;border:2px dashed #9bbde0;
+ border-radius:15px;background:#fff;cursor:pointer
+}
+.drop:hover{border-color:var(--blue);background:#eef8ff}
+.drop b{display:block;color:var(--blue);font-size:16px;margin-bottom:7px}
+#file{display:none}
+.info,.preview,.download,.progress,.msg{display:none;margin-top:13px}
+.info,.download{
+ padding:12px;border-radius:12px;background:#f2f8ff;border:1px solid #bfddf7
+}
+.preview img,.preview video{
+ width:100%;max-height:350px;object-fit:contain;border-radius:12px;background:#050505
+}
+.preview{display:none}
+.preview.on,.info.on,.download.on,.progress.on,.msg.on{display:block}
+.doc{text-align:center;padding:25px;background:#f5f9fd;border-radius:12px}
+.progress{background:#08090b;padding:12px;border-radius:12px;color:white}
+.bar{height:9px;background:#292c32;border-radius:20px;overflow:hidden;margin-top:8px}
+.fill{
+ height:100%;width:0;background:linear-gradient(90deg,#0057ff,#00a8ff,#ff1f35)
+}
+.msg{padding:12px;border-radius:11px;font-weight:bold}
+.success{background:#eaf7ff;color:#0057a8;border:1px solid #83c7ff}
+.error{background:#fff0f2;color:#b9000b;border:1px solid #ffb5bd}
+button{
+ width:100%;margin-top:18px;padding:15px;border:0;border-radius:12px;
+ background:linear-gradient(135deg,#0057ff,#007bff,#00a8ff);
+ color:white;font-size:16px;font-weight:900;cursor:pointer;
+ box-shadow:0 12px 30px #007bff55
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+footer{text-align:center;color:#b9c5d3;font-size:12px;margin:18px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.card{padding:16px}}
 </style>
+</head>
 
-<!-- ========================================== -->
-<!-- 2. FORMULAIRE HTML                         -->
-<!-- ========================================== -->
-<div class="pub-card">
-  <div class="pub-card-header">
-    <h3><i class="fa-solid fa-cloud-arrow-up"></i> Publier un produit</h3>
-  </div>
+<body>
+<div class="wrap">
 
-  <form id="formPublicationVendeur">
-    <div class="pub-grid">
+<header>
+<img class="logo"
+ src="https://i.postimg.cc/placeholder/dakproelite-logo.png"
+ alt="DAKPROÉLITE"
+ onerror="this.style.display='none'">
+<h1>DAKPROÉLITE</h1>
+<p>Publiez vos produits, cours, épreuves, vidéos et documents.</p>
+</header>
 
-      <div class="pub-group">
-        <label for="pType">Type de Publication *</label>
-        <select id="pType" class="pub-select" required>
-          <option value="produit">Produit Physique / Numérique</option>
-          <option value="cours">Cours en ligne / Formation</option>
-          <option value="epreuve">Épreuve / Document d'étude</option>
-        </select>
-      </div>
+<main class="card">
 
-      <div class="pub-group">
-        <label for="pCategorie">Catégorie *</label>
-        <input type="text" id="pCategorie" class="pub-input" placeholder="Ex: Mode, Informatique, Électronique..." required>
-      </div>
+<div id="auth" class="auth">Vérification de votre connexion...</div>
 
-      <div class="pub-group">
-        <label for="pNom">Titre de la publication *</label>
-        <input type="text" id="pNom" class="pub-input" placeholder="Ex: Chaussures en cuir" required>
-      </div>
+<form id="form">
 
-      <div class="pub-group">
-        <label for="pAuteur">Auteur / Marque / Vendeur *</label>
-        <input type="text" id="pAuteur" class="pub-input" placeholder="Ex: Jean Marc" required>
-      </div>
+<div class="grid">
 
-      <div class="pub-group">
-        <label for="pPrixNormal">Prix Normal (FCFA) *</label>
-        <input type="number" id="pPrixNormal" class="pub-input" min="0" placeholder="Ex: 30000" required>
-      </div>
-
-      <div class="pub-group">
-        <label for="pPrixPromo">Prix Promo (FCFA)</label>
-        <input type="number" id="pPrixPromo" class="pub-input" min="0" placeholder="Ex: 25000">
-      </div>
-
-      <div class="pub-group pub-col-full">
-        <label for="pStock">Quantité en Stock *</label>
-        <input type="number" id="pStock" class="pub-input" value="100" min="1" required>
-      </div>
-
-      <!-- Zone Média Universelle Sans Restriction -->
-      <div class="pub-group pub-col-full">
-        <label>Fichier Média (Galerie, Vidéo ou Document) *</label>
-        
-        <div class="pub-dropzone" id="pubDropzone">
-          <i class="fa-solid fa-photo-film pub-dropzone-icon"></i>
-          <p>Cliquez pour choisir dans la <strong>Galerie / Fichiers</strong> ou glissez-déposez</p>
-          <input type="file" id="pInputMedia" accept="*/*" style="display: none;" required>
-        </div>
-        
-        <input type="hidden" id="base64Publish">
-        <input type="hidden" id="detectedMediaType" value="image">
-
-        <div id="pubPreviewContainer" class="pub-preview-box">
-          <div id="previewMediaWrapper"></div>
-          <span id="previewTag" class="pub-file-tag"></span>
-        </div>
-      </div>
-
-      <div class="pub-group pub-col-full">
-        <label for="pDescription">Description détaillée *</label>
-        <textarea id="pDescription" class="pub-textarea" rows="4" placeholder="Donnez plus de détails sur le produit..." required></textarea>
-      </div>
-
-    </div>
-
-    <button type="submit" class="pub-btn-submit" id="btnPublierSubmit">
-      <i class="fa-solid fa-cloud-arrow-up"></i> Publier l'article
-    </button>
-  </form>
+<div>
+<label>Type de publication *</label>
+<select id="type" required>
+<option value="">Choisir</option>
+<option value="produit">Produit</option>
+<option value="cours">Cours</option>
+<option value="epreuve">Épreuve</option>
+<option value="document">Document</option>
+<option value="video">Vidéo</option>
+</select>
 </div>
 
-<!-- ========================================== -->
-<!-- 3. JAVASCRIPT ET FIREBASE INTEGRATION      -->
-<!-- ========================================== -->
+<div>
+<label>Catégorie *</label>
+<input id="categorie" maxlength="80" placeholder="Ex : Électronique" required>
+</div>
+
+<div class="full">
+<label>Nom / titre *</label>
+<input id="nom" maxlength="150" placeholder="Nom du produit ou titre" required>
+</div>
+
+<div>
+<label>Vendeur / auteur *</label>
+<input id="auteur" maxlength="120" placeholder="Votre nom" required>
+</div>
+
+<div>
+<label>Stock *</label>
+<input id="stock" type="number" min="0" step="1" value="100" required>
+</div>
+
+<div>
+<label>Prix normal (FCFA) *</label>
+<input id="prixNormal" type="number" min="0" step="1" required>
+</div>
+
+<div>
+<label>Prix promotionnel</label>
+<input id="prixPromo" type="number" min="0" step="1">
+</div>
+
+<div class="full">
+<label>Description *</label>
+<textarea id="description" maxlength="5000"
+placeholder="Décrivez clairement votre produit ou contenu..." required></textarea>
+</div>
+
+<div class="full">
+<label>Photo, vidéo ou document *</label>
+
+<div id="drop" class="drop">
+<div style="font-size:40px">📁</div>
+<b>Choisir un fichier</b>
+<span>Image • Vidéo • PDF • Word • Excel • PowerPoint • TXT • ZIP</span>
+<input id="file" type="file"
+accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip">
+</div>
+
+<div id="info" class="info">
+<strong id="fname"></strong>
+<div id="fmeta"></div>
+</div>
+
+<div id="preview" class="preview"></div>
+
+<div id="download" class="download">
+<label>
+<input id="downloadable" type="checkbox" style="width:auto">
+ Autoriser le téléchargement
+</label>
+</div>
+</div>
+
+</div>
+
+<div id="progress" class="progress">
+<div style="display:flex;justify-content:space-between">
+<span id="ptxt">Préparation...</span>
+<span id="pct">0%</span>
+</div>
+<div class="bar"><div id="fill" class="fill"></div></div>
+</div>
+
+<div id="msg" class="msg"></div>
+
+<button id="submit" type="submit" disabled>
+🚀 Publier maintenant
+</button>
+
+</form>
+</main>
+
+<footer>© 2026 DAKPROÉLITE / DAKPRO NEXUS</footer>
+</div>
+
 <script type="module">
-  import { ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-  import { auth, database } from "./firebase-config.js";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("formPublicationVendeur");
-    const dropzone = document.getElementById("pubDropzone");
-    const fileInput = document.getElementById("pInputMedia");
-    const hiddenMediaUrl = document.getElementById("base64Publish");
-    const hiddenMediaType = document.getElementById("detectedMediaType");
-    const previewContainer = document.getElementById("pubPreviewContainer");
-    const previewWrapper = document.getElementById("previewMediaWrapper");
-    const previewTag = document.getElementById("previewTag");
-    const btnSubmit = document.getElementById("btnPublierSubmit");
+/* ============================================================
+   FIREBASE — NE PAS MODIFIER
+============================================================ */
 
-    dropzone.addEventListener("click", () => fileInput.click());
+import {
+ ref,push,set
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    ["dragenter", "dragover"].forEach(evt => {
-      dropzone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        dropzone.classList.add("dragover");
-      });
-    });
+import {
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    ["dragleave", "drop"].forEach(evt => {
-      dropzone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        dropzone.classList.remove("dragover");
-      });
-    });
+import {
+ getStorage,ref as sRef,uploadBytesResumable,
+ getDownloadURL,deleteObject
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    dropzone.addEventListener("drop", (e) => {
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        fileInput.files = files;
-        processUniversalFile(files[0]);
-      }
-    });
+import {
+ auth,database
+} from "./firebase-config.js";
 
-    fileInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        processUniversalFile(file);
-      }
-    });
 
-    // Aiguillage selon la nature du fichier choisi
-    function processUniversalFile(file) {
-      const mime = file.type || "";
+/* ============================================================
+   CONFIGURATION
+============================================================ */
 
-      if (mime.startsWith("image/")) {
-        hiddenMediaType.value = "image";
-        optimizeAndEnhanceImage(file);
-      } else if (mime.startsWith("video/")) {
-        hiddenMediaType.value = "video";
-        processVideo(file);
-      } else {
-        hiddenMediaType.value = "document";
-        processDocument(file);
-      }
-    }
+const NODE="vendeur_publications";
 
-    // Traitement de l'image : Amélioration des couleurs, réduction taille et conversion JPEG
-    function optimizeAndEnhanceImage(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-          const maxDimension = 1000; // Format haute fidélité mais très léger pour DB
+/*
+   IMPORTANT :
+   Si ton tableau vendeur porte un autre nom,
+   change uniquement cette ligne.
+*/
+const REDIRECT_URL="./vendeur.html";
 
-          if (width > maxDimension || height > maxDimension) {
-            if (width > height) {
-              height = Math.round((height * maxDimension) / width);
-              width = maxDimension;
-            } else {
-              width = Math.round((width * maxDimension) / height);
-              height = maxDimension;
-            }
-          }
+const MAX_VIDEO=250*1024*1024;
+const MAX_DOC=100*1024*1024;
+const MAX_IMAGE=1600;
 
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
 
-          // Fond blanc de sécurité pour les formats à transparence (PNG, WEBP)
-          ctx.fillStyle = "#FFFFFF";
-          ctx.fillRect(0, 0, width, height);
+/* ============================================================
+   ELEMENTS
+============================================================ */
 
-          // Rendu dynamique : Contraste, clarté et vivacité des couleurs
-          ctx.filter = "contrast(1.10) saturate(1.12) brightness(1.03)";
-          ctx.drawImage(img, 0, 0, width, height);
+const $=id=>document.getElementById(id);
 
-          // Compression JPEG équilibrée (80% qualité)
-          const optimizedBase64 = canvas.toDataURL("image/jpeg", 0.80);
+const form=$("form");
+const fileInput=$("file");
+const drop=$("drop");
+const submit=$("submit");
+const authBox=$("auth");
+const msg=$("msg");
+const progress=$("progress");
+const fill=$("fill");
+const pct=$("pct");
+const ptxt=$("ptxt");
 
-          previewWrapper.innerHTML = `<img src="${optimizedBase64}" alt="Aperçu Produit">`;
-          previewTag.textContent = "Image Optimisée & Nettoyée (JPEG)";
-          previewContainer.style.display = "flex";
-          hiddenMediaUrl.value = optimizedBase64;
-        };
+let user=null;
+let file=null;
+let uploadFile=null;
+let mediaType=null;
+let publishing=false;
 
-        img.onerror = () => {
-          alert("Erreur lors de la lecture du fichier image.");
-        };
 
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+/* ============================================================
+   AUTHENTIFICATION
+============================================================ */
 
-    // Traitement Vidéo : Génération d'une vignette haute définition
-    function processVideo(file) {
-      const video = document.createElement("video");
-      video.preload = "metadata";
-      video.muted = true;
-      video.playsInline = true;
+onAuthStateChanged(auth,u=>{
 
-      const fileUrl = URL.createObjectURL(file);
-      video.src = fileUrl;
+ user=u;
 
-      video.onloadeddata = () => {
-        video.currentTime = 1;
-      };
+ if(u){
 
-      video.onseeked = () => {
-        const canvas = document.createElement("canvas");
-        const maxDimension = 800;
-        let width = video.videoWidth || 640;
-        let height = video.videoHeight || 360;
+   authBox.textContent="🟦 Connecté — vous pouvez publier.";
+   submit.disabled=false;
 
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = Math.round((height * maxDimension) / width);
-            width = maxDimension;
-          } else {
-            width = Math.round((width * maxDimension) / height);
-            height = maxDimension;
-          }
-        }
+ }else{
 
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0, width, height);
+   authBox.textContent="🔴 Vous devez être connecté pour publier.";
+   submit.disabled=true;
 
-        const frameBase64 = canvas.toDataURL("image/jpeg", 0.75);
+ }
 
-        previewWrapper.innerHTML = `<video src="${fileUrl}" controls style="max-height: 200px;"></video>`;
-        previewTag.textContent = `Vidéo prête (${file.name})`;
-        previewContainer.style.display = "flex";
-        hiddenMediaUrl.value = frameBase64;
-        URL.revokeObjectURL(fileUrl);
-      };
-    }
+});
 
-    // Traitement Document : Conversion légère
-    function processDocument(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        previewWrapper.innerHTML = `<div style="color: #fff; text-align: center;"><i class="fa-solid fa-file-pdf" style="font-size: 50px; color: #d4af37;"></i><p style="margin-top: 10px; font-size: 13px;">${file.name}</p></div>`;
-        previewTag.textContent = "Document prêt à la publication";
-        previewContainer.style.display = "flex";
-        hiddenMediaUrl.value = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
 
-    // Envoi dans la Realtime Database "vendeur_publications"
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+/* ============================================================
+   OUTILS
+============================================================ */
 
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        alert("Vous devez être connecté pour publier.");
-        return;
-      }
+function message(text,type="error"){
+ msg.textContent=text;
+ msg.className="msg on "+type;
+}
 
-      const mediaData = hiddenMediaUrl.value;
-      if (!mediaData) {
-        alert("Veuillez sélectionner une image ou un fichier média valide.");
-        return;
-      }
+function progressBar(n,text){
+ progress.classList.add("on");
+ fill.style.width=n+"%";
+ pct.textContent=Math.round(n)+"%";
+ ptxt.textContent=text;
+}
 
-      btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+function hideProgress(){
+ progress.classList.remove("on");
+ fill.style.width="0%";
+}
 
-      const nouvellePublication = {
-        type: document.getElementById("pType").value,
-        categorie: document.getElementById("pCategorie").value.trim(),
-        nom: document.getElementById("pNom").value.trim(),
-        auteur: document.getElementById("pAuteur").value.trim(),
-        prixNormal: Number(document.getElementById("pPrixNormal").value),
-        prixPromo: document.getElementById("pPrixPromo").value ? Number(document.getElementById("pPrixPromo").value) : null,
-        prix: document.getElementById("pPrixPromo").value ? Number(document.getElementById("pPrixPromo").value) : Number(document.getElementById("pPrixNormal").value),
-        stock: Number(document.getElementById("pStock").value),
-        description: document.getElementById("pDescription").value.trim(),
-        imageUrl: mediaData,
-        typeMedia: hiddenMediaType.value,
-        createdBy: currentUser.uid,
-        sellerId: currentUser.uid,
-        statut: "actif",
-        createdAt: new Date().toISOString()
-      };
+function bytes(n){
+ if(!n)return"0 octet";
+ const u=["octets","Ko","Mo","Go"];
+ let i=0;
+ while(n>=1024&&i<3){n/=1024;i++}
+ return n.toFixed(n>=10?1:2)+" "+u[i];
+}
 
-      try {
-        const vendorPubsRef = ref(database, "vendeur_publications");
-        await push(vendorPubsRef, nouvellePublication);
+function ext(name){
+ return name.split(".").pop().toLowerCase();
+}
 
-        alert("Votre publication a été ajoutée avec succès !");
-        form.reset();
-        hiddenMediaUrl.value = "";
-        previewContainer.style.display = "none";
-      } catch (error) {
-        console.error("Erreur Firebase :", error);
-        alert("Une erreur s'est produite lors de la publication : " + error.message);
-      } finally {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier l'article`;
-      }
-    });
-  });
+const docs=new Set([
+ "pdf","doc","docx","xls","xlsx","ppt","pptx",
+ "txt","csv","zip"
+]);
+
+function typeOf(f){
+
+ if(f.type.startsWith("image/"))return"image";
+ if(f.type.startsWith("video/"))return"video";
+ if(docs.has(ext(f.name)))return"document";
+
+ return null;
+}
+
+function safeName(name){
+
+ return name
+ .normalize("NFD")
+ .replace(/[\u0300-\u036f]/g,"")
+ .replace(/[^a-zA-Z0-9._-]/g,"-")
+ .replace(/-+/g,"-")
+ .slice(0,100);
+
+}
+
+
+/* ============================================================
+   APERCU
+============================================================ */
+
+function previewFile(f,type){
+
+ const box=$("preview");
+ box.innerHTML="";
+
+ if(type==="image"||type==="video"){
+
+   const el=document.createElement(type==="image"?"img":"video");
+
+   el.src=URL.createObjectURL(f);
+
+   if(type==="video")el.controls=true;
+
+   box.appendChild(el);
+
+ }else{
+
+   box.innerHTML=`
+   <div class="doc">
+   <div style="font-size:50px">📄</div>
+   <strong>Document sélectionné</strong>
+   <p>${safeName(f.name)}</p>
+   </div>`;
+
+ }
+
+ box.className="preview on";
+}
+
+
+/* ============================================================
+   OPTIMISATION IMAGE
+============================================================ */
+
+async function optimizeImage(f){
+
+ const url=URL.createObjectURL(f);
+
+ const img=new Image();
+
+ await new Promise((resolve,reject)=>{
+
+   img.onload=resolve;
+   img.onerror=reject;
+   img.src=url;
+
+ });
+
+ let w=img.naturalWidth;
+ let h=img.naturalHeight;
+ const ratio=Math.min(1,MAX_IMAGE/Math.max(w,h));
+
+ w=Math.round(w*ratio);
+ h=Math.round(h*ratio);
+
+ const canvas=document.createElement("canvas");
+ canvas.width=w;
+ canvas.height=h;
+
+ const ctx=canvas.getContext("2d");
+
+ ctx.fillStyle="#fff";
+ ctx.fillRect(0,0,w,h);
+ ctx.drawImage(img,0,0,w,h);
+
+ const blob=await new Promise(resolve=>
+   canvas.toBlob(resolve,"image/jpeg",.82)
+ );
+
+ URL.revokeObjectURL(url);
+
+ return new File(
+   [blob],
+   safeName(f.name.replace(/\.[^.]+$/,""))+".jpg",
+   {type:"image/jpeg"}
+ );
+
+}
+
+
+/* ============================================================
+   SELECTION FICHIER
+============================================================ */
+
+async function selectFile(f){
+
+ if(!f)return;
+
+ msg.className="msg";
+
+ const type=typeOf(f);
+
+ if(!type){
+   message("❌ Type de fichier non autorisé.");
+   return;
+ }
+
+ if(type==="video"&&f.size>MAX_VIDEO){
+   message("❌ Vidéo limitée à 250 Mo.");
+   return;
+ }
+
+ if(type==="document"&&f.size>MAX_DOC){
+   message("❌ Document limité à 100 Mo.");
+   return;
+ }
+
+ file=f;
+ mediaType=type;
+ uploadFile=f;
+
+ if(type==="image"){
+
+   try{
+     progressBar(10,"Optimisation de l'image...");
+     uploadFile=await optimizeImage(f);
+   }catch(e){
+     message("❌ Impossible d'optimiser cette image.");
+     return;
+   }
+
+ }
+
+ $("info").className="info on";
+ $("fname").textContent=f.name;
+ $("fmeta").textContent=
+ `${type.toUpperCase()} • Original : ${bytes(f.size)}`
+ +(type==="image"?` • Optimisée : ${bytes(uploadFile.size)}`:"");
+
+ previewFile(uploadFile,type);
+
+ $("download").className=
+ type==="image"?"download":"download on";
+
+ $("downloadable").checked=false;
+
+ hideProgress();
+}
+
+fileInput.onchange=e=>selectFile(e.target.files[0]);
+
+drop.onclick=()=>fileInput.click();
+
+drop.ondragover=e=>{
+ e.preventDefault();
+ drop.style.borderColor="#007bff";
+};
+
+drop.ondragleave=()=>{
+ drop.style.borderColor="";
+};
+
+drop.ondrop=e=>{
+ e.preventDefault();
+ drop.style.borderColor="";
+ selectFile(e.dataTransfer.files[0]);
+};
+
+
+/* ============================================================
+   FIREBASE STORAGE
+============================================================ */
+
+function uploadMedia(f,uid){
+
+ const storage=getStorage();
+
+ const filename=
+ `${uid}-${Date.now()}-${safeName(f.name)}`;
+
+ const path=
+ `vendeur_publications/${uid}/${filename}`;
+
+ const storageReference=sRef(storage,path);
+
+ const task=uploadBytesResumable(
+   storageReference,
+   f,
+   {
+     contentType:f.type||"application/octet-stream",
+     customMetadata:{
+       uploadedBy:uid,
+       originalName:f.name,
+       app:"DAKPROELITE"
+     }
+   }
+ );
+
+ return new Promise((resolve,reject)=>{
+
+   task.on("state_changed",
+
+     snap=>{
+
+       const p=snap.totalBytes?
+       snap.bytesTransferred/snap.totalBytes*100:0;
+
+       progressBar(p,"Envoi du fichier...");
+
+     },
+
+     reject,
+
+     async()=>{
+
+       try{
+
+         const url=
+         await getDownloadURL(task.snapshot.ref);
+
+         resolve({
+           url,
+           path,
+           name:filename,
+           size:f.size,
+           mimeType:f.type,
+           ref:task.snapshot.ref
+         });
+
+       }catch(e){
+         reject(e);
+       }
+
+     }
+
+   );
+
+ });
+
+}
+
+
+/* ============================================================
+   PUBLICATION
+============================================================ */
+
+form.onsubmit=async e=>{
+
+ e.preventDefault();
+
+ if(publishing)return;
+
+ if(!user){
+   message("❌ Connectez-vous avant de publier.");
+   return;
+ }
+
+ if(!file||!uploadFile){
+   message("❌ Sélectionnez un fichier.");
+   return;
+ }
+
+ publishing=true;
+ submit.disabled=true;
+
+ let uploaded=null;
+
+ try{
+
+   const type=$("type").value;
+   const categorie=$("categorie").value.trim();
+   const nom=$("nom").value.trim();
+   const auteur=$("auteur").value.trim();
+   const description=$("description").value.trim();
+
+   const prixNormal=Number($("prixNormal").value);
+   const promoValue=$("prixPromo").value;
+   const prixPromo=
+   promoValue===""?null:Number(promoValue);
+
+   const stock=Number($("stock").value);
+
+   if(!type||!categorie||!nom||!auteur||!description)
+     throw new Error("Veuillez remplir tous les champs obligatoires.");
+
+   if(!Number.isInteger(prixNormal)||prixNormal<0)
+     throw new Error("Prix normal invalide.");
+
+   if(
+     prixPromo!==null&&
+     (!Number.isInteger(prixPromo)||prixPromo<0)
+   )
+     throw new Error("Prix promotionnel invalide.");
+
+   if(
+     prixPromo!==null&&
+     prixPromo>=prixNormal&&
+     prixNormal>0
+   )
+     throw new Error("Le prix promotionnel doit être inférieur au prix normal.");
+
+   if(!Number.isInteger(stock)||stock<0)
+     throw new Error("Stock invalide.");
+
+   progressBar(0,"Préparation...");
+
+   uploaded=await uploadMedia(uploadFile,user.uid);
+
+   const publicationRef=
+   push(ref(database,NODE));
+
+   const id=publicationRef.key;
+
+   const now=new Date().toISOString();
+
+   const publication={
+
+     id,
+     type,
+     categorie,
+     nom,
+     auteur,
+
+     prixNormal,
+     prixPromo,
+
+     prix:
+       prixPromo!==null
+       ?prixPromo
+       :prixNormal,
+
+     stock,
+     description,
+
+     imageUrl:
+       mediaType==="image"
+       ?uploaded.url
+       :"",
+
+     mediaUrl:uploaded.url,
+     mediaPath:uploaded.path,
+     mediaName:file.name,
+     storageFileName:uploaded.name,
+
+     typeMedia:mediaType,
+     mimeType:uploaded.mimeType,
+
+     fileSize:uploaded.size,
+     originalFileSize:file.size,
+
+     downloadable:
+       mediaType==="image"
+       ?false
+       :$("downloadable").checked,
+
+     createdBy:user.uid,
+     sellerId:user.uid,
+
+     statut:"active",
+     createdAt:now,
+     updatedAt:now
+
+   };
+
+   await set(publicationRef,publication);
+
+   progressBar(100,"Publication enregistrée.");
+
+   message(
+     "✅ Publication réussie ! Redirection...",
+     "success"
+   );
+
+   form.reset();
+
+   file=null;
+   uploadFile=null;
+   mediaType=null;
+
+   $("info").className="info";
+   $("preview").className="preview";
+   $("download").className="download";
+
+   /*
+      REDIRECTION
+   */
+   setTimeout(()=>{
+     window.location.href=REDIRECT_URL;
+   },1200);
+
+ }catch(error){
+
+   console.error(error);
+
+   if(uploaded?.ref){
+
+     try{
+       await deleteObject(uploaded.ref);
+     }catch(cleanup){
+       console.error("Nettoyage Storage:",cleanup);
+     }
+
+   }
+
+   let text=error?.message||"Erreur pendant la publication.";
+
+   if(error?.code==="storage/unauthorized")
+     text="Firebase Storage refuse l'envoi. Vérifiez vos règles Storage.";
+
+   if(error?.code==="storage/quota-exceeded")
+     text="La capacité Firebase Storage est insuffisante.";
+
+   message("❌ "+text);
+
+   hideProgress();
+
+ }finally{
+
+   publishing=false;
+   submit.disabled=!user;
+
+ }
+
+};
+
 </script>
+</body>
+</html>
