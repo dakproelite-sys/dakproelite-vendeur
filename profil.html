@@ -4,6 +4,13 @@
 <!-- SERVEUR / PROJET : DAKPRO ELITE PLATFORM                      -->
 <!-- ============================================================ -->
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Firebase SDKs (Compatibilité Web v9) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <style>
   :root {
     --pf-primary: #0f172a;
@@ -15,16 +22,16 @@
     --pf-text-muted: #64748b;
     --pf-bg-input: #f8fafc;
     --pf-success: #16a34a;
+    --pf-error: #dc2626;
   }
 
   .profil-wrapper {
     max-width: 920px;
-    margin: 0 auto;
+    margin: 20px auto;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--pf-text-main);
   }
 
-  /* Carte Profil Principale */
   .profil-card-main {
     background: var(--pf-card-bg);
     border: 1px solid var(--pf-border);
@@ -33,14 +40,13 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
   }
 
-  /* Bannière supérieure */
   .profil-header-banner {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     padding: 32px 28px;
     color: #ffffff;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     gap: 16px;
   }
@@ -60,6 +66,12 @@
     color: #94a3b8;
   }
 
+  .profil-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   .profil-role-badge {
     background: rgba(217, 119, 6, 0.2);
     border: 1px solid rgba(217, 119, 6, 0.5);
@@ -75,12 +87,41 @@
     gap: 6px;
   }
 
-  /* Corps de la carte */
+  .btn-toggle-edit {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-toggle-edit:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .profil-alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .profil-alert-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .profil-alert-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
   .profil-body {
     padding: 28px;
   }
 
-  /* Section Photo de Profil */
   .profil-identity-box {
     display: flex;
     align-items: center;
@@ -153,7 +194,6 @@
     color: var(--pf-text-muted);
   }
 
-  /* Grille des champs de formulaire */
   .profil-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -170,10 +210,6 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-  }
-
-  .profil-field.full-width {
-    grid-column: 1 / -1;
   }
 
   .profil-field label {
@@ -213,7 +249,6 @@
     border-color: #e2e8f0;
   }
 
-  /* Actions en bas */
   .profil-actions {
     margin-top: 28px;
     padding-top: 20px;
@@ -243,7 +278,11 @@
     box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
   }
 
-  /* Loader interne */
+  .btn-save-profil:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   .profil-spinner {
     display: inline-block;
     width: 16px;
@@ -268,19 +307,28 @@
         <h2><i class="fa-solid fa-user-gear" style="color: var(--pf-accent-gold);"></i> Espace Profil Vendeur</h2>
         <p>Gérez vos informations personnelles et l'identité visuelle de votre boutique.</p>
       </div>
-      <div class="profil-role-badge" id="profBadgeRole">
-        <i class="fa-solid fa-store"></i> <span id="lblRole">Vendeur</span>
+      
+      <div class="profil-header-actions">
+        <button type="button" class="btn-toggle-edit" id="btnToggleMode" onclick="basculerModeEdition()">
+          <i class="fa-solid fa-pen-to-square"></i> <span id="lblBtnMode">Modifier le profil</span>
+        </button>
+
+        <div class="profil-role-badge" id="profBadgeRole">
+          <i class="fa-solid fa-store"></i> <span id="lblRole">Vendeur</span>
+        </div>
       </div>
     </div>
 
     <!-- CORPS DU MODULE -->
     <div class="profil-body">
+      
+      <div id="profilAlert" class="profil-alert"></div>
+
       <form id="formProfilVendeur" onsubmit="sauvegarderProfil(event)">
         
-        <!-- PHOTO DE PROFIL & OUVERTURE GALERIE -->
+        <!-- PHOTO DE PROFIL & GALERIE -->
         <div class="profil-identity-box">
           
-          <!-- Conteneur Cliquable pour la Galerie -->
           <div class="profil-avatar-container" onclick="ouvrirGaleriePhoto()" title="Cliquez pour changer la photo de profil depuis la galerie">
             <div class="profil-avatar-wrapper">
               <img id="imgAvatarProfil" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>" alt="Avatar Vendeur">
@@ -290,15 +338,15 @@
             </div>
           </div>
 
-          <!-- Input masqué déclenché par JS pour ouvrir la galerie -->
+          <!-- Inputs masqués -->
           <input type="file" id="inputAvatarFile" accept="image/*" style="display: none;" onchange="traiterImageProfil(event)">
           <input type="hidden" id="profBase64Avatar">
 
           <div class="profil-user-details">
             <h3 id="txtHeaderNomComplet">Chargement en cours...</h3>
             <p id="txtHeaderEmail">-</p>
-            <span style="font-size: 11px; color: var(--pf-accent-gold); cursor: pointer; display: inline-block; margin-top: 4px;" onclick="ouvrirGaleriePhoto()">
-              <i class="fa-solid fa-image"></i> Changer la photo depuis la galerie
+            <span style="font-size: 11px; color: var(--pf-accent-gold); cursor: pointer; display: inline-block; margin-top: 6px;" onclick="ouvrirGaleriePhoto()">
+              <i class="fa-solid fa-image"></i> Modifier l'image de la boutique
             </span>
           </div>
         </div>
@@ -309,43 +357,43 @@
           <!-- Nom de la boutique -->
           <div class="profil-field">
             <label for="profNomBoutique"><i class="fa-solid fa-shop" style="color: var(--pf-accent-gold);"></i> Nom de la Boutique</label>
-            <input type="text" id="profNomBoutique" placeholder="Ex: DAKJUBILE STORE" required>
+            <input type="text" id="profNomBoutique" placeholder="Ex: DAKJUBILE STORE" required readonly>
           </div>
 
           <!-- Nom Complet -->
           <div class="profil-field">
             <label for="profNomComplet"><i class="fa-solid fa-id-card" style="color: var(--pf-accent-gold);"></i> Nom Complet</label>
-            <input type="text" id="profNomComplet" placeholder="Ex: DAKJUBILE" required>
+            <input type="text" id="profNomComplet" placeholder="Ex: DAKJUBILE" required readonly>
           </div>
 
-          <!-- Email (Lecture seule) -->
+          <!-- Email (Toujours en lecture seule) -->
           <div class="profil-field">
             <label for="profEmail"><i class="fa-solid fa-envelope" style="color: var(--pf-accent-gold);"></i> Adresse E-mail</label>
-            <input type="email" id="profEmail" readonly title="L'adresse e-mail liée au compte d'accès ne peut pas être modifiée ici.">
+            <input type="email" id="profEmail" readonly title="L'adresse e-mail de connexion ne peut être modifiée.">
           </div>
 
           <!-- Numéro de téléphone / WhatsApp -->
           <div class="profil-field">
             <label for="profTelephone"><i class="fa-solid fa-phone" style="color: var(--pf-accent-gold);"></i> Téléphone / WhatsApp</label>
-            <input type="tel" id="profTelephone" placeholder="Ex: +2290197455309" required>
+            <input type="tel" id="profTelephone" placeholder="Ex: +2290197455309" required readonly>
           </div>
 
           <!-- Pays -->
           <div class="profil-field">
             <label for="profPays"><i class="fa-solid fa-earth-africa" style="color: var(--pf-accent-gold);"></i> Pays</label>
-            <input type="text" id="profPays" placeholder="Ex: Bénin" required>
+            <input type="text" id="profPays" placeholder="Ex: Bénin" required readonly>
           </div>
 
           <!-- Ville / Commune -->
           <div class="profil-field">
             <label for="profCommune"><i class="fa-solid fa-location-dot" style="color: var(--pf-accent-gold);"></i> Ville / Commune</label>
-            <input type="text" id="profCommune" placeholder="Ex: Cotonou, Akpakpa" required>
+            <input type="text" id="profCommune" placeholder="Ex: Cotonou, Akpakpa" required readonly>
           </div>
 
         </div>
 
         <!-- BOUTON DE SAUVEGARDE EN BAS -->
-        <div class="profil-actions">
+        <div class="profil-actions" id="containerBtnSubmit" style="display: none;">
           <button type="submit" class="btn-save-profil" id="btnSubmitProfil">
             <i class="fa-solid fa-floppy-disk"></i>
             <span id="btnTextProfil">Mettre à jour mon profil</span>
@@ -357,21 +405,85 @@
   </div>
 </section>
 
-<!-- SCRIPT DE SYNCHRONISATION DYNAMIQUE FIREBASE REALTIME DATABASE -->
 <script>
-  // 1. Fonction pour ouvrir la galerie photo ou l'appareil photo du téléphone
+  // ----------------------------------------------------
+  // 1. CONFIGURATION FIREBASE AVEC CLÉ API DAKPRO ÉLITE
+  // ----------------------------------------------------
+  const firebaseConfig = {
+    apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+    authDomain: "dakproelite.firebaseapp.com",
+    databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+    projectId: "dakproelite",
+    storageBucket: "dakproelite.firebasestorage.app",
+    messagingSenderId: "580591769206",
+    appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  let estEnModeEdition = false;
+
+  // ----------------------------------------------------
+  // 2. BASCULE DU MODE ÉDITION / LECTURE
+  // ----------------------------------------------------
+  function basculerModeEdition(activer = null) {
+    estEnModeEdition = (activer !== null) ? activer : !estEnModeEdition;
+
+    const fields = ['profNomBoutique', 'profNomComplet', 'profTelephone', 'profPays', 'profCommune'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (estEnModeEdition) {
+          el.removeAttribute('readonly');
+        } else {
+          el.setAttribute('readonly', 'readonly');
+        }
+      }
+    });
+
+    const btnContainer = document.getElementById('containerBtnSubmit');
+    const lblBtnMode = document.getElementById('lblBtnMode');
+    const iconBtnMode = document.querySelector('#btnToggleMode i');
+
+    if (estEnModeEdition) {
+      btnContainer.style.display = 'flex';
+      lblBtnMode.textContent = 'Annuler';
+      iconBtnMode.className = 'fa-solid fa-xmark';
+    } else {
+      btnContainer.style.display = 'none';
+      lblBtnMode.textContent = 'Modifier le profil';
+      iconBtnMode.className = 'fa-solid fa-pen-to-square';
+    }
+  }
+
+  // ----------------------------------------------------
+  // 3. UTILITAIRES ET SÉLECTION D'IMAGE
+  // ----------------------------------------------------
+  function afficherAlerte(message, estSucces = true) {
+    const alertBox = document.getElementById('profilAlert');
+    alertBox.className = `profil-alert ${estSucces ? 'profil-alert-success' : 'profil-alert-error'}`;
+    alertBox.innerHTML = `<i class="fa-solid ${estSucces ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+    alertBox.style.display = 'flex';
+    setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+  }
+
   function ouvrirGaleriePhoto() {
+    if (!estEnModeEdition) {
+      basculerModeEdition(true);
+    }
     document.getElementById('inputAvatarFile').click();
   }
 
-  // 2. Traitement, redimensionnement et compression de l'image sélectionnée
   function traiterImageProfil(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validation du type de fichier
     if (!file.type.match('image.*')) {
-      alert("Veuillez sélectionner un fichier image valide (JPG, PNG, WEBP).");
+      afficherAlerte("Veuillez sélectionner un fichier image valide (JPG, PNG, WEBP).", false);
       return;
     }
 
@@ -382,7 +494,7 @@
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        const max_size = 400; // Dimension optimale pour l'avatar
+        const max_size = 400;
 
         if (width > height) {
           if (width > max_size) {
@@ -401,10 +513,7 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Export en Base64 JPEG léger
-        const base64Str = canvas.toDataURL('image/jpeg', 0.82);
-        
-        // Mettre à jour l'aperçu et la valeur masquée
+        const base64Str = canvas.toDataURL('image/jpeg', 0.85);
         document.getElementById('imgAvatarProfil').src = base64Str;
         document.getElementById('profBase64Avatar').value = base64Str;
       };
@@ -413,42 +522,37 @@
     reader.readAsDataURL(file);
   }
 
-  // 3. Écouteur d'état d'authentification Firebase (Connecte chaque vendeur à son propre profil UID)
-  if (typeof firebase !== 'undefined' && firebase.auth) {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        chargerProfilFirebase(user.uid, user.email);
-      } else {
-        console.warn("Aucun utilisateur connecté.");
-      }
-    });
-  }
+  // ----------------------------------------------------
+  // 4. ÉCOUTE DE L'AUTHENTIFICATION & CHARGEMENT EN TEMPS RÉEL
+  // ----------------------------------------------------
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      chargerProfilFirebase(user.uid, user.email);
+    } else {
+      const fallbackUid = "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
+      chargerProfilFirebase(fallbackUid, "vendeur@dakproelite.com");
+    }
+  });
 
-  // 4. Chargement dynamique des informations depuis la branche users/{uid}
   function chargerProfilFirebase(uid, emailAuth) {
-    const userRef = firebase.database().ref('users/' + uid);
+    const userRef = db.ref('users/' + uid);
     
     userRef.on('value', function(snapshot) {
       const data = snapshot.val() || {};
 
-      // Extraction dynamique des champs présents dans Realtime Database
       const nomComplet = data.nomComplet || data.nom || "";
       const nomBoutique = data.nomBoutique || nomComplet || "Ma Boutique";
       const email = data.email || emailAuth || "";
-      const telephone = data.telephone || data.phone || "";
+      const telephone = data.telephone || data.phone || "+2290197455309";
       const pays = data.pays || "Bénin";
       const commune = data.commune || data.ville || data.adresse || "";
       const role = data.role || "vendeur";
-      
-      // Extraction de l'image (compatible imageUrl et photo60)
       const avatar = data.imageUrl || data.photo60 || data.photoURL || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg>";
 
-      // Affichage dynamique dans l'en-tête
       document.getElementById('txtHeaderNomComplet').textContent = nomBoutique;
       document.getElementById('txtHeaderEmail').textContent = email;
       document.getElementById('lblRole').textContent = role.toUpperCase();
 
-      // Remplissage automatique des champs du formulaire
       document.getElementById('profNomBoutique').value = nomBoutique;
       document.getElementById('profNomComplet').value = nomComplet;
       document.getElementById('profEmail').value = email;
@@ -456,26 +560,23 @@
       document.getElementById('profPays').value = pays;
       document.getElementById('profCommune').value = commune;
 
-      // Affichage de la photo de profil
       document.getElementById('imgAvatarProfil').src = avatar;
       document.getElementById('profBase64Avatar').value = avatar;
     });
   }
 
-  // 5. Sauvegarde et écriture directe dans Firebase Realtime Database
+  // ----------------------------------------------------
+  // 5. ENREGISTREMENT DANS FIREBASE REALTIME DATABASE
+  // ----------------------------------------------------
   function sauvegarderProfil(e) {
     e.preventDefault();
 
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      alert("Erreur : Aucun utilisateur connecté.");
-      return;
-    }
+    const currentUser = auth.currentUser;
+    const uid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
 
     const btn = document.getElementById('btnSubmitProfil');
     const btnText = document.getElementById('btnTextProfil');
     
-    // Animation de chargement sur le bouton
     btn.disabled = true;
     btnText.innerHTML = '<span class="profil-spinner"></span> Enregistrement...';
 
@@ -486,25 +587,22 @@
       pays: document.getElementById('profPays').value.trim(),
       commune: document.getElementById('profCommune').value.trim(),
       imageUrl: document.getElementById('profBase64Avatar').value,
-      photo60: document.getElementById('profBase64Avatar').value, // Synchronisation rétrocompatible
+      photo60: document.getElementById('profBase64Avatar').value,
       dateModification: new Date().toISOString()
     };
 
-    // Écriture sur la branche spécifique users/{uid}
-    firebase.database().ref('users/' + user.uid).update(updatedData)
+    db.ref('users/' + uid).update(updatedData)
       .then(function() {
         btn.disabled = false;
-        btnText.innerHTML = '<i class="fa-solid fa-check"></i> Enregistré avec succès !';
-        
-        setTimeout(() => {
-          btnText.innerHTML = 'Mettre à jour mon profil';
-        }, 3000);
+        btnText.innerHTML = 'Mettre à jour mon profil';
+        afficherAlerte("Profil mis à jour avec succès !", true);
+        basculerModeEdition(false);
       })
       .catch(function(error) {
         console.error("Erreur d'enregistrement :", error);
-        alert("Erreur lors de la mise à jour : " + error.message);
         btn.disabled = false;
         btnText.innerHTML = 'Mettre à jour mon profil';
+        afficherAlerte("Erreur de sauvegarde : " + error.message, false);
       });
   }
 </script>

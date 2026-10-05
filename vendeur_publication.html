@@ -6,7 +6,7 @@
   <title>Formulaire de Publication - DAKPRO ÉLITE</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -151,7 +151,7 @@
     
     <div id="statusAlert" class="alert"></div>
 
-    <form onsubmit="window.publierElement(event)">
+    <form id="formPublication" onsubmit="window.publierElement(event)">
       <div class="form-grid">
         
         <!-- TYPE DE PUBLICATION -->
@@ -165,60 +165,90 @@
           </select>
         </div>
 
-        <!-- CATÉGORIES COMPLETES (JUMIA / AMAZON) -->
+        <!-- CATÉGORIES COMPLÈTES (AMAZON / ALIBABA / EBAY / JUMIA) -->
         <div class="form-group">
           <label for="pCategorie">Catégorie</label>
           <select id="pCategorie" required>
             <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
             
-            <optgroup label="🚗 Véhicules & Auto-Moto">
-              <option value="VÉHICULE">Automobiles / Voitures</option>
-              <option value="MOTOS">Motos & Scooters</option>
-              <option value="PIECES_AUTO">Pièces détachées & Accessoires</option>
-              <option value="EQUIPEMENT_AUTO">Électronique Auto & GPS</option>
-            </optgroup>
-
-            <optgroup label="📱 Électronique & Informatique">
-              <option value="TELEPHONIE">Téléphones & Tablettes</option>
-              <option value="INFORMATIQUE">Ordinateurs & Laptops</option>
+            <optgroup label="📱 Électronique, Informatique & Téléphonie">
+              <option value="TELEPHONIE">Téléphones Portable & Smartphones</option>
+              <option value="TABLETTES">Tablettes & Liseuses</option>
+              <option value="INFORMATIQUE_PC">Ordinateurs Portables & PC de Bureau</option>
+              <option value="COMPOSANTS_PC">Composants Informatiques & Stockage</option>
               <option value="ACCESSOIRES_TECH">Accessoires High-Tech & Connectique</option>
-              <option value="TV_AUDIO">TV, Home Cinéma & Audio</option>
-              <option value="PHOTOGRAPHIE">Appareils Photo & Caméras</option>
+              <option value="TV_AUDIO">TV, Home Cinéma & Barre de son</option>
+              <option value="AUDIO_CASQUES">Casques, Écouteurs & Enceintes</option>
+              <option value="PHOTOGRAPHIE">Appareils Photo, Caméras & Drones</option>
+              <option value="JEUX_VIDEO">Consoles & Jeux Vidéo</option>
+              <option value="RESEAUX_DOMOTIQUE">Réseaux, Wifi & Domotique</option>
             </optgroup>
 
-            <optgroup label="👗 Mode, Vêtements & Chaussures">
-              <option value="MODE_HOMME">Mode Homme (Chaussures, Costumes...)</option>
-              <option value="MODE_FEMME">Mode Femme (Robes, Sacs...)</option>
-              <option value="MODE_ENFANT">Mode Enfant & Bébé</option>
-              <option value="BIJOUX_MONTRES">Montres, Bijoux & Lunettes</option>
+            <optgroup label="👗 Mode, Vêtements, Chaussures & Accessoires">
+              <option value="MODE_HOMME_CHAUSSURES">Chaussures Homme (Cuir, Sneakers, Mocassins)</option>
+              <option value="MODE_HOMME_VETEMENTS">Vêtements Homme (Costumes, Chemises, Jeans)</option>
+              <option value="MODE_FEMME_ROBES">Robes & Tenues de Soirée Femme</option>
+              <option value="MODE_FEMME_SACS">Sacs à main & Maroquinerie Femme</option>
+              <option value="MODE_FEMME_CHAUSSURES">Chaussures Femme (Talons, Sandales, Baskets)</option>
+              <option value="MODE_ENFANT_BEBE">Mode Enfant, Bébé & Naissance</option>
+              <option value="BIJOUX_LUXE">Bijoux, Or & Joaillerie</option>
+              <option value="MONTRES">Montres Homme & Femme</option>
+              <option value="LUNETTES_ACCESSOIRES">Lunettes de Soleil & Accessoires Mode</option>
             </optgroup>
 
-            <optgroup label="🏠 Maison, Cuisine & Bureau">
-              <option value="ELECTROMENAGER">Électroménager</option>
-              <option value="MEUBLES">Meubles & Décoration</option>
-              <option value="CUISINE">Articles de Cuisine</option>
-              <option value="BRICOLAGE">Bricolage & Jardinage</option>
-              <option value="FOURNITURES_BUREAU">Fournitures de Bureau</option>
+            <optgroup label="🏠 Maison, Cuisine, Meubles & Électroménager">
+              <option value="GRAND_ELECTROMENAGER">Gros Électroménager (Frigo, Machine à laver)</option>
+              <option value="PETIT_ELECTROMENAGER">Petit Électroménager (Mixeur, Cafetière)</option>
+              <option value="MEUBLES_DECO">Meubles, Canapés & Décoration d'Intérieur</option>
+              <option value="LITERIE">Literie, Matelas & Linge de Maison</option>
+              <option value="CUISINE_TABLE">Cuisine, Vaisselle & Ustensiles</option>
+              <option value="ECLAIRAGE">Éclairage, Lustres & Lampes LED</option>
+              <option value="RANGEMENT">Rangement & Organisation</option>
             </optgroup>
 
-            <optgroup label="💄 Beauté, Santé & Hygiène">
-              <option value="BEAUTE">Cosmétiques & Maquillage</option>
-              <option value="PARFUMS">Parfums & Senteurs</option>
-              <option value="SOINS_CORPS">Soins du Visage & Corps</option>
-              <option value="SANTE">Santé & Compléments</option>
+            <optgroup label="🚗 Véhicules, Auto, Moto & Pièces">
+              <option value="AUTOMOBILES">Automobiles & Voitures de Luxe</option>
+              <option value="MOTOS_SCOOTERS">Motos, Scooters & Quads</option>
+              <option value="PIECES_DETACHEES">Pièces Détachées Auto & Moto</option>
+              <option value="PNEUS_JANTES">Pneus, Jantes & Entretien Véhicule</option>
+              <option value="EQUIPEMENT_ELECTRONIQUE_AUTO">GPS, Alarmes & Caméras Embarquées</option>
             </optgroup>
 
-            <optgroup label="🛒 Épicerie & Supermarché">
-              <option value="EPICERIE">Produits Alimentaires</option>
-              <option value="BOISSONS">Boissons & Rafraîchissements</option>
+            <optgroup label="💄 Beauté, Santé, Hygiène & Parfums">
+              <option value="PARFUMS_LUXE">Parfums & Senteurs de Luxe</option>
+              <option value="COSMETIQUES_MAQUILLAGE">Cosmétiques & Maquillage</option>
+              <option value="SOINS_VISAGE_CORPS">Soins du Visage, Cheveux & Corps</option>
+              <option value="SANTE_COMPLEMENTS">Santé, Hygiène & Compléments Alimentaires</option>
+              <option value="EQUIPEMENT_MEDICAL">Matériel Médical & Bien-être</option>
+            </optgroup>
+
+            <optgroup label="🛠️ Bricolage, Jardin, Énergie & Industrie (Alibaba)">
+              <option value="OUTILLAGE">Outillage Électrique & Manuel</option>
+              <option value="ENERGIE_SOLAIRE">Panneaux Solaires, Inverteurs & Batteries</option>
+              <option value="QUINCAILLERIE">Quincaillerie & Matériaux de Construction</option>
+              <option value="JARDIN_MOBIEL">Jardinage, Arrosage & Mobilier d'Extérieur</option>
+              <option value="EQUIPEMENT_INDUSTRIEL">Machines & Équipements Industriels</option>
+              <option value="SECURITE">Sécurité, Caméras de Surveillance & Alarmes</option>
+            </optgroup>
+
+            <optgroup label="🛒 Épicerie, Alimentation & Supermarché">
+              <option value="EPICERIE_SECHE">Produits Alimentaires & Épicerie Séche</option>
+              <option value="BOISSONS_JUS">Boissons, Jus, Vins & Spiritueux</option>
               <option value="PRODUITS_FRAIS">Produits Frais & Marché</option>
             </optgroup>
 
-            <optgroup label="⚽ Sports, Loisirs & Éducation">
-              <option value="SPORT">Équipements Sportifs</option>
-              <option value="JOUETS">Jeux & Jouets</option>
-              <option value="LIVRES_COURS">Livres, Cours & Formations</option>
-              <option value="EPREUVES_EXAMENS">Épreuves & Annales d'examen</option>
+            <optgroup label="⚽ Sports, Loisirs, Jouets & Bébés">
+              <option value="SPORT_FITNESS">Équipements de Sport, Fitness & Musculation</option>
+              <option value="VELOS_MOBILITE">Vélos, Trottinettes & Mobilité Électrique</option>
+              <option value="JOUETS_JEUX">Jeux, Jouets & Figurine</option>
+              <option value="PUERICULTURE">Puériculture & Articles pour Bébé</option>
+            </optgroup>
+
+            <optgroup label="📚 Éducation, Cours, Livres & Documents">
+              <option value="LIVRES_ROMANS">Livres, Romans & Ebooks</option>
+              <option value="LIVRES_COURS">Cours en ligne, Formations & Tutoriels</option>
+              <option value="EPREUVES_EXAMENS">Épreuves, Annales d'examen & Corrigés</option>
+              <option value="FOURNITURES_BUREAU">Fournitures Scolaires & Papeterie</option>
             </optgroup>
           </select>
         </div>
@@ -226,7 +256,7 @@
         <!-- INFORMATIONS PRODUIT -->
         <div class="form-group">
           <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: MERCEDES 2026 / Chaussures Cuir">
+          <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien / MERCEDES 2026">
         </div>
 
         <div class="form-group">
@@ -236,12 +266,12 @@
 
         <div class="form-group">
           <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="150000000">
+          <input type="number" id="pPrixNormal" required placeholder="150000">
         </div>
 
         <div class="form-group">
           <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="140000000">
+          <input type="number" id="pPrixPromo" placeholder="140000">
         </div>
 
         <div class="form-group">
@@ -260,7 +290,7 @@
           <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
           
           <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé (Ex: Firebase Storage, Cloudinary...) :</small>
-          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" onchange="window.handleDirectUrlInput(this.value)">
+          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" oninput="window.handleDirectUrlInput(this.value)">
           
           <input type="hidden" id="base64Publish">
           <input type="hidden" id="mediaTypePublish" value="image">
@@ -290,10 +320,16 @@
 
   <script>
     // ----------------------------------------------------
-    // 1. CONFIGURATION FIREBASE (À vérifier avec vos clés)
+    // 1. CONFIGURATION FIREBASE AVEC CLÉ API
     // ----------------------------------------------------
     const firebaseConfig = {
-      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com"
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
     };
 
     if (!firebase.apps.length) {
@@ -301,23 +337,32 @@
     }
     const db = firebase.database();
 
+    // Réinitialisation des aperçus
+    function resetPreviews() {
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('previewVideo').style.display = 'none';
+      document.getElementById('previewDoc').style.display = 'none';
+      document.getElementById('previewImage').src = '';
+      document.getElementById('previewVideo').src = '';
+      document.getElementById('docName').innerText = '';
+    }
+
     // ----------------------------------------------------
-    // 2. GESTION DE L'UPLOAD & CONVERSION EN BASE64 / URL
+    // 2. GESTION DU CHARGEMENT DE FICHIER (LOCAL)
     // ----------------------------------------------------
     window.handleMediaUpload = function(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      // Nettoyer l'autre champ d'URL
+      document.getElementById('pUrlMediaDirect').value = '';
+      resetPreviews();
 
       const previewImg = document.getElementById('previewImage');
       const previewVid = document.getElementById('previewVideo');
       const previewDoc = document.getElementById('previewDoc');
       const mediaTypeInput = document.getElementById('mediaTypePublish');
       const base64Input = document.getElementById('base64Publish');
-
-      // Reinitialiser l'affichage des aperçus
-      previewImg.style.display = 'none';
-      previewVid.style.display = 'none';
-      previewDoc.style.display = 'none';
 
       const fileType = file.type;
 
@@ -332,7 +377,7 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         const result = e.target.result;
-        base64Input.value = result; // Stocke la chaîne Base64 ou l'URL
+        base64Input.value = result;
 
         if (mediaTypeInput.value === 'image') {
           previewImg.src = result;
@@ -349,8 +394,20 @@
       reader.readAsDataURL(file);
     };
 
+    // ----------------------------------------------------
+    // 3. GESTION DE L'URL DIRECTE
+    // ----------------------------------------------------
     window.handleDirectUrlInput = function(url) {
-      if (!url) return;
+      url = url.trim();
+      if (!url) {
+        resetPreviews();
+        document.getElementById('base64Publish').value = '';
+        return;
+      }
+
+      // Nettoyer l'input file
+      document.getElementById('pInputMedia').value = '';
+      resetPreviews();
 
       const previewImg = document.getElementById('previewImage');
       const previewVid = document.getElementById('previewVideo');
@@ -358,15 +415,11 @@
       const mediaTypeInput = document.getElementById('mediaTypePublish');
       const base64Input = document.getElementById('base64Publish');
 
-      previewImg.style.display = 'none';
-      previewVid.style.display = 'none';
-      previewDoc.style.display = 'none';
-
-      base64Input.value = url; // L'URL hébergée directement
+      base64Input.value = url;
 
       if (url.match(/\.(mp4|webm|ogg)($\vert{}\?)/i)) {         mediaTypeInput.value = 'video';         previewVid.src = url;         previewVid.style.display = 'block';       } else if (url.match(/\.(pdf\vert{}doc\vert{}docx)($|\?)/i)) {
         mediaTypeInput.value = 'document';
-        document.getElementById('docName').innerText = url.split('/').pop();
+        document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
         previewDoc.style.display = 'block';
       } else {
         mediaTypeInput.value = 'image';
@@ -376,7 +429,7 @@
     };
 
     // ----------------------------------------------------
-    // 3. PUBLICATION DANS FIREBASE (vendeurs_publications)
+    // 4. PUBLICATION DANS "publications" EN REALTIME DATABASE
     // ----------------------------------------------------
     window.publierElement = async function(event) {
       event.preventDefault();
@@ -388,9 +441,8 @@
       btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
 
       try {
-        // Récupération de l'utilisateur Firebase (ou valeur par défaut si déconnecté)
         const currentUser = firebase.auth().currentUser;
-        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82"; // ID vendeur par défaut
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
         
         const type = document.getElementById('pType').value;
         const categorie = document.getElementById('pCategorie').value;
@@ -405,18 +457,35 @@
         const mediaType = document.getElementById('mediaTypePublish').value;
 
         if (!mediaUrl) {
-          throw new Error("Veuillez sélectionner un fichier média ou entrer une URL valide.");
+          throw new Error("Veuillez charger un fichier (image, vidéo, document) ou entrer une URL valide.");
         }
 
-        // Création d'une clé unique dans la base de données
-        const newRef = db.ref('vendeurs_publications').push();
+        // GÉNÉRATION AUTOMATIQUE DE LA DATE ET HEURE DE PUBLICATION
+        const maintenant = new Date();
+        const dateTimestamp = maintenant.getTime();
+        const dateLisible = maintenant.toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+        const heureLisible = maintenant.toLocaleTimeString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+        const dateEtHeureComplete = `${dateLisible} à ${heureLisible}`;
+
+        // Référence unique dans la base de données (nœud "publications")
+        const newRef = db.ref('publications').push();
         const publicationId = newRef.key;
 
-        // Structure exacte conforme à la Realtime Database DAKPRO ÉLITE
         const publicationData = {
           auteur: auteur,
           categorie: categorie,
-          createdAt: Date.now(),
+          createdAt: dateTimestamp,
+          datePublication: dateLisible,
+          heurePublication: heureLisible,
+          dateEtHeure: dateEtHeureComplete,
           createdBy: vendorUid,
           description: description,
           id: publicationId,
@@ -434,18 +503,16 @@
           vendeurUid: vendorUid
         };
 
+        // Écriture effective dans la Realtime Database
         await newRef.set(publicationData);
 
-        // Afficher message de succès
         alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication réussie avec succès !";
+        alertBox.innerText = "Publication réussie le " + dateEtHeureComplete + " !";
         alertBox.style.display = "block";
 
-        // Réinitialiser le formulaire
-        event.target.reset();
-        document.getElementById('previewImage').style.display = 'none';
-        document.getElementById('previewVideo').style.display = 'none';
-        document.getElementById('previewDoc').style.display = 'none';
+        // Réinitialisation complète du formulaire après publication
+        document.getElementById('formPublication').reset();
+        resetPreviews();
         document.getElementById('base64Publish').value = '';
 
       } catch (error) {
