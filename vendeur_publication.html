@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire de Publication - DAKPRO ÉLITE</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs (compat v9) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Ajout du SDK Firebase Storage -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <style>
     :root {
@@ -170,6 +163,7 @@
           <label for="pCategorie">Catégorie</label>
           <select id="pCategorie" required>
             <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
+            <option value="VÉHICULE">Véhicules & Automobile</option>
             <option value="TELEPHONIE">Téléphones Portable & Smartphones</option>
             <option value="INFORMATIQUE_PC">Ordinateurs Portables & PC de Bureau</option>
             <option value="MODE_HOMME_CHAUSSURES">Chaussures Homme</option>
@@ -180,7 +174,7 @@
 
         <div class="form-group">
           <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien">
+          <input type="text" id="pNom" required placeholder="Ex: MERCEDES 2026">
         </div>
 
         <div class="form-group">
@@ -190,12 +184,12 @@
 
         <div class="form-group">
           <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="150000">
+          <input type="number" id="pPrixNormal" required placeholder="15000000">
         </div>
 
         <div class="form-group">
           <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="140000">
+          <input type="number" id="pPrixPromo" placeholder="14000000">
         </div>
 
         <div class="form-group">
@@ -212,8 +206,8 @@
           <label for="pInputMedia">Fichier Média (Image, Vidéo MP4 ou Document PDF/Word) OU URL Directe</label>
           <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
           
-          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé :</small>
-          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" oninput="window.handleDirectUrlInput(this.value)">
+          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL / Base64 d'un média :</small>
+          <input type="text" id="pUrlMediaDirect" placeholder="https://exemple.com/image.jpg ou data:image/jpeg;base64,..." oninput="window.handleDirectUrlInput(this.value)">
           
           <input type="hidden" id="base64Publish">
           <input type="hidden" id="mediaTypePublish" value="image">
@@ -240,7 +234,12 @@
     </form>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
@@ -251,11 +250,10 @@
       appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-    const storage = firebase.storage();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
 
     let selectedFile = null;
 
@@ -268,7 +266,17 @@
       document.getElementById('docName').innerText = '';
     }
 
-    window.handleMediaUpload = function(event) {
+    // Conversion d'un fichier en Base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    window.handleMediaUpload = async function(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -281,9 +289,13 @@
       const previewDoc = document.getElementById('previewDoc');
       const mediaTypeInput = document.getElementById('mediaTypePublish');
 
+      // Préparation de la valeur Base64 directe
+      const base64Data = await fileToBase64(file);
+      document.getElementById('base64Publish').value = base64Data;
+
       if (file.type.startsWith('image/')) {
         mediaTypeInput.value = 'image';
-        previewImg.src = URL.createObjectURL(file);
+        previewImg.src = base64Data;
         previewImg.style.display = 'block';
       } else if (file.type.startsWith('video/')) {
         mediaTypeInput.value = 'video';
@@ -333,25 +345,28 @@
       const alertBox = document.getElementById('statusAlert');
       
       btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi du fichier...`;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi...`;
 
       try {
-        const currentUser = firebase.auth().currentUser;
+        const currentUser = auth.currentUser;
         const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
         
         let finalMediaUrl = document.getElementById('base64Publish').value;
         const mediaType = document.getElementById('mediaTypePublish').value;
 
-        // UPLOAD DU FICHIER SUR FIREBASE STORAGE SI UN FICHIER EST SÉLECTIONNÉ
+        // Tentative d'upload de secours sur Firebase Storage si présent
         if (selectedFile) {
-          const filePath = `publications/${Date.now()}_${selectedFile.name}`;
-          const storageRef = storage.ref().child(filePath);
-          const uploadTask = await storageRef.put(selectedFile);
-          finalMediaUrl = await uploadTask.ref.getDownloadURL();
+          try {
+            const fileRef = storageRef(storage, `publications/${Date.now()}_${selectedFile.name}`);
+            const snapshot = await uploadBytes(fileRef, selectedFile);
+            finalMediaUrl = await getDownloadURL(snapshot.ref);
+          } catch (storageErr) {
+            console.warn("Storage non utilisé ou indisponible, fallback vers Base64 :", storageErr);
+          }
         }
 
         if (!finalMediaUrl) {
-          throw new Error("Veuillez sélectionner un fichier ou coller une URL valide.");
+          throw new Error("Veuillez sélectionner un fichier ou coller une URL/Base64 valide.");
         }
 
         const type = document.getElementById('pType').value;
@@ -364,22 +379,16 @@
         const description = document.getElementById('pDescription').value.trim();
         const vendorPhone = document.getElementById('pVendeurPhone').value.trim();
 
-        const maintenant = new Date();
-        const dateTimestamp = maintenant.getTime();
-        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const dateEtHeureComplete = `${dateLisible} à ${heureLisible}`;
+        const dateTimestamp = Date.now();
 
-        const newRef = db.ref('publications').push();
-        const publicationId = newRef.key;
+        // Référence vers la collection principale selon votre schéma exact dans Firebase
+        const mainRef = push(ref(db, 'vendeurs_publications'));
+        const publicationId = mainRef.key;
 
         const publicationData = {
           auteur: auteur,
           categorie: categorie,
           createdAt: dateTimestamp,
-          datePublication: dateLisible,
-          heurePublication: heureLisible,
-          dateEtHeure: dateEtHeureComplete,
           createdBy: vendorUid,
           description: description,
           id: publicationId,
@@ -397,10 +406,14 @@
           vendeurUid: vendorUid
         };
 
-        await newRef.set(publicationData);
+        // Écriture directe simultanée dans les 2 collections
+        await Promise.all([
+          set(mainRef, publicationData),
+          set(ref(db, `publications/${publicationId}`), publicationData)
+        ]);
 
         alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication réussie le " + dateEtHeureComplete + " !";
+        alertBox.innerText = "Publication enregistrée avec succès sous " + publicationId;
         alertBox.style.display = "block";
 
         document.getElementById('formPublication').reset();
