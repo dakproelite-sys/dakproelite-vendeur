@@ -1,10 +1,17 @@
-<!DOCTYPE html>
+[05/10 05:55] AGLIGNAMOU: <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire de Publication - DAKPRO ÉLITE</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs (compat v9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Ajout du SDK Firebase Storage -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <style>
     :root {
@@ -41,20 +48,6 @@
       align-items: center;
       gap: 10px;
     }
-
-    .user-banner {
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      padding: 10px 14px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .user-banner strong { color: var(--secondary-gold); }
 
     .form-grid {
       display: grid;
@@ -106,10 +99,18 @@
       width: 100%;
     }
 
-    .btn-action:hover { background-color: #000; }
-    .btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-action:hover {
+      background-color: #000;
+    }
 
-    .preview-container { margin-top: 10px; }
+    .btn-action:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preview-container {
+      margin-top: 10px;
+    }
 
     .image-preview, .video-preview {
       max-width: 100%;
@@ -143,7 +144,6 @@
 
     .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
     .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-    .alert-warning { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
   </style>
 </head>
 <body>
@@ -151,11 +151,6 @@
   <div class="content-card">
     <h3><i class="fa-solid fa-store" style="color: var(--primary-gold);"></i> Publier sur DAKPRO ÉLITE</h3>
     
-    <div id="userBanner" class="user-banner" style="display: none;">
-      <span>Connecté en tant que : <strong id="userEmail">...</strong></span>
-      <span id="userRoleBadge" style="background: var(--primary-gold); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">VENDEUR</span>
-    </div>
-
     <div id="statusAlert" class="alert"></div>
 
     <form id="formPublication" onsubmit="window.publierElement(event)">
@@ -175,7 +170,6 @@
           <label for="pCategorie">Catégorie</label>
           <select id="pCategorie" required>
             <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
-            <option value="VÉHICULE">Véhicules & Automobile</option>
             <option value="TELEPHONIE">Téléphones Portable & Smartphones</option>
             <option value="INFORMATIQUE_PC">Ordinateurs Portables & PC de Bureau</option>
             <option value="MODE_HOMME_CHAUSSURES">Chaussures Homme</option>
@@ -186,22 +180,22 @@
 
         <div class="form-group">
           <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: Chaussure Italienne Cuir">
+          <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien">
         </div>
 
         <div class="form-group">
-          <label for="pAuteur">Auteur / Nom de la Boutique</label>
+          <label for="pAuteur">Auteur / Nom du Vendeur</label>
           <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
         </div>
 
         <div class="form-group">
           <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="120000">
+          <input type="number" id="pPrixNormal" required placeholder="150000">
         </div>
 
         <div class="form-group">
           <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="80000">
+          <input type="number" id="pPrixPromo" placeholder="140000">
         </div>
 
         <div class="form-group">
@@ -218,8 +212,8 @@
           <label for="pInputMedia">Fichier Média (Image, Vidéo MP4 ou Document PDF/Word) OU URL Directe</label>
           <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
           
-          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL / Base64 d'un média :</small>
-          <input type="text" id="pUrlMediaDirect" placeholder="https://exemple.com/image.jpg ou data:image/jpeg;base64,..." oninput="window.handleDirectUrlInput(this.value)">
+          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé :</small>
+          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" oninput="window.handleDirectUrlInput(this.value)">
           
           <input type="hidden" id="base64Publish">
           <input type="hidden" id="mediaTypePublish" value="image">
@@ -246,12 +240,7 @@
     </form>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
       authDomain: "dakproelite.firebaseapp.com",
@@ -262,58 +251,13 @@
       appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    const storage = getStorage(app);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const storage = firebase.storage();
 
-    let currentConnectedUser = null;
     let selectedFile = null;
-
-    // Écoute dynamique de la session de l'utilisateur connecté
-    onAuthStateChanged(auth, async (user) => {
-      const alertBox = document.getElementById('statusAlert');
-      const btnSubmit = document.getElementById('btnPublierSubmit');
-      const userBanner = document.getElementById('userBanner');
-
-      if (user) {
-        currentConnectedUser = user;
-        document.getElementById('userEmail').innerText = user.email || user.uid;
-
-        try {
-          // Récupération du profil utilisateur sous /users/{uid}
-          const userSnapshot = await get(ref(db, `users/${user.uid}`));
-          
-          if (userSnapshot.exists()) {
-            const userData = userSnapshot.val();
-            
-            // Pré-remplir les champs avec les données enregistrées
-            if (userData.nom || userData.displayName || userData.nomBoutique) {
-              document.getElementById('pAuteur').value = userData.nomBoutique || userData.nom || userData.displayName || '';
-            }
-            if (userData.telephone || userData.phone) {
-              document.getElementById('pVendeurPhone').value = userData.telephone || userData.phone || '';
-            }
-
-            document.getElementById('userRoleBadge').innerText = (userData.role || 'VENDEUR').toUpperCase();
-          }
-
-          userBanner.style.display = 'flex';
-          btnSubmit.disabled = false;
-        } catch (e) {
-          console.warn("Impossible de charger les données du profil :", e);
-          userBanner.style.display = 'flex';
-        }
-
-      } else {
-        currentConnectedUser = null;
-        userBanner.style.display = 'none';
-        
-        alertBox.className = "alert alert-warning";
-        alertBox.innerText = "Attention : Aucun utilisateur connecté à Firebase Auth. Veuillez vous connecter avec votre compte vendeur pour pouvoir publier.";
-        alertBox.style.display = "block";
-      }
-    });
 
     function resetPreviews() {
       document.getElementById('previewImage').style.display = 'none';
@@ -324,16 +268,7 @@
       document.getElementById('docName').innerText = '';
     }
 
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
-
-    window.handleMediaUpload = async function(event) {
+    window.handleMediaUpload = function(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -346,12 +281,9 @@
       const previewDoc = document.getElementById('previewDoc');
       const mediaTypeInput = document.getElementById('mediaTypePublish');
 
-      const base64Data = await fileToBase64(file);
-      document.getElementById('base64Publish').value = base64Data;
-
       if (file.type.startsWith('image/')) {
         mediaTypeInput.value = 'image';
-        previewImg.src = base64Data;
+        previewImg.src = URL.createObjectURL(file);
         previewImg.style.display = 'block';
       } else if (file.type.startsWith('video/')) {
         mediaTypeInput.value = 'video';
@@ -399,38 +331,27 @@
 
       const btnSubmit = document.getElementById('btnPublierSubmit');
       const alertBox = document.getElementById('statusAlert');
-
-      // Vérification impérative de la session Auth
-      if (!auth.currentUser) {
-        alertBox.className = "alert alert-error";
-        alertBox.innerText = "Erreur : Vous devez être connecté avec votre compte Vendeur pour soumettre une publication.";
-        alertBox.style.display = "block";
-        return;
-      }
-
+      
       btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi...`;
-      alertBox.style.display = "none";
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi du fichier...`;
 
       try {
-        const vendorUid = auth.currentUser.uid;
+        const currentUser = firebase.auth().currentUser;
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
         
         let finalMediaUrl = document.getElementById('base64Publish').value;
         const mediaType = document.getElementById('mediaTypePublish').value;
 
-        // Si un fichier est sélectionné, tenter un téléversement dans Storage
+        // UPLOAD DU FICHIER SUR FIREBASE STORAGE SI UN FICHIER EST SÉLECTIONNÉ
         if (selectedFile) {
-          try {
-            const fileRef = storageRef(storage, `publications/${Date.now()}_${selectedFile.name}`);
-            const snapshot = await uploadBytes(fileRef, selectedFile);
-            finalMediaUrl = await getDownloadURL(snapshot.ref);
-          } catch (storageErr) {
-            console.warn("Storage indisponible ou restreint. Utilisation du format Base64 par défaut :", storageErr);
-          }
+          const filePath = `publications/${Date.now()}_${selectedFile.name}`;
+          const storageRef = storage.ref().child(filePath);
+          const uploadTask = await storageRef.put(selectedFile);
+          finalMediaUrl = await uploadTask.ref.getDownloadURL();
         }
 
         if (!finalMediaUrl) {
-          throw new Error("Veuillez charger une image ou indiquer un lien d'accès média valide.");
+          throw new Error("Veuillez sélectionner un fichier ou coller une URL valide.");
         }
 
         const type = document.getElementById('pType').value;
@@ -443,16 +364,22 @@
         const description = document.getElementById('pDescription').value.trim();
         const vendorPhone = document.getElementById('pVendeurPhone').value.trim();
 
-        const dateTimestamp = Date.now();
+        const maintenant = new Date();
+        const dateTimestamp = maintenant.getTime();
+        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateEtHeureComplete = `${dateLisible} à ${heureLisible}`;
 
-        // Référence unique sous la collection "vendeurs_publications"
-        const mainRef = push(ref(db, 'vendeurs_publications'));
-        const publicationId = mainRef.key;
+        const newRef = db.ref('publications').push();
+        const publicationId = newRef.key;
 
         const publicationData = {
           auteur: auteur,
           categorie: categorie,
           createdAt: dateTimestamp,
+          datePublication: dateLisible,
+          heurePublication: heureLisible,
+          dateEtHeure: dateEtHeureComplete,
           createdBy: vendorUid,
           description: description,
           id: publicationId,
@@ -463,7 +390,6 @@
           prix: prixPromo,
           prixNormal: prixNormal,
           prixPromo: prixPromo,
-          sellerId: vendorUid,
           stock: stock,
           type: type,
           vendeurNom: auteur,
@@ -471,14 +397,10 @@
           vendeurUid: vendorUid
         };
 
-        // Enregistrement simultané sous "vendeurs_publications" et "publications"
-        await Promise.all([
-          set(mainRef, publicationData),
-          set(ref(db, `publications/${publicationId}`), publicationData)
-        ]);
+        await newRef.set(publicationData);
 
         alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication enregistrée avec succès sous l'ID : " + publicationId;
+        alertBox.innerText = "Publication réussie le " + dateEtHeureComplete + " !";
         alertBox.style.display = "block";
 
         document.getElementById('formPublication').reset();
@@ -495,6 +417,764 @@
         btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource`;
       }
     };
+  </script>
+</body>
+</html>
+[05/10 07:18] AGLIGNAMOU: <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio de Publication - DAKPRO ÉLITE</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs (v9 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --info-color: #2563eb;
+      --bg-light: #f8fafc;
+      --success-color: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); padding: 20px; }
+
+    .studio-container {
+      max-width: 950px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .studio-header {
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--primary-gold);
+    }
+
+    .studio-header h2 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary-gold);
+    }
+
+    .stepper-nav {
+      display: flex;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .step-btn {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .step-btn.active {
+      color: var(--dark-bg);
+      border-bottom-color: var(--primary-gold);
+      background: #fff;
+    }
+
+    .studio-content {
+      padding: 24px;
+    }
+
+    .step-panel {
+      display: none;
+    }
+
+    .step-panel.active {
+      display: block;
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--primary-gold);
+      background: #fcfbf7;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .upload-dropzone:hover {
+      background: #f5efe0;
+    }
+
+    .upload-dropzone i {
+      font-size: 48px;
+      color: var(--secondary-gold);
+      margin-bottom: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .media-preview-box {
+      margin-top: 16px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-preview-box img, .media-preview-box video {
+      max-width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+    }
+
+    .doc-preview-box {
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+
+    .progress-wrapper {
+      display: none;
+      margin-top: 16px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      height: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary-gold), var(--primary-gold));
+      width: 0%;
+      transition: width 0.2s ease-in-out;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .actions-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text-main);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--dark-bg);
+      color: var(--primary-gold);
+      border: 1px solid var(--primary-gold);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover { background: #000; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <div class="studio-container">
+    <div class="studio-header">
+      <h2><i class="fa-brands fa-youtube"></i> Studio de Publication DAKPRO ÉLITE</h2>
+      <span style="font-size: 12px; opacity: 0.8;">Haute Vitesse & Support Multi-médias</span>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <div class="stepper-nav">
+      <button class="step-btn active" id="tabStep1" type="button" onclick="switchStep(1)">
+        <i class="fa-solid fa-file-video"></i> 1. Média
+      </button>
+      <button class="step-btn" id="tabStep2" type="button" onclick="switchStep(2)">
+        <i class="fa-solid fa-list-check"></i> 2. Détails
+      </button>
+      <button class="step-btn" id="tabStep3" type="button" onclick="switchStep(3)">
+        <i class="fa-solid fa-globe"></i> 3. Visibilité
+      </button>
+    </div>
+
+    <div class="studio-content">
+      <div id="statusAlert" class="alert"></div>
+
+      <form id="formStudio" onsubmit="publierRessource(event)">
+        
+        <!-- ÉTAPE 1 : SÉLECTION MÉDIA -->
+        <div class="step-panel active" id="panelStep1">
+          <div class="upload-dropzone" onclick="document.getElementById('pInputMedia').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>Sélectionnez votre fichier (Image, Vidéo, PDF)</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+              Envoi ultra-rapide optimisé
+            </p>
+            <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileSelection(event)">
+          </div>
+
+          <div style="margin-top: 16px; text-align: center;">
+            <span style="font-size: 12px; color: var(--text-muted);">- OU SAISIR UNE URL DIRECTE -</span>
+            <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/fichier.mp4" style="margin-top: 8px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);" oninput="handleUrlInput(this.value)">
+          </div>
+
+          <!-- Zone Aperçu -->
+          <div id="previewContainer" style="display:none;">
+            <div class="media-preview-box" id="boxMediaPreview">
+              <img id="previewImage" style="display:none;" alt="Aperçu Image">
+              <video id="previewVideo" controls preload="metadata" style="display:none;">
+                <source id="videoSource" src="" type="video/mp4">
+              </video>
+            </div>
+            <div id="previewDoc" class="doc-preview-box" style="display:none;">
+              <i class="fa-solid fa-file-pdf" style="font-size: 24px; color: #dc2626;"></i>
+              <span id="docName">Document sélectionné</span>
+            </div>
+          </div>
+
+          <!-- Progression du chargement -->
+          <div class="progress-wrapper" id="progressWrapper">
+            <div class="progress-bar-fill" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0%</div>
+          </div>
+
+          <div class="actions-footer">
+            <div></div>
+            <button type="button" class="btn-primary" onclick="switchStep(2)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 2 : DÉTAILS DU PRODUIT / CONTENU -->
+        <div class="step-panel" id="panelStep2">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pType">Type de Publication</label>
+              <select id="pType" required>
+                <option value="produit">Produit Physique / Numérique</option>
+                <option value="cours">Cours en ligne / Formation</option>
+                <option value="epreuve">Épreuve / Document d'étude</option>
+                <option value="lien">Lien Externe / Produit Copié</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pCategorie">Catégorie</label>
+              <select id="pCategorie" required>
+                <option value="" disabled selected>-- Choisir une catégorie --</option>
+                
+                <optgroup label="🚗 Véhicules & Auto-Moto">
+                  <option value="VEHICULES_VOITURES">Voitures & Automobiles</option>
+                  <option value="VEHICULES_MOTOS">Motos, Scooters & Triporteurs</option>
+                  <option value="VEHICULES_CAMIONS">Camions, Engins & Utilitaires</option>
+                  <option value="VEHICULES_PIECES">Pièces Détachées & Accessoires Auto</option>
+                  <option value="VEHICULES_NAUTISME">Bateaux, Jetskis & Nautisme</option>
+                </optgroup>
+
+                <optgroup label="📱 Téléphonie & Objets Connectés">
+                  <option value="TELEPHONIE_SMARTPHONES">Smartphones & Téléphones</option>
+                  <option value="TELEPHONIE_TABLETTES">Tablettes Tactiles</option>
+                  <option value="TELEPHONIE_MONTRES">Montres Connectées & Bracelets</option>
+                  <option value="TELEPHONIE_ACCESSOIRES">Coques, Écouteurs & Chargeurs</option>
+                </optgroup>
+
+                <optgroup label="💻 Informatique & High-Tech">
+                  <option value="INFORMATIQUE_PC_PORTABLE">Ordinateurs Portables</option>
+                  <option value="INFORMATIQUE_PC_BUREAU">Ordinateurs de Bureau & All-in-One</option>
+                  <option value="INFORMATIQUE_COMPOSANTS">Composants PC (RAM, Disques, Cartes Graphiques)</option>
+                  <option value="INFORMATIQUE_PERIPHERIQUES">Claviers, Souris & Écrans</option>
+                  <option value="INFORMATIQUE_RESEAUX">Réseaux, Modems & Wi-Fi</option>
+                  <option value="INFORMATIQUE_STOCKAGE">Clés USB, Disques Durs & Cartes Mémoire</option>
+                </optgroup>
+
+                <optgroup label="📺 Électronique, TV & Audio">
+                  <option value="TV_AUDIO_TV">Téléviseurs & Smart TV</option>
+                  <option value="TV_AUDIO_SON">Barres de son, Hifi & Home Cinéma</option>
+                  <option value="TV_AUDIO_CASQUES">Casques Audio & Écouteurs Bluetooth</option>
+                  <option value="TV_AUDIO_PHOTO">Appareils Photo, Caméras & Drones</option>
+                  <option value="TV_AUDIO_PROJECTEURS">Vidéoprojecteurs & Accessoires</option>
+                </optgroup>
+
+                <optgroup label="🏠 Maison, Mobilier & Bricolage">
+                  <option value="MAISON_MEUBLES">Meubles, Canapés & Literie</option>
+                  <option value="MAISON_DECORATION">Décoration, Tapis & Luminaires</option>
+                  <option value="MAISON_CUISINE">Arts de la Table & Ustensiles de Cuisine</option>
+                  <option value="MAISON_BRICOLAGE">Outillage & Bricolage</option>
+                  <option value="MAISON_JARDIN">Jardin, Éclairage Extérieur & Énergie Solaire</option>
+                </optgroup>
+
+                <optgroup label="⚡ Électroménager">
+                  <option value="ELECTRO_GROS">Réfrigérateurs, Congélateurs & Lave-linge</option>
+                  <option value="ELECTRO_CUISINE">Micro-ondes, Friteuses & Mixeurs</option>
+                  <option value="ELECTRO_CLIMATISATION">Climatiseurs, Ventilateurs & Chauffage</option>
+                  <option value="ELECTRO_ENTRETIEN">Aspirateurs & Nettoyeurs</option>
+                </optgroup>
+
+                <optgroup label="👔 Mode & Chaussures Homme">
+                  <option value="MODE_HOMME_CHAUSSURES">Chaussures Cuir, Baskets & Moccasins</option>
+                  <option value="MODE_HOMME_VETEMENTS">Costumes, Chemises & Pantalons</option>
+                  <option value="MODE_HOMME_ACCESSOIRES">Montres, Ceintures & Sacs</option>
+                </optgroup>
+
+                <optgroup label="👗 Mode & Beauté Femme">
+                  <option value="MODE_FEMME_VETEMENTS">Robes, Ensembles & Tops</option>
+                  <option value="MODE_FEMME_CHAUSSURES">Talons, Baskets & Sandales</option>
+                  <option value="MODE_FEMME_SACS">Sacs à Main, Pochettes & Bagages</option>
+                  <option value="MODE_FEMME_BIJOUX">Bijoux, Perruques & Accessoires</option>
+                  <option value="MODE_BEAUTE_COSMETIQUE">Soins du Visage, Maquillage & Parfums</option>
+                </optgroup>
+
+                <optgroup label="👶 Bébé, Enfant & Jouets">
+                  <option value="BEBE_VETEMENTS">Vêtements & Chaussures Bébé</option>
+                  <option value="BEBE_PUERICULTURE">Poussettes, Biberons & Sièges Auto</option>
+                  <option value="BEBE_JOUETS">Jouets, Jeux d'Éveil & Peluches</option>
+                </optgroup>
+
+                <optgroup label="🎮 Jeux Vidéo & Consoles">
+                  <option value="GAMING_CONSOLES">Consoles (PS5, Xbox, Nintendo Switch)</option>
+                  <option value="GAMING_JEUX">Jeux Vidéo (CD, Dématérialisés)</option>
+                  <option value="GAMING_ACCESSOIRES">Manettes, Casques Gaming & Sièges</option>
+                </optgroup>
+
+                <optgroup label="⚽ Sports, Fitness & Loisirs">
+                  <option value="SPORT_FITNESS">Équipements de Musculation & Fitness</option>
+                  <option value="SPORT_MAILLOTS">Maillots de Sport & Chaussures de Crampon</option>
+                  <option value="SPORT_CAMPING">Randonnée, Camping & Matériel Plein Air</option>
+                  <option value="SPORT_VELOS">Vélos, Trottinettes & Glisse</option>
+                </optgroup>
+
+                <optgroup label="🏢 Immobilier (Vente & Location)">
+                  <option value="IMMOBILIER_APPARTEMENTS">Appartements & Studios</option>
+                  <option value="IMMOBILIER_MAISONS">Maisons, Villas & Duplex</option>
+                  <option value="IMMOBILIER_TERRAINS">Terrains & Parcelle à vendre</option>
+                  <option value="IMMOBILIER_BUREAUX">Bureaux, Magasins & Entrepôts</option>
+                </optgroup>
+
+                <optgroup label="📚 Éducation, Formations & Documents">
+                  <option value="FORMATIONS">Formations Vidéo & Cours en Ligne</option>
+                  <option value="DOCUMENTS_EPREUVES">Épreuves, Annales & Corrigés</option>
+                  <option value="LIVRES_EBOOKS">Livres, E-books & Romans</option>
+                  <option value="LOGICIELS_LICENCES">Logiciels, Scripts & Clés de Licence</option>
+                </optgroup>
+
+                <optgroup label="🏗️ Industrie, Fournitures & B2B">
+                  <option value="INDUSTRIE_MACHINES">Machines Industrielles & Outillage de Chantier</option>
+                  <option value="INDUSTRIE_MATERIAUX">Matériaux de Construction & Solaire</option>
+                  <option value="INDUSTRIE_FOURNITURES_BUREAU">Fournitures de Bureau & Papeterie</option>
+                  <option value="INDUSTRIE_PACKAGING">Emballages, Cartons & Bouteilles</option>
+                </optgroup>
+
+                <optgroup label="💼 Services & Prestations">
+                  <option value="SERVICES_FREELANCE">Services Informatiques, Web & Design</option>
+                  <option value="SERVICES_TRANSPORT">Transport, Logistique & Déménagement</option>
+                  <option value="SERVICES_EVENEMENTIEL">Événementiel, Traiteur & Location</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pNom">Titre du contenu</label>
+              <input type="text" id="pNom" required placeholder="Ex: Chaussure Italienne en Cuir">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixNormal">Prix Normal (FCFA)</label>
+              <input type="number" id="pPrixNormal" required placeholder="50000">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixPromo">Prix Promo (FCFA)</label>
+              <input type="number" id="pPrixPromo" placeholder="35000">
+            </div>
+
+            <div class="form-group">
+              <label for="pStock">Quantité / Stock</label>
+              <input type="number" id="pStock" value="100" required>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="pDescription">Description</label>
+              <textarea id="pDescription" rows="4" required placeholder="Rédigez la description de votre produit ou cours..."></textarea>
+            </div>
+          </div>
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(1)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="button" class="btn-primary" onclick="switchStep(3)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 3 : VISIBILITÉ & CONFIGURATION -->
+        <div class="step-panel" id="panelStep3">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pAuteur">Nom du Vendeur / Formateur</label>
+              <input type="text" id="pAuteur" required placeholder="Ex: DAKPRO OFFICIAL">
+            </div>
+
+            <div class="form-group">
+              <label for="pVendeurPhone">Téléphone Contact WhatsApp</label>
+              <input type="tel" id="pVendeurPhone" value="+2290197455309" required>
+            </div>
+          </div>
+
+          <input type="hidden" id="finalMediaUrlHolder">
+          <input type="hidden" id="mediaTypeHolder" value="image">
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(2)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="submit" class="btn-primary" id="btnSubmitPublish">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    let selectedFile = null;
+    let currentObjectUrl = null;
+
+    function switchStep(stepNumber) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(`panelStep${stepNumber}`).classList.add('active');
+      document.getElementById(`tabStep${stepNumber}`).classList.add('active');
+    }
+
+    function showAlert(message, type = 'error') {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerText = message;
+      alertBox.style.display = 'block';
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetAlert() {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.style.display = 'none';
+      alertBox.innerText = '';
+    }
+
+    function resetPreviews() {
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+      document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('previewVideo').style.display = 'none';
+      document.getElementById('previewDoc').style.display = 'none';
+      document.getElementById('previewImage').src = '';
+      document.getElementById('videoSource').src = '';
+    }
+
+    function handleFileSelection(event) {
+      resetAlert();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      document.getElementById('pUrlMediaDirect').value = '';
+      document.getElementById('finalMediaUrlHolder').value = '';
+      resetPreviews();
+
+      document.getElementById('previewContainer').style.display = 'block';
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      currentObjectUrl = URL.createObjectURL(file);
+
+      if (file.type.startsWith('image/')) {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = currentObjectUrl;
+        img.style.display = 'block';
+      } else if (file.type.startsWith('video/')) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        const src = document.getElementById('videoSource');
+        src.src = currentObjectUrl;
+        vid.load();
+        vid.style.display = 'block';
+      } else {
+        holderType.value = 'document';
+        document.getElementById('docName').innerText = file.name;
+        document.getElementById('previewDoc').style.display = 'block';
+      }
+    }
+
+    function handleUrlInput(url) {
+      resetAlert();
+      url = url.trim();
+      selectedFile = null;
+      resetPreviews();
+
+      if (!url) return;
+
+      document.getElementById('previewContainer').style.display = 'block';
+      document.getElementById('finalMediaUrlHolder').value = url;
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        document.getElementById('videoSource').src = url;
+        vid.load();
+        vid.style.display = 'block';
+      } else if (url.match(/\.(pdf|doc|docx)($|\?)/i)) {
+        holderType.value = 'document';
+        document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
+        document.getElementById('previewDoc').style.display = 'block';
+      } else {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = url;
+        img.style.display = 'block';
+      }
+    }
+
+    function cleanFileName(filename) {
+      const ext = filename.substring(filename.lastIndexOf('.'));
+      const name = filename.substring(0, filename.lastIndexOf('.'));
+      const sanitized = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "_");
+      return `${sanitized}_${Date.now()}${ext}`;
+    }
+
+    async function publierRessource(event) {
+      event.preventDefault();
+      resetAlert();
+
+      const form = document.getElementById('formStudio');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btnSubmitPublish');
+      const progressWrapper = document.getElementById('progressWrapper');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+
+      try {
+        let finalUrl = document.getElementById('finalMediaUrlHolder').value;
+        const mediaType = document.getElementById('mediaTypeHolder').value;
+
+        if (selectedFile) {
+          progressWrapper.style.display = 'block';
+          progressBar.style.width = '0%';
+          progressText.innerText = 'Initialisation...';
+
+          let folderName = 'images';
+          if (mediaType === 'video') folderName = 'videos';
+          if (mediaType === 'document') folderName = 'documents';
+
+          const sanitizedName = cleanFileName(selectedFile.name);
+          const filePath = `${folderName}/${sanitizedName}`;
+          const storageRef = storage.ref().child(filePath);
+          
+          const uploadTask = storageRef.put(selectedFile);
+
+          finalUrl = await new Promise((resolve, reject) => {
+            uploadTask.on(
+              firebase.storage.TaskEvent.STATE_CHANGED,
+              (snapshot) => {
+                if (snapshot.totalBytes > 0) {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  progressBar.style.width = `${progress.toFixed(0)}%`;
+                  progressText.innerText = `Envoi (${mediaType.toUpperCase()}) : ${progress.toFixed(0)}%`;
+                }
+              },
+              (error) => {
+                reject(new Error("Échec du téléversement vers Firebase Storage : " + error.message));
+              },
+              async () => {
+                try {
+                  const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                  resolve(downloadURL);
+                } catch (err) {
+                  reject(err);
+                }
+              }
+            );
+          });
+        }
+
+        if (!finalUrl) {
+          throw new Error("Veuillez sélectionner un fichier (Image, Vidéo, Document) ou renseigner une URL valide.");
+        }
+
+        const currentUser = firebase.auth().currentUser;
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
+
+        const maintenant = new Date();
+        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        const newRef = db.ref('publications').push();
+        const pubData = {
+          id: newRef.key,
+          nom: document.getElementById('pNom').value.trim(),
+          auteur: document.getElementById('pAuteur').value.trim(),
+          vendeurNom: document.getElementById('pAuteur').value.trim(),
+          vendeurPhone: document.getElementById('pVendeurPhone').value.trim(),
+          vendeurUid: vendorUid,
+          createdBy: vendorUid,
+          categorie: document.getElementById('pCategorie').value,
+          type: document.getElementById('pType').value,
+          prix: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          prixNormal: Number(document.getElementById('pPrixNormal').value),
+          prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          stock: Number(document.getElementById('pStock').value) || 0,
+          description: document.getElementById('pDescription').value.trim(),
+          image: finalUrl,
+          imageUrl: finalUrl,
+          mediaUrl: finalUrl,
+          mediaType: mediaType,
+          createdAt: maintenant.getTime(),
+          datePublication: dateLisible,
+          heurePublication: heureLisible,
+          dateEtHeure: `${dateLisible} à ${heureLisible}`
+        };
+
+        await newRef.set(pubData);
+
+        showAlert(`Publication réussie avec succès !`, 'success');
+        form.reset();
+        resetPreviews();
+        selectedFile = null;
+        progressWrapper.style.display = 'none';
+        switchStep(1);
+
+      } catch (err) {
+        showAlert(err.message, 'error');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant`;
+      }
+    }
   </script>
 </body>
 </html>
