@@ -119,20 +119,32 @@
   .pub-preview-box {
     margin-top: 14px;
     display: none;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background: #0f172a;
     border-radius: 8px;
-    padding: 10px;
-    max-height: 250px;
+    padding: 14px;
+    max-height: 300px;
     overflow: hidden;
   }
 
-  .pub-preview-box img {
+  .pub-preview-box img,
+  .pub-preview-box video {
     max-width: 100%;
-    max-height: 230px;
+    max-height: 220px;
     border-radius: 6px;
     object-fit: contain;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .pub-file-tag {
+    color: var(--pub-primary);
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .pub-btn-submit {
@@ -220,20 +232,22 @@
         <input type="number" id="pStock" class="pub-input" value="100" min="1" required>
       </div>
 
-      <!-- Zone Média Image Uniquement -->
+      <!-- Zone Média Universelle Sans Restriction -->
       <div class="pub-group pub-col-full">
-        <label>Image du Produit *</label>
+        <label>Fichier Média (Galerie, Vidéo ou Document) *</label>
         
         <div class="pub-dropzone" id="pubDropzone">
-          <i class="fa-solid fa-image pub-dropzone-icon"></i>
-          <p>Glissez votre image ici ou <strong>cliquez pour la sélectionner</strong></p>
-          <input type="file" id="pInputMedia" accept="image/*" style="display: none;" required>
+          <i class="fa-solid fa-photo-film pub-dropzone-icon"></i>
+          <p>Cliquez pour choisir dans la <strong>Galerie / Fichiers</strong> ou glissez-déposez</p>
+          <input type="file" id="pInputMedia" accept="*/*" style="display: none;" required>
         </div>
         
         <input type="hidden" id="base64Publish">
+        <input type="hidden" id="detectedMediaType" value="image">
 
         <div id="pubPreviewContainer" class="pub-preview-box">
-          <img id="previewImage" alt="Aperçu Image">
+          <div id="previewMediaWrapper"></div>
+          <span id="previewTag" class="pub-file-tag"></span>
         </div>
       </div>
 
@@ -262,8 +276,10 @@
     const dropzone = document.getElementById("pubDropzone");
     const fileInput = document.getElementById("pInputMedia");
     const hiddenMediaUrl = document.getElementById("base64Publish");
+    const hiddenMediaType = document.getElementById("detectedMediaType");
     const previewContainer = document.getElementById("pubPreviewContainer");
-    const imgPreview = document.getElementById("previewImage");
+    const previewWrapper = document.getElementById("previewMediaWrapper");
+    const previewTag = document.getElementById("previewTag");
     const btnSubmit = document.getElementById("btnPublierSubmit");
 
     dropzone.addEventListener("click", () => fileInput.click());
@@ -284,22 +300,37 @@
 
     dropzone.addEventListener("drop", (e) => {
       const files = e.dataTransfer.files;
-      if (files.length > 0 && files[0].type.startsWith("image/")) {
+      if (files.length > 0) {
         fileInput.files = files;
-        compressAndProcessImage(files[0]);
-      } else {
-        alert("Veuillez déposer un fichier image valide.");
+        processUniversalFile(files[0]);
       }
     });
 
     fileInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
-      if (file && file.type.startsWith("image/")) {
-        compressAndProcessImage(file);
+      if (file) {
+        processUniversalFile(file);
       }
     });
 
-    function compressAndProcessImage(file) {
+    // Aiguillage selon la nature du fichier choisi
+    function processUniversalFile(file) {
+      const mime = file.type || "";
+
+      if (mime.startsWith("image/")) {
+        hiddenMediaType.value = "image";
+        optimizeAndEnhanceImage(file);
+      } else if (mime.startsWith("video/")) {
+        hiddenMediaType.value = "video";
+        processVideo(file);
+      } else {
+        hiddenMediaType.value = "document";
+        processDocument(file);
+      }
+    }
+
+    // Traitement de l'image : Amélioration des couleurs, réduction taille et conversion JPEG
+    function optimizeAndEnhanceImage(file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -307,7 +338,7 @@
           const canvas = document.createElement("canvas");
           let width = img.width;
           let height = img.height;
-          const maxDimension = 650;
+          const maxDimension = 1000; // Format haute fidélité mais très léger pour DB
 
           if (width > maxDimension || height > maxDimension) {
             if (width > height) {
@@ -322,18 +353,91 @@
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext("2d");
+
+          // Fond blanc de sécurité pour les formats à transparence (PNG, WEBP)
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, width, height);
+
+          // Rendu dynamique : Contraste, clarté et vivacité des couleurs
+          ctx.filter = "contrast(1.10) saturate(1.12) brightness(1.03)";
           ctx.drawImage(img, 0, 0, width, height);
 
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
-          imgPreview.src = compressedBase64;
+          // Compression JPEG équilibrée (80% qualité)
+          const optimizedBase64 = canvas.toDataURL("image/jpeg", 0.80);
+
+          previewWrapper.innerHTML = `<img src="${optimizedBase64}" alt="Aperçu Produit">`;
+          previewTag.textContent = "Image Optimisée & Nettoyée (JPEG)";
           previewContainer.style.display = "flex";
-          hiddenMediaUrl.value = compressedBase64;
+          hiddenMediaUrl.value = optimizedBase64;
         };
+
+        img.onerror = () => {
+          alert("Erreur lors de la lecture du fichier image.");
+        };
+
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
+    // Traitement Vidéo : Génération d'une vignette haute définition
+    function processVideo(file) {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.muted = true;
+      video.playsInline = true;
+
+      const fileUrl = URL.createObjectURL(file);
+      video.src = fileUrl;
+
+      video.onloadeddata = () => {
+        video.currentTime = 1;
+      };
+
+      video.onseeked = () => {
+        const canvas = document.createElement("canvas");
+        const maxDimension = 800;
+        let width = video.videoWidth || 640;
+        let height = video.videoHeight || 360;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, width, height);
+
+        const frameBase64 = canvas.toDataURL("image/jpeg", 0.75);
+
+        previewWrapper.innerHTML = `<video src="${fileUrl}" controls style="max-height: 200px;"></video>`;
+        previewTag.textContent = `Vidéo prête (${file.name})`;
+        previewContainer.style.display = "flex";
+        hiddenMediaUrl.value = frameBase64;
+        URL.revokeObjectURL(fileUrl);
+      };
+    }
+
+    // Traitement Document : Conversion légère
+    function processDocument(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewWrapper.innerHTML = `<div style="color: #fff; text-align: center;"><i class="fa-solid fa-file-pdf" style="font-size: 50px; color: #d4af37;"></i><p style="margin-top: 10px; font-size: 13px;">${file.name}</p></div>`;
+        previewTag.textContent = "Document prêt à la publication";
+        previewContainer.style.display = "flex";
+        hiddenMediaUrl.value = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Envoi dans la Realtime Database "vendeur_publications"
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -343,9 +447,9 @@
         return;
       }
 
-      const imageUrl = hiddenMediaUrl.value;
-      if (!imageUrl) {
-        alert("Veuillez sélectionner une image pour votre produit.");
+      const mediaData = hiddenMediaUrl.value;
+      if (!mediaData) {
+        alert("Veuillez sélectionner une image ou un fichier média valide.");
         return;
       }
 
@@ -362,8 +466,8 @@
         prix: document.getElementById("pPrixPromo").value ? Number(document.getElementById("pPrixPromo").value) : Number(document.getElementById("pPrixNormal").value),
         stock: Number(document.getElementById("pStock").value),
         description: document.getElementById("pDescription").value.trim(),
-        imageUrl: imageUrl,
-        typeMedia: "image",
+        imageUrl: mediaData,
+        typeMedia: hiddenMediaType.value,
         createdBy: currentUser.uid,
         sellerId: currentUser.uid,
         statut: "actif",
@@ -374,12 +478,12 @@
         const vendorPubsRef = ref(database, "vendeur_publications");
         await push(vendorPubsRef, nouvellePublication);
 
-        alert("Votre publication a été créée avec succès !");
+        alert("Votre publication a été ajoutée avec succès !");
         form.reset();
         hiddenMediaUrl.value = "";
         previewContainer.style.display = "none";
       } catch (error) {
-        console.error("Erreur d'enregistrement Firebase :", error);
+        console.error("Erreur Firebase :", error);
         alert("Une erreur s'est produite lors de la publication : " + error.message);
       } finally {
         btnSubmit.disabled = false;
