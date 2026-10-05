@@ -300,15 +300,63 @@
               <label for="pCategorie">Catégorie</label>
               <select id="pCategorie" required>
                 <option value="" disabled selected>-- Choisir une catégorie --</option>
-                <option value="FORMATIONS">Formations Vidéo & Cours en Ligne</option>
-                <option value="MODE_BEAUTE_COSMETIQUE">Soins & Beauté</option>
-                <option value="TELEPHONIE_SMARTPHONES">Smartphones & Téléphones</option>
+                
+                <!-- Produits Numériques & Formations -->
+                <optgroup label="Produits Numériques & Savoir">
+                  <option value="FORMATIONS">Formations Vidéo & Cours en Ligne</option>
+                  <option value="EBOOKS_DOCUMENTS">E-books, Épreuves & Documents</option>
+                  <option value="LOGICIELS_APPLICATIONS">Logiciels, Scripts & Apps</option>
+                </optgroup>
+
+                <!-- Électronique & High-Tech -->
+                <optgroup label="Électronique & High-Tech">
+                  <option value="TELEPHONIE_SMARTPHONES">Téléphones, Smartphones & Tablettes</option>
+                  <option value="INFORMATIQUE_ORDINATEURS">Informatique, Laptops & Accessoires</option>
+                  <option value="TV_AUDIO_SON">TV, Home Cinéma & Équipement Audio</option>
+                  <option value="JEUX_CONSOLE">Jeux Vidéo & Consoles</option>
+                </optgroup>
+
+                <!-- Mode & Accessoires -->
+                <optgroup label="Mode & Habillements">
+                  <option value="MODE_CHAUSSURES_CUIR">Chaussures & Maroquinerie de Luxe</option>
+                  <option value="MODE_HOMME">Mode Homme (Vêtements & Accessoires)</option>
+                  <option value="MODE_FEMME">Mode Femme (Robes, Sacs & Bijoux)</option>
+                  <option value="MODE_BEAUTE_COSMETIQUE">Soins, Beauté & Parfumerie</option>
+                  <option value="MONTRES_BIJOUX">Montres, Bijoux & Horlogerie</option>
+                </optgroup>
+
+                <!-- Maison, Cuisine & Électroménager -->
+                <optgroup label="Maison & Électroménager">
+                  <option value="ELECTROMENAGER">Électroménager & Cuisine</option>
+                  <option value="MAISON_DECORATION">Meubles, Déco & Literie</option>
+                  <option value="BRICOLAGE_OUTILLAGE">Bricolage, Outillage & Jardin</option>
+                </optgroup>
+
+                <!-- Équipements & Fournitures Industrielles -->
+                <optgroup label="Fournitures & Industrie">
+                  <option value="FOURNITURES_BUREAU">Fournitures de Bureau & Papeterie</option>
+                  <option value="EQUIPEMENT_INDUSTRIEL">Équipements & Matériel Pro</option>
+                  <option value="AUTO_MOTO_PIECES">Véhicules, Pièces Auto & Moto</option>
+                </optgroup>
+
+                <!-- Santé, Sport & Loisirs -->
+                <optgroup label="Santé, Sport & Loisirs">
+                  <option value="SPORTS_FITNESS">Sports, Fitness & Plein air</option>
+                  <option value="SANTE_PARAPHARMACIE">Santé, Bien-être & Compléments</option>
+                  <option value="JOUETS_ENFANTS">Jouets, Bébés & Puériculture</option>
+                </optgroup>
+
+                <!-- Divers -->
+                <optgroup label="Autres Services">
+                  <option value="SERVICES_PRESTATIONS">Services & Prestations</option>
+                  <option value="DIVERS">Autres / Divers</option>
+                </optgroup>
               </select>
             </div>
 
             <div class="form-group">
               <label for="pNom">Titre du contenu</label>
-              <input type="text" id="pNom" required placeholder="Ex: Formation Quantique & IA">
+              <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien Premium">
             </div>
 
             <div class="form-group">
@@ -499,9 +547,13 @@
       const progressText = document.getElementById('progressText');
 
       btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement en cours...`;
 
       try {
+        if (!firebase.auth().currentUser) {
+          await firebase.auth().signInAnonymously().catch(() => {});
+        }
+
         let finalUrl = document.getElementById('finalMediaUrlHolder').value;
         const mediaType = document.getElementById('mediaTypeHolder').value;
 
@@ -510,34 +562,58 @@
           progressBar.style.width = '0%';
           
           const totalMb = (selectedFile.size / (1024 * 1024)).toFixed(2);
-          progressText.innerText = `Initialisation (0 / ${totalMb} Mo)...`;
+          progressText.innerText = `Préparation de l'envoi (0 / ${totalMb} Mo)...`;
 
           let folderName = mediaType === 'video' ? 'videos' : (mediaType === 'document' ? 'documents' : 'images');
           const ext = selectedFile.name.substring(selectedFile.name.lastIndexOf('.'));
           const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}${ext}`;
           
           const storageRef = storage.ref().child(`${folderName}/${fileName}`);
-          const uploadTask = storageRef.put(selectedFile);
+          
+          const metadata = {
+            contentType: selectedFile.type || 'application/octet-stream'
+          };
+
+          const uploadTask = storageRef.put(selectedFile, metadata);
 
           finalUrl = await new Promise((resolve, reject) => {
             uploadTask.on(
               firebase.storage.TaskEvent.STATE_CHANGED,
               (snapshot) => {
-                if (snapshot.totalBytes > 0) {
-                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  const currentMb = (snapshot.bytesTransferred / (1024 * 1024)).toFixed(2);
-                  progressBar.style.width = `${progress.toFixed(0)}%`;
+                const bytesTransferred = snapshot.bytesTransferred;
+                const totalBytes = snapshot.totalBytes;
+
+                if (totalBytes > 0) {
+                  const progress = (bytesTransferred / totalBytes) * 100;
+                  const currentMb = (bytesTransferred / (1024 * 1024)).toFixed(2);
+                  
+                  progressBar.style.width = `${progress.toFixed(1)}%`;
                   progressText.innerText = `${progress.toFixed(0)}% (${currentMb} Mo / ${totalMb} Mo)`;
+
+                  switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED:
+                      progressText.innerText += ' - Suspendu';
+                      break;
+                    case firebase.storage.TaskState.RUNNING:
+                      break;
+                  }
                 }
               },
               (error) => {
                 let msg = "Erreur de téléversement : ";
-                if (error.code === 'storage/unauthorized') {
-                  msg += "Permission refusée. Vérifiez vos règles Firebase Storage !";
-                } else if (error.code === 'storage/canceled') {
-                  msg += "Téléversement annulé.";
-                } else {
-                  msg += error.message;
+                switch (error.code) {
+                  case 'storage/unauthorized':
+                    msg += "Accès refusé. Vérifiez vos règles Firebase Storage.";
+                    break;
+                  case 'storage/canceled':
+                    msg += "Envoi annulé par l'utilisateur.";
+                    break;
+                  case 'storage/retry-limit-exceeded':
+                    msg += "Délai dépassé. Connexion réseau trop lente.";
+                    break;
+                  default:
+                    msg += error.message || "Erreur réseau lors de l'envoi.";
+                    break;
                 }
                 reject(new Error(msg));
               },
