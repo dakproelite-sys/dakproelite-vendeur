@@ -1,422 +1,390 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulaire de Publication - DAKPRO ÉLITE</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs (compat v9) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Ajout du SDK Firebase Storage -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<!-- ========================================== -->
+<!-- 1. STYLES CSS                              -->
+<!-- ========================================== -->
+<style>
+  :root {
+    --pub-primary: #d4af37;
+    --pub-primary-hover: #b8860b;
+    --pub-dark: #0f172a;
+    --pub-bg-card: #ffffff;
+    --pub-border: #cbd5e1;
+    --pub-text: #1e293b;
+    --pub-text-muted: #64748b;
+    --pub-radius: 12px;
+  }
 
-  <style>
-    :root {
-      --primary-gold: #d4af37;
-      --secondary-gold: #b8860b;
-      --dark-bg: #0f172a;
-      --card-bg: #ffffff;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --info-color: #3b82f6;
-      --bg-light: #f8fafc;
-      --success-color: #10b981;
-    }
+  .pub-card {
+    background: var(--pub-bg-card);
+    border-radius: var(--pub-radius);
+    padding: 28px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    margin: 20px auto;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-main); padding: 20px; }
+  .pub-card-header {
+    margin-bottom: 24px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 12px;
+  }
 
-    .content-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      max-width: 900px;
-      margin: 0 auto;
-    }
+  .pub-card-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--pub-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
 
-    .content-card h3 {
-      font-size: 18px;
-      margin-bottom: 16px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .pub-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
+  .pub-col-full {
+    grid-column: 1 / -1;
+  }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+  .pub-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-    .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
+  .pub-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--pub-text);
+  }
 
-    .form-group input, .form-group select, .form-group textarea {
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-      background: #fff;
-    }
+  .pub-input,
+  .pub-select,
+  .pub-textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--pub-border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--pub-text);
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    box-sizing: border-box;
+  }
 
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--primary-gold);
-    }
+  .pub-input:focus,
+  .pub-select:focus,
+  .pub-textarea:focus {
+    border-color: var(--pub-primary);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+  }
 
-    .btn-action {
-      background-color: var(--dark-bg);
-      color: var(--primary-gold);
-      border: 1px solid var(--primary-gold);
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      width: 100%;
-    }
+  .pub-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
 
-    .btn-action:hover {
-      background-color: #000;
-    }
+  .pub-dropzone {
+    border: 2px dashed var(--pub-border);
+    border-radius: var(--pub-radius);
+    padding: 24px;
+    text-align: center;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
 
-    .btn-action:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+  .pub-dropzone:hover,
+  .pub-dropzone.dragover {
+    border-color: var(--pub-primary);
+    background-color: rgba(212, 175, 55, 0.05);
+  }
 
-    .preview-container {
-      margin-top: 10px;
-    }
+  .pub-dropzone-icon {
+    font-size: 38px;
+    color: var(--pub-primary);
+    margin-bottom: 8px;
+  }
 
-    .image-preview, .video-preview {
-      max-width: 100%;
-      max-height: 250px;
-      border-radius: 8px;
-      border: 1px dashed var(--primary-gold);
-      object-fit: contain;
-      display: none;
-      margin-top: 10px;
-      background: #000;
-    }
+  .pub-dropzone p {
+    font-size: 13.5px;
+    color: var(--pub-text-muted);
+    margin: 0;
+  }
 
-    .doc-preview {
-      display: none;
-      font-weight: 600;
-      color: var(--info-color);
-      padding: 12px;
-      border: 1px dashed var(--border-color);
-      border-radius: 8px;
-      margin-top: 10px;
-      background: var(--bg-light);
-    }
+  .pub-preview-box {
+    margin-top: 14px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 10px;
+    max-height: 250px;
+    overflow: hidden;
+  }
 
-    .alert {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 16px;
-      display: none;
-    }
+  .pub-preview-box img {
+    max-width: 100%;
+    max-height: 230px;
+    border-radius: 6px;
+    object-fit: contain;
+  }
 
-    .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-    .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-  </style>
-</head>
-<body>
+  .pub-btn-submit {
+    width: 100%;
+    background-color: var(--pub-dark);
+    color: var(--pub-primary);
+    border: 1.5px solid var(--pub-primary);
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
 
-  <div class="content-card">
-    <h3><i class="fa-solid fa-store" style="color: var(--primary-gold);"></i> Publier sur DAKPRO ÉLITE</h3>
-    
-    <div id="statusAlert" class="alert"></div>
+  .pub-btn-submit:hover {
+    background-color: #000000;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 
-    <form id="formPublication" onsubmit="window.publierElement(event)">
-      <div class="form-grid">
-        
-        <div class="form-group">
-          <label for="pType">Type de Publication</label>
-          <select id="pType" required>
-            <option value="produit">Produit Physique / Numérique</option>
-            <option value="cours">Cours en ligne / Formation</option>
-            <option value="epreuve">Épreuve / Document d'étude</option>
-            <option value="lien">Lien Externe / Produit Copié</option>
-          </select>
-        </div>
+  .pub-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-        <div class="form-group">
-          <label for="pCategorie">Catégorie</label>
-          <select id="pCategorie" required>
-            <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
-            <option value="TELEPHONIE">Téléphones Portable & Smartphones</option>
-            <option value="INFORMATIQUE_PC">Ordinateurs Portables & PC de Bureau</option>
-            <option value="MODE_HOMME_CHAUSSURES">Chaussures Homme</option>
-            <option value="JEUX_VIDEO">Consoles & Jeux Vidéo</option>
-            <option value="SANTE_COMPLEMENTS">Santé & Bien-être</option>
-          </select>
-        </div>
+  @media (max-width: 640px) {
+    .pub-grid { grid-template-columns: 1fr; }
+    .pub-card { padding: 18px; }
+  }
+</style>
 
-        <div class="form-group">
-          <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien">
-        </div>
-
-        <div class="form-group">
-          <label for="pAuteur">Auteur / Nom du Vendeur</label>
-          <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
-        </div>
-
-        <div class="form-group">
-          <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="150000">
-        </div>
-
-        <div class="form-group">
-          <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="140000">
-        </div>
-
-        <div class="form-group">
-          <label for="pStock">Stock disponible</label>
-          <input type="number" id="pStock" value="100" required>
-        </div>
-
-        <div class="form-group">
-          <label for="pVendeurPhone">Téléphone du Vendeur</label>
-          <input type="tel" id="pVendeurPhone" placeholder="+2290197455309" value="+2290197455309">
-        </div>
-
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label for="pInputMedia">Fichier Média (Image, Vidéo MP4 ou Document PDF/Word) OU URL Directe</label>
-          <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
-          
-          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé :</small>
-          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" oninput="window.handleDirectUrlInput(this.value)">
-          
-          <input type="hidden" id="base64Publish">
-          <input type="hidden" id="mediaTypePublish" value="image">
-          
-          <div class="preview-container">
-            <img id="previewImage" class="image-preview" alt="Aperçu Image">
-            <video id="previewVideo" class="video-preview" controls></video>
-            <div id="previewDoc" class="doc-preview">
-              <i class="fa-solid fa-file-lines"></i> <span id="docName">Document sélectionné</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label for="pDescription">Description détaillée</label>
-          <textarea id="pDescription" rows="4" required placeholder="Décrivez clairement votre produit ou service..."></textarea>
-        </div>
-
-      </div>
-
-      <button type="submit" class="btn-action" id="btnPublierSubmit">
-        <i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource
-      </button>
-    </form>
+<!-- ========================================== -->
+<!-- 2. FORMULAIRE HTML                         -->
+<!-- ========================================== -->
+<div class="pub-card">
+  <div class="pub-card-header">
+    <h3><i class="fa-solid fa-cloud-arrow-up"></i> Publier un produit</h3>
   </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
-      authDomain: "dakproelite.firebaseapp.com",
-      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
-      projectId: "dakproelite",
-      storageBucket: "dakproelite.firebasestorage.app",
-      messagingSenderId: "580591769206",
-      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
-    };
+  <form id="formPublicationVendeur">
+    <div class="pub-grid">
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-    const storage = firebase.storage();
+      <div class="pub-group">
+        <label for="pType">Type de Publication *</label>
+        <select id="pType" class="pub-select" required>
+          <option value="produit">Produit Physique / Numérique</option>
+          <option value="cours">Cours en ligne / Formation</option>
+          <option value="epreuve">Épreuve / Document d'étude</option>
+        </select>
+      </div>
 
-    let selectedFile = null;
+      <div class="pub-group">
+        <label for="pCategorie">Catégorie *</label>
+        <input type="text" id="pCategorie" class="pub-input" placeholder="Ex: Mode, Informatique, Électronique..." required>
+      </div>
 
-    function resetPreviews() {
-      document.getElementById('previewImage').style.display = 'none';
-      document.getElementById('previewVideo').style.display = 'none';
-      document.getElementById('previewDoc').style.display = 'none';
-      document.getElementById('previewImage').src = '';
-      document.getElementById('previewVideo').src = '';
-      document.getElementById('docName').innerText = '';
-    }
+      <div class="pub-group">
+        <label for="pNom">Titre de la publication *</label>
+        <input type="text" id="pNom" class="pub-input" placeholder="Ex: Chaussures en cuir" required>
+      </div>
 
-    window.handleMediaUpload = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      <div class="pub-group">
+        <label for="pAuteur">Auteur / Marque / Vendeur *</label>
+        <input type="text" id="pAuteur" class="pub-input" placeholder="Ex: Jean Marc" required>
+      </div>
 
-      selectedFile = file;
-      document.getElementById('pUrlMediaDirect').value = '';
-      resetPreviews();
+      <div class="pub-group">
+        <label for="pPrixNormal">Prix Normal (FCFA) *</label>
+        <input type="number" id="pPrixNormal" class="pub-input" min="0" placeholder="Ex: 30000" required>
+      </div>
 
-      const previewImg = document.getElementById('previewImage');
-      const previewVid = document.getElementById('previewVideo');
-      const previewDoc = document.getElementById('previewDoc');
-      const mediaTypeInput = document.getElementById('mediaTypePublish');
+      <div class="pub-group">
+        <label for="pPrixPromo">Prix Promo (FCFA)</label>
+        <input type="number" id="pPrixPromo" class="pub-input" min="0" placeholder="Ex: 25000">
+      </div>
 
-      if (file.type.startsWith('image/')) {
-        mediaTypeInput.value = 'image';
-        previewImg.src = URL.createObjectURL(file);
-        previewImg.style.display = 'block';
-      } else if (file.type.startsWith('video/')) {
-        mediaTypeInput.value = 'video';
-        previewVid.src = URL.createObjectURL(file);
-        previewVid.style.display = 'block';
+      <div class="pub-group pub-col-full">
+        <label for="pStock">Quantité en Stock *</label>
+        <input type="number" id="pStock" class="pub-input" value="100" min="1" required>
+      </div>
+
+      <!-- Zone Média Image Uniquement -->
+      <div class="pub-group pub-col-full">
+        <label>Image du Produit *</label>
+        
+        <div class="pub-dropzone" id="pubDropzone">
+          <i class="fa-solid fa-image pub-dropzone-icon"></i>
+          <p>Glissez votre image ici ou <strong>cliquez pour la sélectionner</strong></p>
+          <input type="file" id="pInputMedia" accept="image/*" style="display: none;" required>
+        </div>
+        
+        <input type="hidden" id="base64Publish">
+
+        <div id="pubPreviewContainer" class="pub-preview-box">
+          <img id="previewImage" alt="Aperçu Image">
+        </div>
+      </div>
+
+      <div class="pub-group pub-col-full">
+        <label for="pDescription">Description détaillée *</label>
+        <textarea id="pDescription" class="pub-textarea" rows="4" placeholder="Donnez plus de détails sur le produit..." required></textarea>
+      </div>
+
+    </div>
+
+    <button type="submit" class="pub-btn-submit" id="btnPublierSubmit">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Publier l'article
+    </button>
+  </form>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. JAVASCRIPT ET FIREBASE INTEGRATION      -->
+<!-- ========================================== -->
+<script type="module">
+  import { ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { auth, database } from "./firebase-config.js";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("formPublicationVendeur");
+    const dropzone = document.getElementById("pubDropzone");
+    const fileInput = document.getElementById("pInputMedia");
+    const hiddenMediaUrl = document.getElementById("base64Publish");
+    const previewContainer = document.getElementById("pubPreviewContainer");
+    const imgPreview = document.getElementById("previewImage");
+    const btnSubmit = document.getElementById("btnPublierSubmit");
+
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    ["dragenter", "dragover"].forEach(evt => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(evt => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+      });
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith("image/")) {
+        fileInput.files = files;
+        compressAndProcessImage(files[0]);
       } else {
-        mediaTypeInput.value = 'document';
-        document.getElementById('docName').innerText = file.name;
-        previewDoc.style.display = 'block';
+        alert("Veuillez déposer un fichier image valide.");
       }
-    };
+    });
 
-    window.handleDirectUrlInput = function(url) {
-      url = url.trim();
-      selectedFile = null;
-      if (!url) {
-        resetPreviews();
-        document.getElementById('base64Publish').value = '';
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith("image/")) {
+        compressAndProcessImage(file);
+      }
+    });
+
+    function compressAndProcessImage(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDimension = 650;
+
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
+          imgPreview.src = compressedBase64;
+          previewContainer.style.display = "flex";
+          hiddenMediaUrl.value = compressedBase64;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("Vous devez être connecté pour publier.");
         return;
       }
 
-      document.getElementById('pInputMedia').value = '';
-      resetPreviews();
-
-      const previewImg = document.getElementById('previewImage');
-      const previewVid = document.getElementById('previewVideo');
-      const previewDoc = document.getElementById('previewDoc');
-      const mediaTypeInput = document.getElementById('mediaTypePublish');
-
-      document.getElementById('base64Publish').value = url;
-
-      if (url.match(/\.(mp4|webm|ogg)($\vert{}\?)/i)) {         mediaTypeInput.value = 'video';         previewVid.src = url;         previewVid.style.display = 'block';       } else if (url.match(/\.(pdf\vert{}doc\vert{}docx)($|\?)/i)) {
-        mediaTypeInput.value = 'document';
-        document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
-        previewDoc.style.display = 'block';
-      } else {
-        mediaTypeInput.value = 'image';
-        previewImg.src = url;
-        previewImg.style.display = 'block';
+      const imageUrl = hiddenMediaUrl.value;
+      if (!imageUrl) {
+        alert("Veuillez sélectionner une image pour votre produit.");
+        return;
       }
-    };
 
-    window.publierElement = async function(event) {
-      event.preventDefault();
-
-      const btnSubmit = document.getElementById('btnPublierSubmit');
-      const alertBox = document.getElementById('statusAlert');
-      
       btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi du fichier...`;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+
+      const nouvellePublication = {
+        type: document.getElementById("pType").value,
+        categorie: document.getElementById("pCategorie").value.trim(),
+        nom: document.getElementById("pNom").value.trim(),
+        auteur: document.getElementById("pAuteur").value.trim(),
+        prixNormal: Number(document.getElementById("pPrixNormal").value),
+        prixPromo: document.getElementById("pPrixPromo").value ? Number(document.getElementById("pPrixPromo").value) : null,
+        prix: document.getElementById("pPrixPromo").value ? Number(document.getElementById("pPrixPromo").value) : Number(document.getElementById("pPrixNormal").value),
+        stock: Number(document.getElementById("pStock").value),
+        description: document.getElementById("pDescription").value.trim(),
+        imageUrl: imageUrl,
+        typeMedia: "image",
+        createdBy: currentUser.uid,
+        sellerId: currentUser.uid,
+        statut: "actif",
+        createdAt: new Date().toISOString()
+      };
 
       try {
-        const currentUser = firebase.auth().currentUser;
-        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
-        
-        let finalMediaUrl = document.getElementById('base64Publish').value;
-        const mediaType = document.getElementById('mediaTypePublish').value;
+        const vendorPubsRef = ref(database, "vendeur_publications");
+        await push(vendorPubsRef, nouvellePublication);
 
-        // UPLOAD DU FICHIER SUR FIREBASE STORAGE SI UN FICHIER EST SÉLECTIONNÉ
-        if (selectedFile) {
-          const filePath = `publications/${Date.now()}_${selectedFile.name}`;
-          const storageRef = storage.ref().child(filePath);
-          const uploadTask = await storageRef.put(selectedFile);
-          finalMediaUrl = await uploadTask.ref.getDownloadURL();
-        }
-
-        if (!finalMediaUrl) {
-          throw new Error("Veuillez sélectionner un fichier ou coller une URL valide.");
-        }
-
-        const type = document.getElementById('pType').value;
-        const categorie = document.getElementById('pCategorie').value;
-        const nom = document.getElementById('pNom').value.trim();
-        const auteur = document.getElementById('pAuteur').value.trim();
-        const prixNormal = Number(document.getElementById('pPrixNormal').value);
-        const prixPromo = Number(document.getElementById('pPrixPromo').value) || prixNormal;
-        const stock = Number(document.getElementById('pStock').value) || 0;
-        const description = document.getElementById('pDescription').value.trim();
-        const vendorPhone = document.getElementById('pVendeurPhone').value.trim();
-
-        const maintenant = new Date();
-        const dateTimestamp = maintenant.getTime();
-        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const dateEtHeureComplete = `${dateLisible} à ${heureLisible}`;
-
-        const newRef = db.ref('publications').push();
-        const publicationId = newRef.key;
-
-        const publicationData = {
-          auteur: auteur,
-          categorie: categorie,
-          createdAt: dateTimestamp,
-          datePublication: dateLisible,
-          heurePublication: heureLisible,
-          dateEtHeure: dateEtHeureComplete,
-          createdBy: vendorUid,
-          description: description,
-          id: publicationId,
-          image: finalMediaUrl,
-          imageUrl: finalMediaUrl,
-          mediaType: mediaType,
-          nom: nom,
-          prix: prixPromo,
-          prixNormal: prixNormal,
-          prixPromo: prixPromo,
-          stock: stock,
-          type: type,
-          vendeurNom: auteur,
-          vendeurPhone: vendorPhone,
-          vendeurUid: vendorUid
-        };
-
-        await newRef.set(publicationData);
-
-        alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication réussie le " + dateEtHeureComplete + " !";
-        alertBox.style.display = "block";
-
-        document.getElementById('formPublication').reset();
-        resetPreviews();
-        selectedFile = null;
-        document.getElementById('base64Publish').value = '';
-
+        alert("Votre publication a été créée avec succès !");
+        form.reset();
+        hiddenMediaUrl.value = "";
+        previewContainer.style.display = "none";
       } catch (error) {
-        alertBox.className = "alert alert-error";
-        alertBox.innerText = "Erreur lors de la publication : " + error.message;
-        alertBox.style.display = "block";
+        console.error("Erreur d'enregistrement Firebase :", error);
+        alert("Une erreur s'est produite lors de la publication : " + error.message);
       } finally {
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource`;
+        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier l'article`;
       }
-    };
-  </script>
-</body>
-</html>
+    });
+  });
+</script>
