@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio de Publication - DAKPRO ÉLITE</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs (v9 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --bg-light: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); padding: 15px; }
+
+    .studio-container {
+      max-width: 950px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .studio-header {
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--primary-gold);
+    }
+
+    .studio-header h2 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary-gold);
+    }
+
+    .stepper-nav {
+      display: flex;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .step-btn {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .step-btn.active {
+      color: var(--dark-bg);
+      border-bottom-color: var(--primary-gold);
+      background: #fff;
+    }
+
+    .studio-content { padding: 24px; }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    .upload-dropzone {
+      border: 2px dashed var(--primary-gold);
+      background: #fcfbf7;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .upload-dropzone i {
+      font-size: 40px;
+      color: var(--secondary-gold);
+      margin-bottom: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .media-preview-box {
+      margin-top: 16px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-preview-box img, .media-preview-box video {
+      max-width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+    }
+
+    .progress-wrapper {
+      display: none;
+      margin-top: 16px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      height: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary-gold), var(--primary-gold));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .actions-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text-main);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--dark-bg);
+      color: var(--primary-gold);
+      border: 1px solid var(--primary-gold);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <div class="studio-container">
+    <div class="studio-header">
+      <h2><i class="fa-brands fa-youtube"></i> Studio de Publication DAKPRO ÉLITE</h2>
+      <span style="font-size: 12px; opacity: 0.8;">Support Fichiers Volumineux</span>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <div class="stepper-nav">
+      <button class="step-btn active" id="tabStep1" type="button" onclick="switchStep(1)">
+        <i class="fa-solid fa-file-video"></i> 1. Média
+      </button>
+      <button class="step-btn" id="tabStep2" type="button" onclick="switchStep(2)">
+        <i class="fa-solid fa-list-check"></i> 2. Détails
+      </button>
+      <button class="step-btn" id="tabStep3" type="button" onclick="switchStep(3)">
+        <i class="fa-solid fa-globe"></i> 3. Visibilité
+      </button>
+    </div>
+
+    <div class="studio-content">
+      <div id="statusAlert" class="alert"></div>
+
+      <form id="formStudio" onsubmit="publierRessource(event)">
+        
+        <!-- ÉTAPE 1 : SÉLECTION MÉDIA -->
+        <div class="step-panel active" id="panelStep1">
+          <div class="upload-dropzone" onclick="document.getElementById('pInputMedia').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>Sélectionnez votre vidéo, image ou document</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+              Cliquez pour parcourir vos fichiers
+            </p>
+            <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileSelection(event)">
+          </div>
+
+          <div style="margin-top: 16px; text-align: center;">
+            <span style="font-size: 12px; color: var(--text-muted);">- OU SAISIR UNE URL DIRECTE -</span>
+            <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/fichier.mp4" style="margin-top: 8px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);" oninput="handleUrlInput(this.value)">
+          </div>
+
+          <!-- Zone Aperçu -->
+          <div id="previewContainer" style="display:none;">
+            <div class="media-preview-box">
+              <img id="previewImage" style="display:none;" alt="Aperçu">
+              <video id="previewVideo" controls preload="metadata" style="display:none; width:100%;">
+                <source id="videoSource" src="" type="video/mp4">
+              </video>
+            </div>
+            <div id="previewDoc" style="display:none; padding:15px; background:#f1f5f9; margin-top:10px; border-radius:8px;">
+              <i class="fa-solid fa-file-pdf" style="color:red;"></i> <span id="docName"></span>
+            </div>
+          </div>
+
+          <div class="actions-footer">
+            <div></div>
+            <button type="button" class="btn-primary" onclick="switchStep(2)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 2 : DÉTAILS -->
+        <div class="step-panel" id="panelStep2">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pType">Type de Publication</label>
+              <select id="pType" required>
+                <option value="produit">Produit Physique / Numérique</option>
+                <option value="cours">Cours en ligne / Formation</option>
+                <option value="epreuve">Épreuve / Document d'étude</option>
+                <option value="lien">Lien Externe</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pCategorie">Catégorie</label>
+              <select id="pCategorie" required>
+                <option value="" disabled selected>-- Choisir une catégorie --</option>
+                
+                <!-- Produits Numériques & Formations -->
+                <optgroup label="Produits Numériques & Savoir">
+                  <option value="FORMATIONS">Formations Vidéo & Cours en Ligne</option>
+                  <option value="EBOOKS_DOCUMENTS">E-books, Épreuves & Documents</option>
+                  <option value="LOGICIELS_APPLICATIONS">Logiciels, Scripts & Apps</option>
+                </optgroup>
+
+                <!-- Électronique & High-Tech -->
+                <optgroup label="Électronique & High-Tech">
+                  <option value="TELEPHONIE_SMARTPHONES">Téléphones, Smartphones & Tablettes</option>
+                  <option value="INFORMATIQUE_ORDINATEURS">Informatique, Laptops & Accessoires</option>
+                  <option value="TV_AUDIO_SON">TV, Home Cinéma & Équipement Audio</option>
+                  <option value="JEUX_CONSOLE">Jeux Vidéo & Consoles</option>
+                </optgroup>
+
+                <!-- Mode & Accessoires -->
+                <optgroup label="Mode & Habillements">
+                  <option value="MODE_CHAUSSURES_CUIR">Chaussures & Maroquinerie de Luxe</option>
+                  <option value="MODE_HOMME">Mode Homme (Vêtements & Accessoires)</option>
+                  <option value="MODE_FEMME">Mode Femme (Robes, Sacs & Bijoux)</option>
+                  <option value="MODE_BEAUTE_COSMETIQUE">Soins, Beauté & Parfumerie</option>
+                  <option value="MONTRES_BIJOUX">Montres, Bijoux & Horlogerie</option>
+                </optgroup>
+
+                <!-- Maison, Cuisine & Électroménager -->
+                <optgroup label="Maison & Électroménager">
+                  <option value="ELECTROMENAGER">Électroménager & Cuisine</option>
+                  <option value="MAISON_DECORATION">Meubles, Déco & Literie</option>
+                  <option value="BRICOLAGE_OUTILLAGE">Bricolage, Outillage & Jardin</option>
+                </optgroup>
+
+                <!-- Équipements & Fournitures Industrielles -->
+                <optgroup label="Fournitures & Industrie">
+                  <option value="FOURNITURES_BUREAU">Fournitures de Bureau & Papeterie</option>
+                  <option value="EQUIPEMENT_INDUSTRIEL">Équipements & Matériel Pro</option>
+                  <option value="AUTO_MOTO_PIECES">Véhicules, Pièces Auto & Moto</option>
+                </optgroup>
+
+                <!-- Santé, Sport & Loisirs -->
+                <optgroup label="Santé, Sport & Loisirs">
+                  <option value="SPORTS_FITNESS">Sports, Fitness & Plein air</option>
+                  <option value="SANTE_PARAPHARMACIE">Santé, Bien-être & Compléments</option>
+                  <option value="JOUETS_ENFANTS">Jouets, Bébés & Puériculture</option>
+                </optgroup>
+
+                <!-- Divers -->
+                <optgroup label="Autres Services">
+                  <option value="SERVICES_PRESTATIONS">Services & Prestations</option>
+                  <option value="DIVERS">Autres / Divers</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pNom">Titre du contenu</label>
+              <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien Premium">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixNormal">Prix Normal (FCFA)</label>
+              <input type="number" id="pPrixNormal" required placeholder="10000">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixPromo">Prix Promo (FCFA)</label>
+              <input type="number" id="pPrixPromo" placeholder="10000">
+            </div>
+
+            <div class="form-group">
+              <label for="pStock">Quantité / Stock</label>
+              <input type="number" id="pStock" value="100" required>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="pDescription">Description</label>
+              <textarea id="pDescription" rows="4" required placeholder="Description..."></textarea>
+            </div>
+          </div>
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(1)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="button" class="btn-primary" onclick="switchStep(3)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 3 : VISIBILITÉ & ENVOI -->
+        <div class="step-panel" id="panelStep3">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pAuteur">Nom du Vendeur / Formateur</label>
+              <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
+            </div>
+
+            <div class="form-group">
+              <label for="pVendeurPhone">Téléphone Contact WhatsApp</label>
+              <input type="tel" id="pVendeurPhone" value="+2290197455309" required>
+            </div>
+          </div>
+
+          <!-- Progression Visible à l'Étape 3 -->
+          <div class="progress-wrapper" id="progressWrapper">
+            <div class="progress-bar-fill" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0% (0 Mo / 0 Mo)</div>
+          </div>
+
+          <input type="hidden" id="finalMediaUrlHolder">
+          <input type="hidden" id="mediaTypeHolder" value="image">
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(2)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="submit" class="btn-primary" id="btnSubmitPublish">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    let selectedFile = null;
+    let currentObjectUrl = null;
+
+    function switchStep(stepNumber) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(`panelStep${stepNumber}`).classList.add('active');
+      document.getElementById(`tabStep${stepNumber}`).classList.add('active');
+    }
+
+    function showAlert(message, type = 'error') {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerText = message;
+      alertBox.style.display = 'block';
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetAlert() {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.style.display = 'none';
+    }
+
+    function resetPreviews() {
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+      document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('previewVideo').style.display = 'none';
+      document.getElementById('previewDoc').style.display = 'none';
+    }
+
+    function handleFileSelection(event) {
+      resetAlert();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      document.getElementById('pUrlMediaDirect').value = '';
+      document.getElementById('finalMediaUrlHolder').value = '';
+      resetPreviews();
+
+      document.getElementById('previewContainer').style.display = 'block';
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      currentObjectUrl = URL.createObjectURL(file);
+
+      if (file.type.startsWith('image/')) {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = currentObjectUrl;
+        img.style.display = 'block';
+      } else if (file.type.startsWith('video/')) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        document.getElementById('videoSource').src = currentObjectUrl;
+        vid.load();
+        vid.style.display = 'block';
+      } else {
+        holderType.value = 'document';
+        document.getElementById('docName').innerText = file.name;
+        document.getElementById('previewDoc').style.display = 'block';
+      }
+    }
+
+    function handleUrlInput(url) {
+      resetAlert();
+      url = url.trim();
+      selectedFile = null;
+      resetPreviews();
+      if (!url) return;
+
+      document.getElementById('previewContainer').style.display = 'block';
+      document.getElementById('finalMediaUrlHolder').value = url;
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        document.getElementById('videoSource').src = url;
+        vid.load();
+        vid.style.display = 'block';
+      } else {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = url;
+        img.style.display = 'block';
+      }
+    }
+
+    async function publierRessource(event) {
+      event.preventDefault();
+      resetAlert();
+
+      const form = document.getElementById('formStudio');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btnSubmitPublish');
+      const progressWrapper = document.getElementById('progressWrapper');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement en cours...`;
+
+      try {
+        if (!firebase.auth().currentUser) {
+          await firebase.auth().signInAnonymously().catch(() => {});
+        }
+
+        let finalUrl = document.getElementById('finalMediaUrlHolder').value;
+        const mediaType = document.getElementById('mediaTypeHolder').value;
+
+        if (selectedFile) {
+          progressWrapper.style.display = 'block';
+          progressBar.style.width = '0%';
+          
+          const totalMb = (selectedFile.size / (1024 * 1024)).toFixed(2);
+          progressText.innerText = `Préparation de l'envoi (0 / ${totalMb} Mo)...`;
+
+          let folderName = mediaType === 'video' ? 'videos' : (mediaType === 'document' ? 'documents' : 'images');
+          const ext = selectedFile.name.substring(selectedFile.name.lastIndexOf('.'));
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}${ext}`;
+          
+          const storageRef = storage.ref().child(`${folderName}/${fileName}`);
+          
+          const metadata = {
+            contentType: selectedFile.type || 'application/octet-stream'
+          };
+
+          const uploadTask = storageRef.put(selectedFile, metadata);
+
+          finalUrl = await new Promise((resolve, reject) => {
+            uploadTask.on(
+              firebase.storage.TaskEvent.STATE_CHANGED,
+              (snapshot) => {
+                const bytesTransferred = snapshot.bytesTransferred;
+                const totalBytes = snapshot.totalBytes;
+
+                if (totalBytes > 0) {
+                  const progress = (bytesTransferred / totalBytes) * 100;
+                  const currentMb = (bytesTransferred / (1024 * 1024)).toFixed(2);
+                  
+                  progressBar.style.width = `${progress.toFixed(1)}%`;
+                  progressText.innerText = `${progress.toFixed(0)}% (${currentMb} Mo / ${totalMb} Mo)`;
+
+                  switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED:
+                      progressText.innerText += ' - Suspendu';
+                      break;
+                    case firebase.storage.TaskState.RUNNING:
+                      break;
+                  }
+                }
+              },
+              (error) => {
+                let msg = "Erreur de téléversement : ";
+                switch (error.code) {
+                  case 'storage/unauthorized':
+                    msg += "Accès refusé. Vérifiez vos règles Firebase Storage.";
+                    break;
+                  case 'storage/canceled':
+                    msg += "Envoi annulé par l'utilisateur.";
+                    break;
+                  case 'storage/retry-limit-exceeded':
+                    msg += "Délai dépassé. Connexion réseau trop lente.";
+                    break;
+                  default:
+                    msg += error.message || "Erreur réseau lors de l'envoi.";
+                    break;
+                }
+                reject(new Error(msg));
+              },
+              async () => {
+                try {
+                  const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                  resolve(downloadURL);
+                } catch (err) {
+                  reject(err);
+                }
+              }
+            );
+          });
+        }
+
+        if (!finalUrl) {
+          throw new Error("Veuillez sélectionner un fichier ou renseigner une URL valide.");
+        }
+
+        const currentUser = firebase.auth().currentUser;
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
+
+        const maintenant = new Date();
+        const dateLisible = maintenant.toLocaleDateString('fr-FR');
+        const heureLisible = maintenant.toLocaleTimeString('fr-FR');
+
+        const newRef = db.ref('publications').push();
+        await newRef.set({
+          id: newRef.key,
+          nom: document.getElementById('pNom').value.trim(),
+          auteur: document.getElementById('pAuteur').value.trim(),
+          vendeurNom: document.getElementById('pAuteur').value.trim(),
+          vendeurPhone: document.getElementById('pVendeurPhone').value.trim(),
+          vendeurUid: vendorUid,
+          categorie: document.getElementById('pCategorie').value,
+          type: document.getElementById('pType').value,
+          prix: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          prixNormal: Number(document.getElementById('pPrixNormal').value),
+          prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          stock: Number(document.getElementById('pStock').value) || 0,
+          description: document.getElementById('pDescription').value.trim(),
+          image: finalUrl,
+          imageUrl: finalUrl,
+          mediaUrl: finalUrl,
+          mediaType: mediaType,
+          createdAt: maintenant.getTime(),
+          datePublication: dateLisible,
+          heurePublication: heureLisible
+        });
+
+        showAlert(`Publication réussie avec succès !`, 'success');
+        form.reset();
+        resetPreviews();
+        selectedFile = null;
+        progressWrapper.style.display = 'none';
+        switchStep(1);
+
+      } catch (err) {
+        showAlert(err.message, 'error');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant`;
+      }
+    }
+  </script>
+</body>
+</html>
