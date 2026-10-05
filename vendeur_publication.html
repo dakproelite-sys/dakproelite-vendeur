@@ -2,227 +2,941 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DAKPROÉLITE — Publication vendeur</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
 <meta name="theme-color" content="#007bff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>DAKPROÉLITE — Publication vendeur</title>
 
 <style>
 :root{
- --w:#fff;--bg:#050505;--blue:#007bff;--cyan:#00a8ff;
- --red:#e50914;--text:#080b10;--muted:#64748b;
- --border:#d7e5f2;--shadow:0 20px 55px #0008;
+  --blue:#007bff;
+  --cyan:#00a8ff;
+  --red:#e50914;
+  --black:#050505;
+  --white:#fff;
+  --text:#080b10;
+  --muted:#64748b;
+  --border:#d7e5f2;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  width:100%;
+  min-height:100%;
+  -webkit-text-size-adjust:100%;
+}
+
 body{
- font-family:Arial,sans-serif;min-height:100vh;padding:18px;color:var(--text);
- background:
- radial-gradient(circle at 10% 5%,#00a8ff38,transparent 28%),
- radial-gradient(circle at 90% 5%,#e5091428,transparent 25%),
- linear-gradient(135deg,#020202,#111318,#020202);
+  min-height:100vh;
+  padding:16px;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+
+  background:
+    radial-gradient(circle at 10% 5%,#00a8ff38,transparent 28%),
+    radial-gradient(circle at 90% 5%,#e5091428,transparent 25%),
+    linear-gradient(135deg,#020202,#111318,#020202);
+
+  -webkit-tap-highlight-color:transparent;
 }
-.wrap{max-width:850px;margin:auto}
-header{text-align:center;color:white;margin:10px 0 22px}
-header h1{font-size:29px;font-weight:900}
-header p{margin-top:8px;color:#dbeafe;font-size:14px}
+
+button,
+input,
+select,
+textarea{
+  font-family:inherit;
+}
+
+.wrap{
+  width:100%;
+  max-width:850px;
+  margin:auto;
+}
+
+header{
+  text-align:center;
+  color:white;
+  margin:10px 0 20px;
+}
+
 .logo{
- width:75px;height:75px;object-fit:contain;border-radius:18px;
- background:white;padding:7px;margin-bottom:10px;
- border:2px solid var(--cyan);box-shadow:0 0 25px #00a8ff55
+  width:74px;
+  height:74px;
+  object-fit:contain;
+  border-radius:18px;
+  background:white;
+  padding:7px;
+  border:2px solid var(--cyan);
+  box-shadow:0 0 25px #00a8ff55;
+  margin-bottom:8px;
 }
+
+header h1{
+  font-size:28px;
+  font-weight:900;
+}
+
+header p{
+  margin-top:7px;
+  color:#dbeafe;
+  font-size:14px;
+  line-height:1.5;
+}
+
 .card{
- background:linear-gradient(145deg,#fff,#f1f8ff);
- border-radius:20px;padding:22px;box-shadow:var(--shadow);
- border-top:6px solid var(--blue)
+  background:linear-gradient(145deg,#fff,#f1f8ff);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 20px 55px #0008;
+  border-top:6px solid var(--blue);
 }
+
 .auth{
- padding:12px 14px;border-radius:12px;background:#eef8ff;
- border:1px solid #b7dcff;color:#07549a;font-weight:bold;margin-bottom:18px
+  padding:12px;
+  border-radius:12px;
+  background:#eef8ff;
+  border:1px solid #b7dcff;
+  color:#07549a;
+  font-weight:bold;
+  margin-bottom:18px;
+  line-height:1.45;
 }
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.full{grid-column:1/-1}
-label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}
-input,select,textarea{
- width:100%;padding:12px;border:1px solid var(--border);border-radius:11px;
- background:#fff;font-size:15px;outline:none
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
 }
-input:focus,select:focus,textarea:focus{
- border-color:var(--blue);box-shadow:0 0 0 3px #007bff18
+
+.full{
+  grid-column:1/-1;
 }
-textarea{min-height:120px;resize:vertical}
+
+label{
+  display:block;
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:7px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#fff;
+  font-size:15px;
+  outline:none;
+  color:#080b10;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px #007bff18;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+  line-height:1.5;
+}
+
+
+/* =========================================================
+   ZONE DE SELECTION
+========================================================= */
+
 .drop{
- padding:25px 15px;text-align:center;border:2px dashed #9bbde0;
- border-radius:15px;background:#fff;cursor:pointer
+  position:relative;
+  padding:28px 15px;
+  text-align:center;
+  border:2px dashed #8db8df;
+  border-radius:16px;
+  background:#fff;
+  cursor:pointer;
+  transition:.2s;
+  user-select:none;
+  -webkit-user-select:none;
 }
-.drop:hover{border-color:var(--blue);background:#eef8ff}
-.drop b{display:block;color:var(--blue);font-size:16px;margin-bottom:7px}
-#file{display:none}
-.info,.preview,.download,.progress,.msg{display:none;margin-top:13px}
-.info,.download{
- padding:12px;border-radius:12px;background:#f2f8ff;border:1px solid #bfddf7
+
+.drop:hover,
+.drop.active,
+.drop:focus{
+  border-color:var(--blue);
+  background:#eef8ff;
+  outline:none;
 }
-.preview img,.preview video{
- width:100%;max-height:350px;object-fit:contain;border-radius:12px;background:#050505
+
+.drop:focus-visible{
+  box-shadow:0 0 0 4px #007bff22;
 }
-.preview{display:none}
-.preview.on,.info.on,.download.on,.progress.on,.msg.on{display:block}
-.doc{text-align:center;padding:25px;background:#f5f9fd;border-radius:12px}
-.progress{background:#08090b;padding:12px;border-radius:12px;color:white}
-.bar{height:9px;background:#292c32;border-radius:20px;overflow:hidden;margin-top:8px}
+
+.drop-icon{
+  font-size:42px;
+  margin-bottom:7px;
+}
+
+.drop b{
+  display:block;
+  color:var(--blue);
+  font-size:17px;
+  margin-bottom:7px;
+}
+
+.drop small{
+  display:block;
+  color:#64748b;
+  line-height:1.5;
+}
+
+#file{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+
+
+/* =========================================================
+   INFORMATIONS FICHIER
+========================================================= */
+
+.info,
+.preview,
+.download,
+.progress,
+.msg{
+  display:none;
+  margin-top:13px;
+}
+
+.info.on,
+.preview.on,
+.download.on,
+.progress.on,
+.msg.on{
+  display:block;
+}
+
+.info,
+.download{
+  padding:12px;
+  border-radius:12px;
+  background:#f2f8ff;
+  border:1px solid #bfddf7;
+}
+
+#fname{
+  word-break:break-word;
+}
+
+#fmeta{
+  color:#64748b;
+  font-size:13px;
+  margin-top:4px;
+  line-height:1.5;
+}
+
+
+/* =========================================================
+   APERCU
+========================================================= */
+
+.preview img,
+.preview video{
+  width:100%;
+  max-height:360px;
+  object-fit:contain;
+  border-radius:13px;
+  background:#050505;
+}
+
+.preview img{
+  display:block;
+}
+
+.preview video{
+  display:block;
+}
+
+.doc{
+  text-align:center;
+  padding:28px;
+  background:#f5f9fd;
+  border-radius:13px;
+  border:1px solid #dbeafe;
+}
+
+.doc-icon{
+  font-size:52px;
+  margin-bottom:8px;
+}
+
+.doc p{
+  margin-top:7px;
+  word-break:break-word;
+  color:#475569;
+}
+
+
+/* =========================================================
+   PROGRESSION
+========================================================= */
+
+.progress{
+  background:#08090b;
+  color:#fff;
+  padding:12px;
+  border-radius:12px;
+}
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+}
+
+#ptxt{
+  line-height:1.4;
+}
+
+.bar{
+  height:9px;
+  margin-top:8px;
+  background:#292c32;
+  border-radius:20px;
+  overflow:hidden;
+}
+
 .fill{
- height:100%;width:0;background:linear-gradient(90deg,#0057ff,#00a8ff,#ff1f35)
+  width:0;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    #0057ff,
+    #00a8ff,
+    #ff1f35
+  );
+  transition:width .15s;
 }
-.msg{padding:12px;border-radius:11px;font-weight:bold}
-.success{background:#eaf7ff;color:#0057a8;border:1px solid #83c7ff}
-.error{background:#fff0f2;color:#b9000b;border:1px solid #ffb5bd}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.msg{
+  padding:12px;
+  border-radius:11px;
+  font-weight:bold;
+  line-height:1.5;
+}
+
+.success{
+  background:#eaf7ff;
+  color:#0057a8;
+  border:1px solid #83c7ff;
+}
+
+.error{
+  background:#fff0f2;
+  color:#b9000b;
+  border:1px solid #ffb5bd;
+}
+
+
+/* =========================================================
+   BOUTON
+========================================================= */
+
 button{
- width:100%;margin-top:18px;padding:15px;border:0;border-radius:12px;
- background:linear-gradient(135deg,#0057ff,#007bff,#00a8ff);
- color:white;font-size:16px;font-weight:900;cursor:pointer;
- box-shadow:0 12px 30px #007bff55
+  width:100%;
+  margin-top:18px;
+  padding:15px;
+  border:0;
+  border-radius:12px;
+
+  background:linear-gradient(
+    135deg,
+    #0057ff,
+    #007bff,
+    #00a8ff
+  );
+
+  color:white;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 12px 30px #007bff55;
+  min-height:50px;
 }
-button:disabled{opacity:.55;cursor:not-allowed}
-footer{text-align:center;color:#b9c5d3;font-size:12px;margin:18px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.card{padding:16px}}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+footer{
+  text-align:center;
+  color:#b9c5d3;
+  font-size:12px;
+  margin:18px;
+  line-height:1.5;
+}
+
+
+/* =========================================================
+   TABLETTES / PETITS ECRANS
+========================================================= */
+
+@media(max-width:650px){
+
+  body{
+    padding:10px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  .card{
+    padding:15px;
+    border-radius:16px;
+  }
+
+  header h1{
+    font-size:24px;
+  }
+
+  header p{
+    font-size:13px;
+  }
+
+  .drop{
+    padding:25px 12px;
+  }
+
+  .drop-icon{
+    font-size:38px;
+  }
+
+}
+
+
+/* =========================================================
+   TRES PETITS TELEPHONES
+========================================================= */
+
+@media(max-width:380px){
+
+  body{
+    padding:7px;
+  }
+
+  .card{
+    padding:12px;
+  }
+
+  header h1{
+    font-size:22px;
+  }
+
+  input,
+  select,
+  textarea{
+    font-size:16px;
+  }
+
+}
+
+
+/* =========================================================
+   GRANDS ECRANS
+========================================================= */
+
+@media(min-width:1200px){
+
+  .wrap{
+    max-width:900px;
+  }
+
+  .card{
+    padding:25px;
+  }
+
+}
 </style>
 </head>
 
+
 <body>
+
 <div class="wrap">
 
 <header>
-<img class="logo"
- src="https://i.postimg.cc/placeholder/dakproelite-logo.png"
- alt="DAKPROÉLITE"
- onerror="this.style.display='none'">
+
+<img
+  class="logo"
+  src="https://i.postimg.cc/placeholder/dakproelite-logo.png"
+  alt="DAKPROÉLITE"
+  onerror="this.style.display='none'"
+>
+
 <h1>DAKPROÉLITE</h1>
-<p>Publiez vos produits, cours, épreuves, vidéos et documents.</p>
+
+<p>
+Publiez vos produits, cours, épreuves, vidéos et documents.
+</p>
+
 </header>
+
 
 <main class="card">
 
-<div id="auth" class="auth">Vérification de votre connexion...</div>
+<div id="auth" class="auth">
+Vérification de votre connexion...
+</div>
+
 
 <form id="form">
 
 <div class="grid">
 
-<div>
-<label>Type de publication *</label>
-<select id="type" required>
-<option value="">Choisir</option>
-<option value="produit">Produit</option>
-<option value="cours">Cours</option>
-<option value="epreuve">Épreuve</option>
-<option value="document">Document</option>
-<option value="video">Vidéo</option>
-</select>
-</div>
+
+<!-- =====================================================
+     TYPE
+====================================================== -->
 
 <div>
-<label>Catégorie *</label>
-<input id="categorie" maxlength="80" placeholder="Ex : Électronique" required>
-</div>
 
-<div class="full">
-<label>Nom / titre *</label>
-<input id="nom" maxlength="150" placeholder="Nom du produit ou titre" required>
-</div>
-
-<div>
-<label>Vendeur / auteur *</label>
-<input id="auteur" maxlength="120" placeholder="Votre nom" required>
-</div>
-
-<div>
-<label>Stock *</label>
-<input id="stock" type="number" min="0" step="1" value="100" required>
-</div>
-
-<div>
-<label>Prix normal (FCFA) *</label>
-<input id="prixNormal" type="number" min="0" step="1" required>
-</div>
-
-<div>
-<label>Prix promotionnel</label>
-<input id="prixPromo" type="number" min="0" step="1">
-</div>
-
-<div class="full">
-<label>Description *</label>
-<textarea id="description" maxlength="5000"
-placeholder="Décrivez clairement votre produit ou contenu..." required></textarea>
-</div>
-
-<div class="full">
-<label>Photo, vidéo ou document *</label>
-
-<div id="drop" class="drop">
-<div style="font-size:40px">📁</div>
-<b>Choisir un fichier</b>
-<span>Image • Vidéo • PDF • Word • Excel • PowerPoint • TXT • ZIP</span>
-<input id="file" type="file"
-accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip">
-</div>
-
-<div id="info" class="info">
-<strong id="fname"></strong>
-<div id="fmeta"></div>
-</div>
-
-<div id="preview" class="preview"></div>
-
-<div id="download" class="download">
-<label>
-<input id="downloadable" type="checkbox" style="width:auto">
- Autoriser le téléchargement
+<label for="type">
+Type de publication *
 </label>
-</div>
-</div>
+
+<select id="type" required>
+
+<option value="">
+Choisir
+</option>
+
+<option value="produit">
+Produit
+</option>
+
+<option value="cours">
+Cours
+</option>
+
+<option value="epreuve">
+Épreuve
+</option>
+
+<option value="document">
+Document
+</option>
+
+<option value="video">
+Vidéo
+</option>
+
+</select>
 
 </div>
 
-<div id="progress" class="progress">
-<div style="display:flex;justify-content:space-between">
-<span id="ptxt">Préparation...</span>
-<span id="pct">0%</span>
-</div>
-<div class="bar"><div id="fill" class="fill"></div></div>
+
+<!-- =====================================================
+     CATEGORIE
+====================================================== -->
+
+<div>
+
+<label for="categorie">
+Catégorie *
+</label>
+
+<input
+  id="categorie"
+  maxlength="80"
+  placeholder="Ex : Électronique"
+  required
+>
+
 </div>
 
-<div id="msg" class="msg"></div>
 
-<button id="submit" type="submit" disabled>
+<!-- =====================================================
+     NOM
+====================================================== -->
+
+<div class="full">
+
+<label for="nom">
+Nom / titre *
+</label>
+
+<input
+  id="nom"
+  maxlength="150"
+  placeholder="Nom du produit ou titre"
+  required
+>
+
+</div>
+
+
+<!-- =====================================================
+     AUTEUR
+====================================================== -->
+
+<div>
+
+<label for="auteur">
+Vendeur / auteur *
+</label>
+
+<input
+  id="auteur"
+  maxlength="120"
+  placeholder="Votre nom"
+  required
+>
+
+</div>
+
+
+<!-- =====================================================
+     STOCK
+====================================================== -->
+
+<div>
+
+<label for="stock">
+Stock *
+</label>
+
+<input
+  id="stock"
+  type="number"
+  min="0"
+  step="1"
+  value="100"
+  required
+>
+
+</div>
+
+
+<!-- =====================================================
+     PRIX NORMAL
+====================================================== -->
+
+<div>
+
+<label for="prixNormal">
+Prix normal (FCFA) *
+</label>
+
+<input
+  id="prixNormal"
+  type="number"
+  min="0"
+  step="1"
+  required
+>
+
+</div>
+
+
+<!-- =====================================================
+     PRIX PROMOTIONNEL
+====================================================== -->
+
+<div>
+
+<label for="prixPromo">
+Prix promotionnel
+</label>
+
+<input
+  id="prixPromo"
+  type="number"
+  min="0"
+  step="1"
+>
+
+</div>
+
+
+<!-- =====================================================
+     DESCRIPTION
+====================================================== -->
+
+<div class="full">
+
+<label for="description">
+Description *
+</label>
+
+<textarea
+  id="description"
+  maxlength="5000"
+  placeholder="Décrivez clairement votre produit ou contenu..."
+  required
+></textarea>
+
+</div>
+
+
+<!-- =====================================================
+     FICHIER
+====================================================== -->
+
+<div class="full">
+
+<label>
+Photo, vidéo ou document *
+</label>
+
+
+<div
+  id="drop"
+  class="drop"
+  role="button"
+  tabindex="0"
+  aria-label="Choisir une photo, une vidéo ou un document"
+>
+
+<div class="drop-icon">
+📁
+</div>
+
+<b>
+Choisir une photo ou un fichier
+</b>
+
+<small>
+Galerie • Appareil photo • Fichiers • Vidéo • PDF • Word • Excel • PowerPoint • ZIP
+</small>
+
+
+<!--
+===========================================================
+IMPORTANT
+
+capture="environment" n'est PAS utilisé.
+
+Cela permet au système Android / iPhone / iPad
+de proposer normalement :
+
+• Galerie
+• Photos
+• Appareil photo
+• Fichiers
+• Gestionnaire de fichiers
+
+selon le système et le navigateur.
+===========================================================
+-->
+
+
+<input
+  id="file"
+  type="file"
+
+  accept="
+    image/*,
+    video/*,
+    .pdf,
+    .doc,
+    .docx,
+    .xls,
+    .xlsx,
+    .ppt,
+    .pptx,
+    .txt,
+    .csv,
+    .zip
+"
+>
+
+
+</div>
+
+
+<!-- =====================================================
+     INFORMATIONS FICHIER
+====================================================== -->
+
+<div
+  id="info"
+  class="info"
+>
+
+<strong id="fname"></strong>
+
+<div id="fmeta"></div>
+
+</div>
+
+
+<!-- =====================================================
+     APERCU
+====================================================== -->
+
+<div
+  id="preview"
+  class="preview"
+></div>
+
+
+<!-- =====================================================
+     TELECHARGEMENT
+====================================================== -->
+
+<div
+  id="download"
+  class="download"
+>
+
+<label>
+
+<input
+  id="downloadable"
+  type="checkbox"
+  style="width:auto"
+>
+
+Autoriser le téléchargement
+
+</label>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     PROGRESSION
+====================================================== -->
+
+<div
+  id="progress"
+  class="progress"
+>
+
+<div class="progress-top">
+
+<span id="ptxt">
+Préparation...
+</span>
+
+<span id="pct">
+0%
+</span>
+
+</div>
+
+
+<div class="bar">
+
+<div
+  id="fill"
+  class="fill"
+></div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     MESSAGE
+====================================================== -->
+
+<div
+  id="msg"
+  class="msg"
+></div>
+
+
+<!-- =====================================================
+     BOUTON
+====================================================== -->
+
+<button
+  id="submit"
+  type="submit"
+  disabled
+>
 🚀 Publier maintenant
 </button>
 
+
 </form>
+
 </main>
 
-<footer>© 2026 DAKPROÉLITE / DAKPRO NEXUS</footer>
+
+<footer>
+© 2026 DAKPROÉLITE / DAKPRO NEXUS
+</footer>
+
 </div>
+
 
 <script type="module">
 
+
 /* ============================================================
-   FIREBASE — NE PAS MODIFIER
+   FIREBASE
 ============================================================ */
 
 import {
- ref,push,set
+  ref,
+  push,
+  set
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+
 import {
- onAuthStateChanged
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-import {
- getStorage,ref as sRef,uploadBytesResumable,
- getDownloadURL,deleteObject
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 import {
- auth,database
+  getStorage,
+  ref as storageRef,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+
+import {
+  auth,
+  database
 } from "./firebase-config.js";
 
 
@@ -230,122 +944,452 @@ import {
    CONFIGURATION
 ============================================================ */
 
-const NODE="vendeur_publications";
 
 /*
-   IMPORTANT :
-   Si ton tableau vendeur porte un autre nom,
-   change uniquement cette ligne.
-*/
-const REDIRECT_URL="./vendeur.html";
+IMPORTANT :
 
-const MAX_VIDEO=250*1024*1024;
-const MAX_DOC=100*1024*1024;
-const MAX_IMAGE=1600;
+Le nom doit rester exactement :
+
+vendeur_publications
+*/
+
+const NODE =
+  "vendeur_publications";
+
+
+/*
+Page de retour après publication.
+*/
+
+const REDIRECT_URL =
+  "./vendeur.html";
+
+
+/*
+Limites.
+*/
+
+const MAX_VIDEO =
+  250 * 1024 * 1024;
+
+
+const MAX_DOCUMENT =
+  100 * 1024 * 1024;
+
+
+/*
+Taille maximale du côté le plus long
+pour les images compressées.
+*/
+
+const MAX_IMAGE =
+  1600;
 
 
 /* ============================================================
    ELEMENTS
 ============================================================ */
 
-const $=id=>document.getElementById(id);
+const $ =
+  id => document.getElementById(id);
 
-const form=$("form");
-const fileInput=$("file");
-const drop=$("drop");
-const submit=$("submit");
-const authBox=$("auth");
-const msg=$("msg");
-const progress=$("progress");
-const fill=$("fill");
-const pct=$("pct");
-const ptxt=$("ptxt");
 
-let user=null;
-let file=null;
-let uploadFile=null;
-let mediaType=null;
-let publishing=false;
+const form =
+  $("form");
+
+
+const fileInput =
+  $("file");
+
+
+const drop =
+  $("drop");
+
+
+const submit =
+  $("submit");
+
+
+const authBox =
+  $("auth");
+
+
+const msg =
+  $("msg");
+
+
+const progress =
+  $("progress");
+
+
+const fill =
+  $("fill");
+
+
+const pct =
+  $("pct");
+
+
+const ptxt =
+  $("ptxt");
+
+
+/* ============================================================
+   ETAT
+============================================================ */
+
+let user =
+  null;
+
+
+let selectedFile =
+  null;
+
+
+let uploadFile =
+  null;
+
+
+let mediaType =
+  null;
+
+
+let publishing =
+  false;
 
 
 /* ============================================================
    AUTHENTIFICATION
 ============================================================ */
 
-onAuthStateChanged(auth,u=>{
+onAuthStateChanged(
+  auth,
+  currentUser => {
 
- user=u;
+    user =
+      currentUser;
 
- if(u){
 
-   authBox.textContent="🟦 Connecté — vous pouvez publier.";
-   submit.disabled=false;
+    if(user){
 
- }else{
+      authBox.textContent =
+        "🟦 Connecté — vous pouvez publier.";
 
-   authBox.textContent="🔴 Vous devez être connecté pour publier.";
-   submit.disabled=true;
+      submit.disabled =
+        false;
 
- }
+    }else{
 
-});
+      authBox.textContent =
+        "🔴 Vous devez être connecté pour publier.";
+
+      submit.disabled =
+        true;
+
+    }
+
+  }
+);
 
 
 /* ============================================================
-   OUTILS
+   MESSAGES
 ============================================================ */
 
-function message(text,type="error"){
- msg.textContent=text;
- msg.className="msg on "+type;
+function message(
+  text,
+  type = "error"
+){
+
+  msg.textContent =
+    text;
+
+  msg.className =
+    "msg on " + type;
+
 }
 
-function progressBar(n,text){
- progress.classList.add("on");
- fill.style.width=n+"%";
- pct.textContent=Math.round(n)+"%";
- ptxt.textContent=text;
+
+/* ============================================================
+   PROGRESSION
+============================================================ */
+
+function progressBar(
+  percent,
+  text
+){
+
+  const value =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        percent
+      )
+    );
+
+
+  progress.classList.add(
+    "on"
+  );
+
+
+  fill.style.width =
+    value + "%";
+
+
+  pct.textContent =
+    Math.round(value) + "%";
+
+
+  ptxt.textContent =
+    text;
+
 }
+
 
 function hideProgress(){
- progress.classList.remove("on");
- fill.style.width="0%";
+
+  progress.classList.remove(
+    "on"
+  );
+
+
+  fill.style.width =
+    "0%";
+
 }
 
-function bytes(n){
- if(!n)return"0 octet";
- const u=["octets","Ko","Mo","Go"];
- let i=0;
- while(n>=1024&&i<3){n/=1024;i++}
- return n.toFixed(n>=10?1:2)+" "+u[i];
+
+/* ============================================================
+   TAILLE FICHIER
+============================================================ */
+
+function bytes(size){
+
+  if(!size){
+
+    return "0 octet";
+
+  }
+
+
+  const units = [
+    "octets",
+    "Ko",
+    "Mo",
+    "Go"
+  ];
+
+
+  let i =
+    0;
+
+
+  let value =
+    size;
+
+
+  while(
+    value >= 1024 &&
+    i < units.length - 1
+  ){
+
+    value /=
+      1024;
+
+    i++;
+
+  }
+
+
+  return (
+    value.toFixed(
+      value >= 10
+      ? 1
+      : 2
+    )
+    + " "
+    + units[i]
+  );
+
 }
+
+
+/* ============================================================
+   EXTENSION
+============================================================ */
 
 function ext(name){
- return name.split(".").pop().toLowerCase();
+
+  const parts =
+    String(
+      name || ""
+    ).split(".");
+
+
+  return (
+    parts.length > 1
+    ? parts.pop()
+    : ""
+  ).toLowerCase();
+
 }
 
-const docs=new Set([
- "pdf","doc","docx","xls","xlsx","ppt","pptx",
- "txt","csv","zip"
-]);
 
-function typeOf(f){
+/* ============================================================
+   EXTENSIONS AUTORISEES
+============================================================ */
 
- if(f.type.startsWith("image/"))return"image";
- if(f.type.startsWith("video/"))return"video";
- if(docs.has(ext(f.name)))return"document";
+const imageExtensions =
+  new Set([
 
- return null;
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "gif",
+    "bmp",
+    "avif",
+    "heic",
+    "heif"
+
+  ]);
+
+
+const videoExtensions =
+  new Set([
+
+    "mp4",
+    "mov",
+    "m4v",
+    "avi",
+    "mkv",
+    "webm",
+    "3gp",
+    "mpeg",
+    "mpg"
+
+  ]);
+
+
+const documentExtensions =
+  new Set([
+
+    "pdf",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "txt",
+    "csv",
+    "zip"
+
+  ]);
+
+
+/* ============================================================
+   DETECTION ROBUSTE DU TYPE
+============================================================ */
+
+function detectType(file){
+
+  if(!file){
+
+    return null;
+
+  }
+
+
+  const mime =
+    String(
+      file.type || ""
+    ).toLowerCase();
+
+
+  const extension =
+    ext(file.name);
+
+
+  /* IMAGE */
+
+  if(
+    mime.startsWith("image/") ||
+    imageExtensions.has(
+      extension
+    )
+  ){
+
+    return "image";
+
+  }
+
+
+  /* VIDEO */
+
+  if(
+    mime.startsWith("video/") ||
+    videoExtensions.has(
+      extension
+    )
+  ){
+
+    return "video";
+
+  }
+
+
+  /* DOCUMENT */
+
+  if(
+    documentExtensions.has(
+      extension
+    )
+  ){
+
+    return "document";
+
+  }
+
+
+  return null;
+
 }
+
+
+/* ============================================================
+   NOM SECURISE
+============================================================ */
 
 function safeName(name){
 
- return name
- .normalize("NFD")
- .replace(/[\u0300-\u036f]/g,"")
- .replace(/[^a-zA-Z0-9._-]/g,"-")
- .replace(/-+/g,"-")
- .slice(0,100);
+  return String(
+    name || "fichier"
+  )
+
+    .normalize("NFD")
+
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+
+    .replace(
+      /[^a-zA-Z0-9._-]/g,
+      "-"
+    )
+
+    .replace(
+      /-+/g,
+      "-"
+    )
+
+    .slice(
+      0,
+      100
+    );
 
 }
 
@@ -354,82 +1398,435 @@ function safeName(name){
    APERCU
 ============================================================ */
 
-function previewFile(f,type){
+function previewFile(
+  file,
+  type
+){
 
- const box=$("preview");
- box.innerHTML="";
+  const box =
+    $("preview");
 
- if(type==="image"||type==="video"){
 
-   const el=document.createElement(type==="image"?"img":"video");
+  box.innerHTML =
+    "";
 
-   el.src=URL.createObjectURL(f);
 
-   if(type==="video")el.controls=true;
+  if(
+    type === "image" ||
+    type === "video"
+  ){
 
-   box.appendChild(el);
+    const element =
+      document.createElement(
+        type === "image"
+        ? "img"
+        : "video"
+      );
 
- }else{
 
-   box.innerHTML=`
-   <div class="doc">
-   <div style="font-size:50px">📄</div>
-   <strong>Document sélectionné</strong>
-   <p>${safeName(f.name)}</p>
-   </div>`;
+    const objectURL =
+      URL.createObjectURL(
+        file
+      );
 
- }
 
- box.className="preview on";
+    element.src =
+      objectURL;
+
+
+    if(type === "image"){
+
+      element.alt =
+        "Aperçu de l'image";
+
+
+      element.onload =
+        () => {
+
+          setTimeout(
+            () => {
+
+              URL.revokeObjectURL(
+                objectURL
+              );
+
+            },
+            1000
+          );
+
+        };
+
+
+      element.onerror =
+        () => {
+
+          URL.revokeObjectURL(
+            objectURL
+          );
+
+          /*
+          L'upload peut quand même
+          continuer si le navigateur
+          ne sait pas afficher le format.
+          */
+
+        };
+
+    }else{
+
+      element.controls =
+        true;
+
+      element.playsInline =
+        true;
+
+      element.preload =
+        "metadata";
+
+
+      element.onloadeddata =
+        () => {
+
+          setTimeout(
+            () => {
+
+              URL.revokeObjectURL(
+                objectURL
+              );
+
+            },
+            1000
+          );
+
+        };
+
+    }
+
+
+    box.appendChild(
+      element
+    );
+
+  }else{
+
+    const div =
+      document.createElement(
+        "div"
+      );
+
+
+    div.className =
+      "doc";
+
+
+    const icon =
+      document.createElement(
+        "div"
+      );
+
+
+    icon.className =
+      "doc-icon";
+
+
+    icon.textContent =
+      "📄";
+
+
+    const title =
+      document.createElement(
+        "strong"
+      );
+
+
+    title.textContent =
+      "Document sélectionné";
+
+
+    const name =
+      document.createElement(
+        "p"
+      );
+
+
+    name.textContent =
+      safeName(
+        file.name
+      );
+
+
+    div.appendChild(
+      icon
+    );
+
+
+    div.appendChild(
+      title
+    );
+
+
+    div.appendChild(
+      name
+    );
+
+
+    box.appendChild(
+      div
+    );
+
+  }
+
+
+  box.className =
+    "preview on";
+
 }
 
 
 /* ============================================================
-   OPTIMISATION IMAGE
+   COMPRESSION IMAGE
 ============================================================ */
 
-async function optimizeImage(f){
+async function compressImage(
+  file
+){
 
- const url=URL.createObjectURL(f);
+  const extension =
+    ext(
+      file.name
+    );
 
- const img=new Image();
 
- await new Promise((resolve,reject)=>{
+  /*
+  HEIC / HEIF :
 
-   img.onload=resolve;
-   img.onerror=reject;
-   img.src=url;
+  Certains navigateurs ne savent pas
+  convertir ces formats avec Canvas.
 
- });
+  Dans ce cas on conserve le fichier original.
+  */
 
- let w=img.naturalWidth;
- let h=img.naturalHeight;
- const ratio=Math.min(1,MAX_IMAGE/Math.max(w,h));
 
- w=Math.round(w*ratio);
- h=Math.round(h*ratio);
+  if(
+    extension === "heic" ||
+    extension === "heif"
+  ){
 
- const canvas=document.createElement("canvas");
- canvas.width=w;
- canvas.height=h;
+    return file;
 
- const ctx=canvas.getContext("2d");
+  }
 
- ctx.fillStyle="#fff";
- ctx.fillRect(0,0,w,h);
- ctx.drawImage(img,0,0,w,h);
 
- const blob=await new Promise(resolve=>
-   canvas.toBlob(resolve,"image/jpeg",.82)
- );
+  /*
+  Si le fichier est déjà petit,
+  on peut tout de même le convertir
+  en JPEG pour standardiser l'image.
+  */
 
- URL.revokeObjectURL(url);
 
- return new File(
-   [blob],
-   safeName(f.name.replace(/\.[^.]+$/,""))+".jpg",
-   {type:"image/jpeg"}
- );
+  const objectURL =
+    URL.createObjectURL(
+      file
+    );
+
+
+  const img =
+    new Image();
+
+
+  try{
+
+    await new Promise(
+      (
+        resolve,
+        reject
+      ) => {
+
+        img.onload =
+          resolve;
+
+
+        img.onerror =
+          () => {
+
+            reject(
+              new Error(
+                "Format d'image non compatible."
+              )
+            );
+
+          };
+
+
+        img.src =
+          objectURL;
+
+      }
+    );
+
+
+    let width =
+      img.naturalWidth;
+
+
+    let height =
+      img.naturalHeight;
+
+
+    if(
+      !width ||
+      !height
+    ){
+
+      throw new Error(
+        "Dimensions d'image invalides."
+      );
+
+    }
+
+
+    /*
+    Réduction à maximum 1600 px
+    sur le côté le plus long.
+    */
+
+    const ratio =
+      Math.min(
+        1,
+        MAX_IMAGE /
+        Math.max(
+          width,
+          height
+        )
+      );
+
+
+    width =
+      Math.max(
+        1,
+        Math.round(
+          width * ratio
+        )
+      );
+
+
+    height =
+      Math.max(
+        1,
+        Math.round(
+          height * ratio
+        )
+      );
+
+
+    const canvas =
+      document.createElement(
+        "canvas"
+      );
+
+
+    canvas.width =
+      width;
+
+
+    canvas.height =
+      height;
+
+
+    const ctx =
+      canvas.getContext(
+        "2d"
+      );
+
+
+    if(!ctx){
+
+      throw new Error(
+        "Canvas indisponible."
+      );
+
+    }
+
+
+    /*
+    Fond blanc pour éviter
+    les problèmes de transparence
+    lors de la conversion JPEG.
+    */
+
+    ctx.fillStyle =
+      "#ffffff";
+
+
+    ctx.fillRect(
+      0,
+      0,
+      width,
+      height
+    );
+
+
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      width,
+      height
+    );
+
+
+    const blob =
+      await new Promise(
+        resolve => {
+
+          canvas.toBlob(
+            resolve,
+            "image/jpeg",
+            0.82
+          );
+
+        }
+      );
+
+
+    if(!blob){
+
+      throw new Error(
+        "Compression impossible."
+      );
+
+    }
+
+
+    const newName =
+      safeName(
+        file.name.replace(
+          /\.[^.]+$/,
+          ""
+        )
+      ) + ".jpg";
+
+
+    return new File(
+      [blob],
+      newName,
+      {
+        type:
+          "image/jpeg",
+
+        lastModified:
+          Date.now()
+
+      }
+    );
+
+  }finally{
+
+    URL.revokeObjectURL(
+      objectURL
+    );
+
+  }
 
 }
 
@@ -438,337 +1835,1133 @@ async function optimizeImage(f){
    SELECTION FICHIER
 ============================================================ */
 
-async function selectFile(f){
+async function selectFile(
+  file
+){
 
- if(!f)return;
+  if(!file){
 
- msg.className="msg";
+    return;
 
- const type=typeOf(f);
+  }
 
- if(!type){
-   message("❌ Type de fichier non autorisé.");
-   return;
- }
 
- if(type==="video"&&f.size>MAX_VIDEO){
-   message("❌ Vidéo limitée à 250 Mo.");
-   return;
- }
+  msg.className =
+    "msg";
 
- if(type==="document"&&f.size>MAX_DOC){
-   message("❌ Document limité à 100 Mo.");
-   return;
- }
 
- file=f;
- mediaType=type;
- uploadFile=f;
+  hideProgress();
 
- if(type==="image"){
 
-   try{
-     progressBar(10,"Optimisation de l'image...");
-     uploadFile=await optimizeImage(f);
-   }catch(e){
-     message("❌ Impossible d'optimiser cette image.");
-     return;
-   }
+  const type =
+    detectType(
+      file
+    );
 
- }
 
- $("info").className="info on";
- $("fname").textContent=f.name;
- $("fmeta").textContent=
- `${type.toUpperCase()} • Original : ${bytes(f.size)}`
- +(type==="image"?` • Optimisée : ${bytes(uploadFile.size)}`:"");
+  if(!type){
 
- previewFile(uploadFile,type);
+    message(
+      "❌ Ce fichier n'est pas reconnu. Choisissez une image, une vidéo ou un document autorisé."
+    );
 
- $("download").className=
- type==="image"?"download":"download on";
+    return;
 
- $("downloadable").checked=false;
+  }
 
- hideProgress();
+
+  /* ========================================================
+     LIMITE VIDEO
+  ======================================================== */
+
+  if(
+    type === "video" &&
+    file.size > MAX_VIDEO
+  ){
+
+    message(
+      "❌ Cette vidéo dépasse la limite de 250 Mo."
+    );
+
+    return;
+
+  }
+
+
+  /* ========================================================
+     LIMITE DOCUMENT
+  ======================================================== */
+
+  if(
+    type === "document" &&
+    file.size > MAX_DOCUMENT
+  ){
+
+    message(
+      "❌ Ce document dépasse la limite de 100 Mo."
+    );
+
+    return;
+
+  }
+
+
+  /*
+  On conserve le fichier original
+  pour les informations et la publication.
+  */
+
+  selectedFile =
+    file;
+
+
+  mediaType =
+    type;
+
+
+  uploadFile =
+    file;
+
+
+  /* ========================================================
+     IMAGE
+  ======================================================== */
+
+  if(type === "image"){
+
+    try{
+
+      progressBar(
+        5,
+        "Compression de l'image..."
+      );
+
+
+      uploadFile =
+        await compressImage(
+          file
+        );
+
+
+    }catch(error){
+
+      console.warn(
+        "Compression impossible. Fichier original utilisé.",
+        error
+      );
+
+
+      uploadFile =
+        file;
+
+    }
+
+  }
+
+
+  /* ========================================================
+     INFORMATIONS
+  ======================================================== */
+
+  $("info").className =
+    "info on";
+
+
+  $("fname").textContent =
+    file.name;
+
+
+  let metadata =
+    type.toUpperCase()
+    + " • Original : "
+    + bytes(
+      file.size
+    );
+
+
+  if(
+    type === "image" &&
+    uploadFile !== file
+  ){
+
+    metadata +=
+      " • Après compression : "
+      + bytes(
+        uploadFile.size
+      );
+
+  }
+
+
+  $("fmeta").textContent =
+    metadata;
+
+
+  /* ========================================================
+     APERCU
+  ======================================================== */
+
+  previewFile(
+    uploadFile,
+    type
+  );
+
+
+  /* ========================================================
+     TELECHARGEMENT
+  ======================================================== */
+
+  if(
+    type === "image"
+  ){
+
+    $("download").className =
+      "download";
+
+  }else{
+
+    $("download").className =
+      "download on";
+
+  }
+
+
+  $("downloadable").checked =
+    false;
+
+
+  hideProgress();
+
 }
-
-fileInput.onchange=e=>selectFile(e.target.files[0]);
-
-drop.onclick=()=>fileInput.click();
-
-drop.ondragover=e=>{
- e.preventDefault();
- drop.style.borderColor="#007bff";
-};
-
-drop.ondragleave=()=>{
- drop.style.borderColor="";
-};
-
-drop.ondrop=e=>{
- e.preventDefault();
- drop.style.borderColor="";
- selectFile(e.dataTransfer.files[0]);
-};
 
 
 /* ============================================================
-   FIREBASE STORAGE
+   OUVRIR LE SELECTEUR
 ============================================================ */
 
-function uploadMedia(f,uid){
+function openPicker(){
 
- const storage=getStorage();
+  /*
+  Permet de sélectionner
+  deux fois exactement
+  le même fichier.
+  */
 
- const filename=
- `${uid}-${Date.now()}-${safeName(f.name)}`;
+  fileInput.value =
+    "";
 
- const path=
- `vendeur_publications/${uid}/${filename}`;
 
- const storageReference=sRef(storage,path);
-
- const task=uploadBytesResumable(
-   storageReference,
-   f,
-   {
-     contentType:f.type||"application/octet-stream",
-     customMetadata:{
-       uploadedBy:uid,
-       originalName:f.name,
-       app:"DAKPROELITE"
-     }
-   }
- );
-
- return new Promise((resolve,reject)=>{
-
-   task.on("state_changed",
-
-     snap=>{
-
-       const p=snap.totalBytes?
-       snap.bytesTransferred/snap.totalBytes*100:0;
-
-       progressBar(p,"Envoi du fichier...");
-
-     },
-
-     reject,
-
-     async()=>{
-
-       try{
-
-         const url=
-         await getDownloadURL(task.snapshot.ref);
-
-         resolve({
-           url,
-           path,
-           name:filename,
-           size:f.size,
-           mimeType:f.type,
-           ref:task.snapshot.ref
-         });
-
-       }catch(e){
-         reject(e);
-       }
-
-     }
-
-   );
-
- });
+  fileInput.click();
 
 }
 
 
 /* ============================================================
-   PUBLICATION
+   CLIC SUR LA ZONE
 ============================================================ */
 
-form.onsubmit=async e=>{
+drop.addEventListener(
+  "click",
+  event => {
 
- e.preventDefault();
+    event.preventDefault();
 
- if(publishing)return;
+    openPicker();
 
- if(!user){
-   message("❌ Connectez-vous avant de publier.");
-   return;
- }
+  }
+);
 
- if(!file||!uploadFile){
-   message("❌ Sélectionnez un fichier.");
-   return;
- }
 
- publishing=true;
- submit.disabled=true;
+/* ============================================================
+   CLAVIER
+============================================================ */
 
- let uploaded=null;
+drop.addEventListener(
+  "keydown",
+  event => {
 
- try{
+    if(
+      event.key === "Enter" ||
+      event.key === " "
+    ){
 
-   const type=$("type").value;
-   const categorie=$("categorie").value.trim();
-   const nom=$("nom").value.trim();
-   const auteur=$("auteur").value.trim();
-   const description=$("description").value.trim();
+      event.preventDefault();
 
-   const prixNormal=Number($("prixNormal").value);
-   const promoValue=$("prixPromo").value;
-   const prixPromo=
-   promoValue===""?null:Number(promoValue);
+      openPicker();
 
-   const stock=Number($("stock").value);
+    }
 
-   if(!type||!categorie||!nom||!auteur||!description)
-     throw new Error("Veuillez remplir tous les champs obligatoires.");
+  }
+);
 
-   if(!Number.isInteger(prixNormal)||prixNormal<0)
-     throw new Error("Prix normal invalide.");
 
-   if(
-     prixPromo!==null&&
-     (!Number.isInteger(prixPromo)||prixPromo<0)
-   )
-     throw new Error("Prix promotionnel invalide.");
+/* ============================================================
+   FICHIER SELECTIONNE
+============================================================ */
 
-   if(
-     prixPromo!==null&&
-     prixPromo>=prixNormal&&
-     prixNormal>0
-   )
-     throw new Error("Le prix promotionnel doit être inférieur au prix normal.");
+fileInput.addEventListener(
+  "change",
+  event => {
 
-   if(!Number.isInteger(stock)||stock<0)
-     throw new Error("Stock invalide.");
+    const file =
+      event.target.files?.[0];
 
-   progressBar(0,"Préparation...");
 
-   uploaded=await uploadMedia(uploadFile,user.uid);
+    selectFile(
+      file
+    );
 
-   const publicationRef=
-   push(ref(database,NODE));
+  }
+);
 
-   const id=publicationRef.key;
 
-   const now=new Date().toISOString();
+/* ============================================================
+   DRAG & DROP
+============================================================ */
 
-   const publication={
+drop.addEventListener(
+  "dragover",
+  event => {
 
-     id,
-     type,
-     categorie,
-     nom,
-     auteur,
+    event.preventDefault();
 
-     prixNormal,
-     prixPromo,
+    drop.classList.add(
+      "active"
+    );
 
-     prix:
-       prixPromo!==null
-       ?prixPromo
-       :prixNormal,
+  }
+);
 
-     stock,
-     description,
 
-     imageUrl:
-       mediaType==="image"
-       ?uploaded.url
-       :"",
+drop.addEventListener(
+  "dragleave",
+  () => {
 
-     mediaUrl:uploaded.url,
-     mediaPath:uploaded.path,
-     mediaName:file.name,
-     storageFileName:uploaded.name,
+    drop.classList.remove(
+      "active"
+    );
 
-     typeMedia:mediaType,
-     mimeType:uploaded.mimeType,
+  }
+);
 
-     fileSize:uploaded.size,
-     originalFileSize:file.size,
 
-     downloadable:
-       mediaType==="image"
-       ?false
-       :$("downloadable").checked,
+drop.addEventListener(
+  "drop",
+  event => {
 
-     createdBy:user.uid,
-     sellerId:user.uid,
+    event.preventDefault();
 
-     statut:"active",
-     createdAt:now,
-     updatedAt:now
+    drop.classList.remove(
+      "active"
+    );
 
-   };
 
-   await set(publicationRef,publication);
+    const file =
+      event.dataTransfer
+      ?.files?.[0];
 
-   progressBar(100,"Publication enregistrée.");
 
-   message(
-     "✅ Publication réussie ! Redirection...",
-     "success"
-   );
+    selectFile(
+      file
+    );
 
-   form.reset();
+  }
+);
 
-   file=null;
-   uploadFile=null;
-   mediaType=null;
 
-   $("info").className="info";
-   $("preview").className="preview";
-   $("download").className="download";
+/* ============================================================
+   UPLOAD FIREBASE STORAGE
+============================================================ */
 
-   /*
-      REDIRECTION
-   */
-   setTimeout(()=>{
-     window.location.href=REDIRECT_URL;
-   },1200);
+function uploadMedia(
+  file,
+  uid
+){
 
- }catch(error){
+  const storage =
+    getStorage();
 
-   console.error(error);
 
-   if(uploaded?.ref){
+  const filename =
+    uid
+    + "-"
+    + Date.now()
+    + "-"
+    + safeName(
+      file.name
+    );
 
-     try{
-       await deleteObject(uploaded.ref);
-     }catch(cleanup){
-       console.error("Nettoyage Storage:",cleanup);
-     }
 
-   }
+  const path =
+    "vendeur_publications/"
+    + uid
+    + "/"
+    + filename;
 
-   let text=error?.message||"Erreur pendant la publication.";
 
-   if(error?.code==="storage/unauthorized")
-     text="Firebase Storage refuse l'envoi. Vérifiez vos règles Storage.";
+  const fileRef =
+    storageRef(
+      storage,
+      path
+    );
 
-   if(error?.code==="storage/quota-exceeded")
-     text="La capacité Firebase Storage est insuffisante.";
 
-   message("❌ "+text);
+  const uploadTask =
+    uploadBytesResumable(
+      fileRef,
+      file,
+      {
 
-   hideProgress();
+        contentType:
+          file.type ||
+          "application/octet-stream",
 
- }finally{
 
-   publishing=false;
-   submit.disabled=!user;
+        customMetadata:{
 
- }
+          uploadedBy:
+            uid,
 
-};
+          originalName:
+            file.name,
+
+          app:
+            "DAKPROELITE"
+
+        }
+
+      }
+    );
+
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+
+
+      uploadTask.on(
+
+        "state_changed",
+
+
+        snapshot => {
+
+          const percent =
+            snapshot.totalBytes
+            ? (
+                snapshot.bytesTransferred /
+                snapshot.totalBytes
+              ) * 100
+            : 0;
+
+
+          progressBar(
+            percent,
+            "Envoi vers Firebase Storage..."
+          );
+
+        },
+
+
+        error => {
+
+          reject(
+            error
+          );
+
+        },
+
+
+        async () => {
+
+          try{
+
+            const url =
+              await getDownloadURL(
+                uploadTask.snapshot.ref
+              );
+
+
+            resolve({
+
+              url:
+
+                url,
+
+              path:
+
+                path,
+
+              name:
+
+                filename,
+
+              size:
+
+                file.size,
+
+              mimeType:
+
+                file.type ||
+                "application/octet-stream",
+
+              ref:
+
+                uploadTask.snapshot.ref
+
+            });
+
+
+          }catch(error){
+
+            reject(
+              error
+            );
+
+          }
+
+        }
+
+      );
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   PUBLICATION FIREBASE
+============================================================ */
+
+form.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if(publishing){
+
+      return;
+
+    }
+
+
+    if(!user){
+
+      message(
+        "❌ Connectez-vous avant de publier."
+      );
+
+      return;
+
+    }
+
+
+    if(
+      !selectedFile ||
+      !uploadFile
+    ){
+
+      message(
+        "❌ Sélectionnez d'abord une photo ou un fichier."
+      );
+
+      return;
+
+    }
+
+
+    publishing =
+      true;
+
+
+    submit.disabled =
+      true;
+
+
+    let uploaded =
+      null;
+
+
+    try{
+
+
+      /* ======================================================
+         RECUPERATION FORMULAIRE
+      ====================================================== */
+
+      const type =
+        $("type").value;
+
+
+      const categorie =
+        $("categorie")
+        .value
+        .trim();
+
+
+      const nom =
+        $("nom")
+        .value
+        .trim();
+
+
+      const auteur =
+        $("auteur")
+        .value
+        .trim();
+
+
+      const description =
+        $("description")
+        .value
+        .trim();
+
+
+      const prixNormal =
+        Number(
+          $("prixNormal")
+          .value
+        );
+
+
+      const promoValue =
+        $("prixPromo")
+        .value;
+
+
+      const prixPromo =
+        promoValue === ""
+        ? null
+        : Number(
+            promoValue
+          );
+
+
+      const stock =
+        Number(
+          $("stock")
+          .value
+        );
+
+
+      /* ======================================================
+         VALIDATION
+      ====================================================== */
+
+      if(
+        !type ||
+        !categorie ||
+        !nom ||
+        !auteur ||
+        !description
+      ){
+
+        throw new Error(
+          "Veuillez remplir tous les champs obligatoires."
+        );
+
+      }
+
+
+      if(
+        !Number.isInteger(
+          prixNormal
+        ) ||
+        prixNormal < 0
+      ){
+
+        throw new Error(
+          "Prix normal invalide."
+        );
+
+      }
+
+
+      if(
+        prixPromo !== null &&
+        (
+          !Number.isInteger(
+            prixPromo
+          ) ||
+          prixPromo < 0
+        )
+      ){
+
+        throw new Error(
+          "Prix promotionnel invalide."
+        );
+
+      }
+
+
+      if(
+        prixPromo !== null &&
+        prixNormal > 0 &&
+        prixPromo >= prixNormal
+      ){
+
+        throw new Error(
+          "Le prix promotionnel doit être inférieur au prix normal."
+        );
+
+      }
+
+
+      if(
+        !Number.isInteger(
+          stock
+        ) ||
+        stock < 0
+      ){
+
+        throw new Error(
+          "Stock invalide."
+        );
+
+      }
+
+
+      /* ======================================================
+         UPLOAD STORAGE
+      ====================================================== */
+
+      progressBar(
+        0,
+        "Préparation de la publication..."
+      );
+
+
+      uploaded =
+        await uploadMedia(
+          uploadFile,
+          user.uid
+        );
+
+
+      /* ======================================================
+         CREATION ID
+      ====================================================== */
+
+      const publicationRef =
+        push(
+          ref(
+            database,
+            NODE
+          )
+        );
+
+
+      const publicationId =
+        publicationRef.key;
+
+
+      if(!publicationId){
+
+        throw new Error(
+          "Impossible de générer l'identifiant de publication."
+        );
+
+      }
+
+
+      const now =
+        new Date()
+        .toISOString();
+
+
+      /* ======================================================
+         OBJET COMPLET
+      ====================================================== */
+
+      const publication = {
+
+        /* IDENTIFICATION */
+
+        id:
+          publicationId,
+
+        publicationId:
+          publicationId,
+
+
+        /* INFORMATIONS */
+
+        type:
+          type,
+
+        categorie:
+          categorie,
+
+        nom:
+          nom,
+
+        titre:
+          nom,
+
+        auteur:
+          auteur,
+
+
+        /* VENDEUR */
+
+        createdBy:
+          user.uid,
+
+        sellerId:
+          user.uid,
+
+        vendeurId:
+          user.uid,
+
+
+        /* PRIX */
+
+        prixNormal:
+          prixNormal,
+
+        prixPromo:
+          prixPromo,
+
+        prix:
+          prixPromo !== null
+          ? prixPromo
+          : prixNormal,
+
+
+        /* STOCK */
+
+        stock:
+          stock,
+
+
+        /* DESCRIPTION */
+
+        description:
+          description,
+
+
+        /* MEDIA */
+
+        imageUrl:
+          mediaType === "image"
+          ? uploaded.url
+          : "",
+
+
+        mediaUrl:
+          uploaded.url,
+
+
+        url:
+          uploaded.url,
+
+
+        downloadUrl:
+          uploaded.url,
+
+
+        /* STORAGE */
+
+        mediaPath:
+          uploaded.path,
+
+
+        storagePath:
+          uploaded.path,
+
+
+        mediaName:
+          selectedFile.name,
+
+
+        originalFileName:
+          selectedFile.name,
+
+
+        storageFileName:
+          uploaded.name,
+
+
+        /* TYPE MEDIA */
+
+        typeMedia:
+          mediaType,
+
+
+        mediaType:
+          mediaType,
+
+
+        mimeType:
+          uploaded.mimeType,
+
+
+        /* TAILLES */
+
+        fileSize:
+          uploaded.size,
+
+
+        originalFileSize:
+          selectedFile.size,
+
+
+        /* TELECHARGEMENT */
+
+        downloadable:
+          mediaType === "image"
+          ? false
+          : $("downloadable").checked,
+
+
+        /* STATUT */
+
+        statut:
+          "active",
+
+
+        status:
+          "active",
+
+
+        /* APPLICATION */
+
+        app:
+          "DAKPROELITE",
+
+
+        source:
+          "vendeur",
+
+
+        /* DATES */
+
+        createdAt:
+          now,
+
+
+        updatedAt:
+          now
+
+      };
+
+
+      /* ======================================================
+         ENREGISTREMENT DANS REALTIME DATABASE
+      ====================================================== */
+
+      await set(
+        publicationRef,
+        publication
+      );
+
+
+      /* ======================================================
+         SUCCES
+      ====================================================== */
+
+      progressBar(
+        100,
+        "Publication enregistrée dans Firebase."
+      );
+
+
+      message(
+        "✅ Publication réussie ! Le produit est maintenant enregistré dans DAKPROÉLITE.",
+        "success"
+      );
+
+
+      /* ======================================================
+         RESET
+      ====================================================== */
+
+      form.reset();
+
+
+      selectedFile =
+        null;
+
+
+      uploadFile =
+        null;
+
+
+      mediaType =
+        null;
+
+
+      $("info").className =
+        "info";
+
+
+      $("preview").className =
+        "preview";
+
+
+      $("download").className =
+        "download";
+
+
+      fileInput.value =
+        "";
+
+
+      /*
+      Redirection après confirmation.
+      */
+
+      setTimeout(
+        () => {
+
+          window.location.href =
+            REDIRECT_URL;
+
+        },
+        1200
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "DAKPROÉLITE Publication:",
+        error
+      );
+
+
+      /* ======================================================
+         NETTOYAGE STORAGE
+         SI LA BASE DE DONNEES ECHOUE
+      ====================================================== */
+
+      if(uploaded?.ref){
+
+        try{
+
+          await deleteObject(
+            uploaded.ref
+          );
+
+        }catch(cleanupError){
+
+          console.error(
+            "Erreur nettoyage Storage:",
+            cleanupError
+          );
+
+        }
+
+      }
+
+
+      let text =
+        error?.message ||
+        "Erreur pendant la publication.";
+
+
+      /* ======================================================
+         ERREURS STORAGE
+      ====================================================== */
+
+      if(
+        error?.code ===
+        "storage/unauthorized"
+      ){
+
+        text =
+          "Firebase Storage refuse l'envoi. Vérifiez vos règles Storage.";
+
+      }
+
+
+      if(
+        error?.code ===
+        "storage/quota-exceeded"
+      ){
+
+        text =
+          "La capacité Firebase Storage est insuffisante.";
+
+      }
+
+
+      if(
+        error?.code ===
+        "storage/canceled"
+      ){
+
+        text =
+          "L'envoi du fichier a été annulé.";
+
+      }
+
+
+      if(
+        error?.code ===
+        "storage/unknown"
+      ){
+
+        text =
+          "Firebase Storage a rencontré une erreur inconnue.";
+
+      }
+
+
+      /* ======================================================
+         ERREURS REALTIME DATABASE
+      ====================================================== */
+
+      if(
+        error?.code ===
+        "database/permission-denied"
+      ){
+
+        text =
+          "Firebase Realtime Database refuse l'enregistrement. Vérifiez vos règles Database.";
+
+      }
+
+
+      if(
+        error?.code ===
+        "database/network-error"
+      ){
+
+        text =
+          "Erreur réseau pendant l'enregistrement Firebase.";
+
+      }
+
+
+      message(
+        "❌ " + text
+      );
+
+
+      hideProgress();
+
+
+    }finally{
+
+      publishing =
+        false;
+
+
+      submit.disabled =
+        !user;
+
+    }
+
+  }
+);
 
 </script>
+
 </body>
 </html>
