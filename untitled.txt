@@ -1,1861 +1,758 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="theme-color" content="#d4af37">
-<meta name="application-name" content="DAKPROÉLITE">
-<meta name="apple-mobile-web-app-title" content="DAKPROÉLITE">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<title>DAKPROÉLITE | La Référence Marketplace</title>
-
-<link rel="manifest" href="manifest.json">
-
-<link rel="icon" type="image/png"
-href="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png">
-
-<link rel="apple-touch-icon"
-href="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png">
-
-<link rel="preload" as="image"
-href="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-
-:root{
---gold:#d4af37;
---gold-light:#f3e5ab;
---black:#050505;
---dark:#0b0e13;
---soft-dark:#12161f;
---card:#ffffff;
---card-text:#1a1a1a;
---blue:#0066cc;
---blue-dark:#004a99;
---green:#15803d;
---green-hover:#166534;
---red:#dc2626;
---white:#fff;
---gray:#555;
---border:rgba(212,175,55,.30);
-}
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
-html{
-scroll-behavior:smooth;
--webkit-text-size-adjust:100%;
-}
-
-body{
-min-height:100vh;
-background:var(--black);
-color:var(--white);
-font-family:Poppins,sans-serif;
-display:flex;
-flex-direction:column;
-overflow-x:hidden;
-top:0!important;
-}
-
-button,
-input,
-select,
-textarea{
-font-family:inherit;
-}
-
-button,
-a{
--webkit-tap-highlight-color:transparent;
-}
-
-a{
-color:inherit;
-}
-
-/* =====================================================
-HEADER
-===================================================== */
-
-.header{
-position:sticky;
-top:0;
-z-index:5000;
-width:100%;
-min-height:82px;
-
-display:flex;
-align-items:center;
-
-gap:16px;
-
-padding:
-12px
-max(16px,env(safe-area-inset-right))
-12px
-max(16px,env(safe-area-inset-left));
-
-background:linear-gradient(
-to bottom,
-#131921,
-#050505
-);
-
-border-bottom:2px solid var(--gold);
-}
-
-/* =====================================================
-LOGO — AGRANDI ET GRAVÉ (FIXE & IMMÉDIAT)
-===================================================== */
-
-.logo-container{
-width:64px;
-height:64px;
-min-width:64px;
-min-height:64px;
-flex:0 0 64px;
-border-radius:50%;
-border:2px solid var(--gold);
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#000;
-cursor:pointer;
-box-shadow:
-inset 0 0 0 3px rgba(0,0,0,.95),
-inset 0 0 14px rgba(0,0,0,1),
-0 3px 8px rgba(0,0,0,.9);
-
-transform:none !important;
-transition:none !important;
-animation:none !important;
-}
-
-.logo{
-display:block;
-width:100%;
-height:100%;
-max-width:100%;
-max-height:100%;
-object-fit:contain;
-object-position:center;
-background:#000;
-
-transform:none !important;
-transition:none !important;
-animation:none !important;
-filter:none !important;
-}
-
-.fallback-logo{
-color:var(--gold);
-font-size:16px;
-font-weight:800;
-}
-
-/* =====================================================
-RECHERCHE
-===================================================== */
-
-.search-container{
-flex:1;
-min-width:0;
-display:flex;
-align-items:center;
-gap:8px;
-}
-
-#searchBar{
-flex:1;
-min-width:0;
-height:46px;
-border:1px solid var(--gold);
-border-radius:23px;
-background:#000;
-color:#fff;
-padding:0 16px;
-outline:none;
-font-size:13px;
-box-shadow:0 0 8px rgba(212,175,55,.12);
-text-overflow:ellipsis;
-}
-
-#searchBar::placeholder{
-color:#888;
-font-size:12px;
-}
-
-/* =====================================================
-NAVIGATION
-===================================================== */
-
-.nav-icons{
-display:flex;
-align-items:center;
-gap:16px;
-flex-shrink:0;
-}
-
-.nav-item{
-position:relative;
-min-width:44px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-color:#fff;
-text-decoration:none;
-font-size:10px;
-cursor:pointer;
-}
-
-.nav-item>span:first-child{
-font-size:20px;
-line-height:22px;
-}
-
-.nav-item:hover{
-color:var(--gold);
-}
-
-.cart-badge{
-position:absolute;
-top:-4px;
-right:2px;
-background:var(--red);
-color:#fff;
-font-size:10px;
-font-weight:700;
-border-radius:10px;
-padding:1px 5px;
-min-width:16px;
-text-align:center;
-line-height:1.2;
-display:none;
-border:1px solid var(--black);
-}
-
-/* =====================================================
-INSTALLATION
-===================================================== */
-
-#btnInstall{
-display:none;
-width:calc(100% - 30px);
-max-width:600px;
-margin:12px auto;
-padding:11px;
-background:#333;
-border:1px solid var(--gold);
-border-radius:10px;
-text-align:center;
-color:#fff;
-cursor:pointer;
-font-size:13px;
-font-weight:600;
-}
-
-/* =====================================================
-BANNIÈRES
-===================================================== */
-
-.banner-container{
-display:none;
-position:relative;
-width:94%;
-max-width:1400px;
-margin:15px auto;
-overflow:hidden;
-border:1px solid var(--gold);
-border-radius:15px;
-background:var(--soft-dark);
-box-shadow:0 5px 20px rgba(212,175,55,.15);
-}
-
-.banner-track{
-display:flex;
-width:100%;
-transition:transform .5s ease;
-}
-
-.banner-slide{
-position:relative;
-min-width:100%;
-}
-
-.banner-slide a{
-display:block;
-text-decoration:none;
-cursor:default;
-}
-
-.banner-slide img{
-width:100%;
-height:220px;
-display:block;
-object-fit:cover;
-}
-
-.banner-content{
-position:absolute;
-left:0;
-right:0;
-bottom:0;
-padding:15px;
-background:linear-gradient(to top, rgba(0,0,0,.92), transparent);
-}
-
-.banner-content h3{
-color:var(--gold);
-font-size:15px;
-margin-bottom:3px;
-}
-
-.banner-content p{
-color:#ddd;
-font-size:11px;
-}
-
-.banner-controls{
-position:absolute;
-top:10px;
-right:10px;
-z-index:20;
-display:flex;
-gap:6px;
-background:rgba(0,0,0,0.6);
-padding:4px 8px;
-border-radius:20px;
-border:1px solid var(--gold);
-}
-
-.banner-btn{
-background:transparent;
-border:none;
-color:var(--gold);
-font-size:14px;
-cursor:pointer;
-padding:2px 6px;
-line-height:1;
-user-select:none;
-transition:transform 0.1s ease;
-}
-
-.banner-btn:active{
-transform:scale(0.85);
-}
-
-.banner-dots{
-position:absolute;
-bottom:9px;
-right:12px;
-display:flex;
-gap:5px;
-z-index:10;
-}
-
-.dot{
-width:8px;
-height:8px;
-border-radius:50%;
-background:rgba(255,255,255,.4);
-cursor:pointer;
-}
-
-.dot.active{
-background:var(--gold);
-}
-
-/* =====================================================
-CATÉGORIES
-===================================================== */
-
-.cat-scroll{
-width:100%;
-display:flex;
-gap:9px;
-overflow-x:auto;
-padding:10px 15px 15px;
-scrollbar-width:none;
-}
-
-.cat-scroll::-webkit-scrollbar{
-display:none;
-}
-
-.cat-btn{
-flex:0 0 auto;
-padding:9px 17px;
-border:1px solid var(--gold);
-border-radius:22px;
-background:transparent;
-color:#fff;
-cursor:pointer;
-white-space:nowrap;
-font-size:12px;
-transition:background .2s, color .2s;
-}
-
-.cat-btn.active{
-background:var(--gold);
-color:#000;
-font-weight:700;
-}
-
-/* =====================================================
-PRODUITS (FOND BLANC ÉPURÉ)
-===================================================== */
-
-.products{
-width:96%;
-max-width:1800px;
-margin:10px auto;
-padding:16px;
-background:#ffffff;
-border-radius:12px;
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:16px;
-align-items:stretch;
-flex:1;
-box-shadow:0 4px 15px rgba(0,0,0,0.1);
-}
-
-@media(min-width:700px){
-.products{
-grid-template-columns:repeat(4,1fr);
-gap:18px;
-padding:22px;
-}
-}
-
-@media(min-width:1001px){
-.products{
-grid-template-columns:repeat(6,1fr);
-gap:20px;
-padding:24px;
-}
-}
-
-@media(min-width:1651px){
-.products{
-grid-template-columns:repeat(8,1fr);
-gap:20px;
-}
-}
-
-/* =====================================================
-CARTE PRODUIT (STYLES CLAIRS & HARMONIEUX)
-===================================================== */
-
-.card{
-position:relative;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-width:100%;
-padding:12px;
-background:#ffffff;
-border:1px solid #e2e8f0;
-border-radius:12px;
-box-shadow:0 4px 12px rgba(0,0,0,.05);
-transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-overflow:hidden;
-height:100%;
-}
-
-.card:hover{
-transform:translateY(-3px);
-border-color:var(--gold);
-box-shadow:0 6px 18px rgba(212,175,55,.15);
-}
-
-.badge-discount{
-position:absolute;
-top:10px;
-right:10px;
-z-index:5;
-padding:3px 7px;
-background:var(--red);
-color:#fff;
-border-radius:4px;
-font-size:9px;
-font-weight:800;
-box-shadow:0 2px 4px rgba(0,0,0,0.15);
-}
-
-.badge-boost{
-position:absolute;
-top:10px;
-left:10px;
-z-index:5;
-padding:3px 7px;
-background:linear-gradient(45deg, #d97706, #b45309);
-color:#fff;
-border-radius:4px;
-font-size:8px;
-font-weight:800;
-text-transform:uppercase;
-box-shadow:0 2px 4px rgba(0,0,0,0.15);
-}
-
-/* =====================================================
-MEDIA PRODUIT
-===================================================== */
-
-.media-container{
-width:100%;
-height:190px;
-position:relative;
-border-radius:8px;
-overflow:hidden;
-background:#f8fafc;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:4px;
-margin-bottom:10px;
-border:1px solid #f1f5f9;
-}
-
-.card img{
-width:100%;
-height:100%;
-object-fit:contain;
-object-position:center;
-border-radius:6px;
-display:block;
-}
-
-.card video{
-width:100%;
-height:100%;
-object-fit:contain;
-border-radius:6px;
-display:block;
-}
-
-.product-no-image{
-width:100%;
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-background:#f8fafc;
-color:#94a3b8;
-font-size:10px;
-text-align:center;
-border-radius:8px;
-}
-
-.product-no-image strong{
-font-size:24px;
-margin-bottom:3px;
-color:var(--gold);
-}
-
-.doc-box{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-width:100%;
-height:100%;
-background:#f1f5f9;
-color:#334155;
-text-decoration:none;
-padding:10px 5px;
-text-align:center;
-border-radius:8px;
-}
-
-.doc-box span{
-font-size:24px;
-margin-bottom:3px;
-}
-
-.doc-box p{
-font-size:9px;
-color:#334155;
-word-break:break-all;
-}
-
-/* =====================================================
-TEXTES PRODUITS (LISIBLES ET ÉLÉGANTS)
-===================================================== */
-
-.card h3{
-margin:4px 0 6px;
-font-size:13px;
-font-weight:600;
-line-height:1.35;
-word-break:break-word;
-color:var(--card-text);
-display:-webkit-box;
--webkit-line-clamp:2;
--webkit-box-orient:vertical;
-overflow:hidden;
-min-height:35px;
-}
-
-.card .description-complete{
-font-size:10.5px;
-color:var(--gray);
-line-height:1.4;
-margin-bottom:10px;
-display:-webkit-box;
--webkit-line-clamp:2;
--webkit-box-orient:vertical;
-overflow:hidden;
-word-break:break-word;
-min-height:29px;
-}
-
-.market-tags{
-display:flex;
-gap:4px;
-margin-bottom:6px;
-flex-wrap:wrap;
-}
-
-.tag-express{
-background:rgba(22,163,74,0.1);
-color:#15803d;
-border:1px solid rgba(22,163,74,0.2);
-font-size:8.5px;
-padding:2px 5px;
-border-radius:4px;
-font-weight:600;
-}
-
-.price-container{
-display:flex;
-align-items:baseline;
-gap:6px;
-flex-wrap:wrap;
-margin:6px 0 10px;
-}
-
-.price{
-color:#b48a00;
-font-size:14.5px;
-font-weight:800;
-letter-spacing:-0.2px;
-}
-
-.price-old{
-text-decoration:line-through;
-color:#94a3b8;
-font-size:10px;
-font-weight:400;
-}
-
-/* =====================================================
-BOUTONS D'ACTION (ÉGAUX ET BIEN ORGANISÉS)
-===================================================== */
-
-.card-actions-row{
-display:flex;
-gap:6px;
-margin-top:auto;
-width:100%;
-}
-
-.btn-action{
-flex:1;
-min-width:0;
-padding:8px 4px;
-border-radius:6px;
-font-size:10px;
-font-weight:700;
-text-align:center;
-text-decoration:none;
-cursor:pointer;
-transition:background .2s, transform .1s, opacity .2s;
-display:flex;
-align-items:center;
-justify-content:center;
-white-space:nowrap;
-border:none;
-box-shadow:0 1px 2px rgba(0,0,0,0.05);
-}
-
-.btn-action:active{
-transform:scale(.95);
-}
-
-.btn-view{
-background:var(--blue);
-color:#fff;
-}
-
-.btn-view:hover{
-background:var(--blue-dark);
-}
-
-.btn-copy{
-background:#334155;
-color:#fff;
-}
-
-.btn-copy:hover{
-background:#1e293b;
-}
-
-.btn-cart{
-background:var(--green);
-color:#fff;
-}
-
-.btn-cart:hover{
-background:var(--green-hover);
-}
-
-.affiliate-box{
-margin-top:4px;
-}
-
-.affiliate-input{
-display:none;
-width:100%;
-margin-top:4px;
-padding:4px;
-background:#fff;
-color:#000;
-border:1px solid #cbd5e1;
-border-radius:4px;
-font-size:8px;
-}
-
-/* =====================================================
-MODAL
-===================================================== */
-
-.modal-overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.85);
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:10000;
-padding:15px;
-}
-
-.modal-content{
-background:#0a0d14;
-border:1px solid var(--gold);
-border-radius:14px;
-padding:20px;
-max-width:520px;
-width:100%;
-max-height:90vh;
-overflow-y:auto;
-}
-
-/* =====================================================
-FOOTER
-===================================================== */
-
-.app-footer{
-margin-top:30px;
-background:#131921;
-border-top:2px solid var(--gold);
-color:#ddd;
-font-size:12px;
-}
-
-.footer-announcement{
-padding:16px 20px;
-text-align:center;
-background:var(--soft-dark);
-border-bottom:1px solid #333;
-}
-
-.footer-announcement h4{
-color:var(--gold);
-margin-bottom:5px;
-font-size:14px;
-}
-
-.footer-announcement p{
-color:#ccc;
-line-height:1.5;
-font-size:11px;
-}
-
-.footer-links-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
-width:100%;
-max-width:1000px;
-margin:auto;
-padding:25px 20px;
-}
-
-.footer-column h5{
-color:var(--gold);
-font-size:12px;
-margin-bottom:10px;
-text-transform:uppercase;
-}
-
-.footer-column ul{
-list-style:none;
-}
-
-.footer-column li{
-margin-bottom:8px;
-}
-
-.footer-column a{
-color:#aaa;
-text-decoration:none;
-transition:color .2s ease;
-}
-
-.footer-column a:hover{
-color:var(--gold);
-}
-
-.seller-link{
-color:var(--gold) !important;
-font-weight:600;
-}
-
-.seller-link:hover{
-color:#fff !important;
-}
-
-.footer-bottom-bar{
-padding:15px;
-background:#000;
-border-top:1px solid #222;
-text-align:center;
-color:#777;
-font-size:10px;
-}
-
-.loading-message,
-.empty-message{
-grid-column:1 / -1;
-padding:40px 20px;
-text-align:center;
-color:#64748b;
-font-size:13px;
-}
-
-.error-message{
-color:#dc2626;
-}
-
-@media(max-width:700px){
-.footer-links-grid{
-grid-template-columns:repeat(2,1fr);
-}
-}
-
-@media(max-width:500px){
-.header{
-gap:6px;
-padding-left:8px;
-padding-right:8px;
-min-height:68px;
-}
-
-.logo-container{
-width:50px;
-height:50px;
-min-width:50px;
-min-height:50px;
-flex-basis:50px;
-}
-
-.search-container{
-gap:4px;
-}
-
-#searchBar{
-height:40px;
-padding:0 10px;
-font-size:11px;
-}
-
-.nav-icons{
-gap:6px;
-}
-
-.nav-item{
-min-width:32px;
-font-size:8px;
-}
-
-.nav-item>span:first-child{
-font-size:16px;
-}
-
-.footer-links-grid{
-grid-template-columns:1fr;
-}
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio de Publication - DAKPRO ÉLITE</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs (v9 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <style>
+    :root {
+      --primary-gold: #d4af37;
+      --secondary-gold: #b8860b;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --info-color: #2563eb;
+      --bg-light: #f8fafc;
+      --success-color: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); padding: 20px; }
+
+    .studio-container {
+      max-width: 950px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .studio-header {
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--primary-gold);
+    }
+
+    .studio-header h2 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary-gold);
+    }
+
+    .stepper-nav {
+      display: flex;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .step-btn {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .step-btn.active {
+      color: var(--dark-bg);
+      border-bottom-color: var(--primary-gold);
+      background: #fff;
+    }
+
+    .studio-content {
+      padding: 24px;
+    }
+
+    .step-panel {
+      display: none;
+    }
+
+    .step-panel.active {
+      display: block;
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--primary-gold);
+      background: #fcfbf7;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .upload-dropzone:hover {
+      background: #f5efe0;
+    }
+
+    .upload-dropzone i {
+      font-size: 48px;
+      color: var(--secondary-gold);
+      margin-bottom: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .media-preview-box {
+      margin-top: 16px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-preview-box img, .media-preview-box video {
+      max-width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+    }
+
+    .doc-preview-box {
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+
+    .progress-wrapper {
+      display: none;
+      margin-top: 16px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      height: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary-gold), var(--primary-gold));
+      width: 0%;
+      transition: width 0.2s ease-in-out;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .actions-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text-main);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--dark-bg);
+      color: var(--primary-gold);
+      border: 1px solid var(--primary-gold);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover { background: #000; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  </style>
 </head>
-
 <body>
 
-<!-- =====================================================
-HEADER
-===================================================== -->
-
-<header class="header">
-
-<div
-class="logo-container"
-id="logoButton">
-
-<img
-class="logo"
-id="appLogo"
-src="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png"
-alt="Logo DAKPROÉLITE"
-loading="eager"
-decoding="sync">
-
-<span
-class="fallback-logo"
-id="fallbackLogo"
-style="display:none">
-DP
-</span>
-
-</div>
-
-<div class="search-container">
-
-<input
-type="search"
-id="searchBar"
-autocomplete="off"
-placeholder="Rechercher des produits sur DAKPROÉLITE...">
-
-</div>
-
-<div class="nav-icons">
-
-<a
-href="panier.html"
-class="nav-item"
-id="navCartLink">
-
-<span>🛒</span>
-
-<span
-class="cart-badge"
-id="cartBadge">
-0
-</span>
-
-<span>Panier</span>
-
-</a>
-
-<a
-href="profil-acheteur.html"
-class="nav-item">
-
-<span>👤</span>
-
-<span>Compte</span>
-
-</a>
-
-</div>
-
-</header>
-
-<!-- =====================================================
-INSTALLATION PWA
-===================================================== -->
-
-<div id="btnInstall">
-Installer l'application sur l'appareil
-</div>
-
-<!-- =====================================================
-BANNIÈRES
-===================================================== -->
-
-<section
-class="banner-container"
-id="bannerContainer">
-
-<div class="banner-controls">
-<button type="button" class="banner-btn" id="btnBannerPrev" title="Précédent">◄</button>
-<button type="button" class="banner-btn" id="btnBannerPause" title="Arrêter / Reprendre">⏸</button>
-<button type="button" class="banner-btn" id="btnBannerNext" title="Suivant">►</button>
-</div>
-
-<div
-class="banner-track"
-id="bannerTrack">
-</div>
-
-<div
-class="banner-dots"
-id="bannerDots">
-</div>
-
-</section>
-
-<!-- =====================================================
-CATÉGORIES
-===================================================== -->
-
-<nav
-class="cat-scroll"
-id="catMenu">
-</nav>
-
-<!-- =====================================================
-PRODUITS (ZONE BLANCHE)
-===================================================== -->
-
-<main
-class="products"
-id="products">
-<div class="loading-message">Chargement des produits...</div>
-</main>
-
-<div
-id="productModalContainer">
-</div>
-
-<!-- =====================================================
-FOOTER
-===================================================== -->
-
-<footer class="app-footer">
-
-<section class="footer-announcement">
-<h4 id="fayaBuzzTitle">⚡ Annonce Officielle</h4>
-<p id="fayaBuzzText">Bienvenue sur DAKPROÉLITE, votre plateforme de référence !</p>
-</section>
-
-<div class="footer-links-grid">
-
-<!-- NAVIGATION -->
-<div class="footer-column">
-<h5>Navigation & Aide</h5>
-<ul>
-<li><a href="support-rapide.html">Support Rapide</a></li>
-<li><a href="aide.html">Centre d'aide général</a></li>
-<li><a href="profil-acheteur.html">Mon Compte</a></li>
-</ul>
-</div>
-
-<!-- RÈGLES -->
-<div class="footer-column">
-<h5>Règles & Légal</h5>
-<ul>
-<li><a href="reglement-interieur.html">Règlement Intérieur</a></li>
-<li><a href="politique-confidentialite.html">Politique de Confidentialité</a></li>
-</ul>
-</div>
-
-<!-- VENDEUR -->
-<div class="footer-column">
-<h5>Gagner de l'argent</h5>
-<ul>
-<li><a href="programme-ambassadeur.html">Programme Ambassadeur</a></li>
-<li><a href="programme-ambassadeur.html">Affiliation</a></li>
-<li><a href="https://vendeur.dakproelite.com" class="seller-link" id="sellerLinkBtn">🛍️ Devenir Vendeur</a></li>
-</ul>
-</div>
-
-</div>
-
-<div class="footer-bottom-bar">
-© 2026 DAKPROÉLITE. Tous droits réservés.
-</div>
-
-</footer>
-
-<!-- =====================================================
-SUPPORT RAPIDE
-===================================================== -->
-
-<script src="support-rapide.js"></script>
-
-<!-- =====================================================
-FIREBASE
-===================================================== -->
-
-<script type="module">
-
-import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-import {
-getDatabase,
-ref,
-onValue,
-get,
-update,
-set
-}
-from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-import {
-getAuth,
-onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-
-/* =====================================================
-FIREBASE CONFIG
-===================================================== */
-
-const firebaseConfig = {
-apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
-authDomain: "dakproelite.firebaseapp.com",
-databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
-projectId: "dakproelite",
-storageBucket: "dakproelite.firebasestorage.app",
-messagingSenderId: "580591769206",
-appId: "1:580591769206:web:4f67f8aadbf3d051087157"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-
-window.dakproFirebase = { app, db, auth };
-window.allProductsData = [];
-
-const siteContext = { currentUser: null, userData: null };
-
-let currentCat = "Tous";
-let currentIndex = 0;
-let totalSlides = 0;
-let autoPlay = null;
-let isPaused = false;
-
-
-/* =====================================================
-CACHE
-===================================================== */
-
-(function chargerCacheImmediat(){
-try{
-const cachedProducts = localStorage.getItem("dakpro_cached_publications");
-if(cachedProducts){
-window.allProductsData = JSON.parse(cachedProducts);
-buildCategories();
-filterProducts();
-}
-}catch(e){
-console.warn("Cache indisponible:", e);
-}
-})();
-
-
-/* =====================================================
-UTILISATEUR + PANIER
-===================================================== */
-
-onAuthStateChanged(auth, user=>{
-siteContext.currentUser = user || null;
-if(user){
-listenToCartBadge(user.uid);
-}else{
-updateCartBadgeDisplay(0);
-}
-});
-
-
-function updateCartBadgeDisplay(count){
-const badge = document.getElementById("cartBadge");
-if(!badge)return;
-if(count>0){
-badge.textContent = count;
-badge.style.display = "inline-block";
-}else{
-badge.style.display = "none";
-}
-}
-
-
-function listenToCartBadge(uid){
-const cartRef = ref(db, `users/${uid}/panier`);
-onValue(cartRef, snapshot=>{
-const data = snapshot.val();
-if(!data || typeof data!=="object"){
-updateCartBadgeDisplay(0);
-return;
-}
-let totalItems=0;
-Object.values(data).forEach(item=>{
-totalItems += parseInt(item.quantite || 1, 10);
-});
-updateCartBadgeDisplay(totalItems);
-});
-}
-
-
-/* =====================================================
-SÉCURITÉ HTML
-===================================================== */
-
-function escapeHTML(value){
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-}
-
-function escapeAttribute(value){
-return escapeHTML(value);
-}
-
-
-/* =====================================================
-LOGO
-===================================================== */
-
-document.getElementById("logoButton")?.addEventListener("click", ()=>{
-window.location.href = "index.html";
-});
-
-const appLogo = document.getElementById("appLogo");
-const fallbackLogo = document.getElementById("fallbackLogo");
-
-appLogo?.addEventListener("error", ()=>{
-appLogo.style.display = "none";
-if(fallbackLogo){
-fallbackLogo.style.display = "block";
-}
-});
-
-
-/* =====================================================
-GESTION DYNAMIQUE LIEN VENDEUR
-===================================================== */
-
-document.getElementById("sellerLinkBtn")?.addEventListener("click", function(e){
-e.preventDefault();
-const targetUrl = this.getAttribute("href");
-this.innerHTML = "⏳ Traitement...";
-this.style.pointerEvents = "none";
-setTimeout(()=>{
-window.location.href = targetUrl;
-}, 300);
-});
-
-
-/* =====================================================
-PRODUITS FIREBASE
-===================================================== */
-
-function loadProducts(){
-onValue(ref(db,"publications"), snapshot=>{
-const data = snapshot.val();
-if(!data || typeof data!=="object"){
-window.allProductsData = [];
-buildCategories();
-renderProducts([]);
-return;
-}
-
-window.allProductsData = Object.entries(data)
-.map(([id,product])=>{
-if(!product || typeof product!=="object") return null;
-return { id, ...product };
-})
-.filter(product=>{
-if(!product) return false;
-if(product.actif===false) return false;
-return true;
-});
-
-try{
-localStorage.setItem("dakpro_cached_publications", JSON.stringify(window.allProductsData));
-}catch(e){}
-
-buildCategories();
-filterProducts();
-checkUrlForSharedProduct();
-}, error=>{
-console.error("Erreur publications:", error);
-if(!window.allProductsData.length){
-document.getElementById("products").innerHTML = `
-<div class="empty-message error-message">
-Impossible de charger les publications. Vérifiez votre connexion.
-</div>
-`;
-}
-});
-}
-
-
-/* =====================================================
-CATÉGORIES
-===================================================== */
-
-function buildCategories(){
-const categories=[
-"Tous",
-...new Set(
-window.allProductsData
-.map(p=>p.categorie || p.category)
-.filter(Boolean)
-)
-];
-
-const menu = document.getElementById("catMenu");
-if(!menu)return;
-
-menu.innerHTML = categories.map(category=>{
-const safe = escapeHTML(category);
-return `
-<button
-type="button"
-class="cat-btn ${category===currentCat?"active":""}"
-data-category="${safe}">
-${safe}
-</button>
-`;
-}).join("");
-
-menu.querySelectorAll(".cat-btn").forEach(button=>{
-button.addEventListener("click", ()=>{
-currentCat = button.dataset.category;
-menu.querySelectorAll(".cat-btn").forEach(item=>item.classList.remove("active"));
-button.classList.add("active");
-filterProducts();
-});
-});
-}
-
-
-document.getElementById("searchBar")?.addEventListener("input", filterProducts);
-
-
-/* =====================================================
-FILTRAGE
-===================================================== */
-
-function getFilteredProducts(){
-const search = (document.getElementById("searchBar")?.value || "").toLowerCase().trim();
-
-return window.allProductsData.filter(product=>{
-const name = String(product.nom || product.title || product.name || "").toLowerCase();
-const description = String(product.description || "").toLowerCase();
-const category = String(product.categorie || product.category || "").toLowerCase();
-const productCategory = product.categorie || product.category || "";
-
-const categoryOK = currentCat==="Tous" || productCategory===currentCat;
-
-return categoryOK && (
-name.includes(search) ||
-description.includes(search) ||
-category.includes(search)
-);
-});
-}
-
-function filterProducts(){
-renderProducts(getFilteredProducts());
-}
-
-
-/* =====================================================
-CARTE PRODUIT (3 BOUTONS ÉGAUX ET ÉPURÉS)
-===================================================== */
-
-function generateCardHTML(product, uid){
-const id = encodeURIComponent(product.id || "");
-const siteBase = "https://dakproelite.com";
-const affiliateURL = `${siteBase}/?id=${id}${uid ? "&ref="+encodeURIComponent(uid) : ""}`;
-
-const image = product.image || product.imageUrl || product.photo || product.img || "";
-const video = product.video || product.videoUrl || "";
-const documentUrl = product.document || product.documentUrl || "";
-
-const safeName = escapeHTML(product.nom || product.title || product.name || "Produit");
-const rawDesc = String(product.description || "");
-const shortDesc = rawDesc.length>70 ? rawDesc.substring(0,70)+"..." : rawDesc;
-const safeShortDesc = escapeHTML(shortDesc);
-
-const priceVal = parseFloat(product.prix!==undefined ? product.prix : (product.price!==undefined ? product.price : 0));
-const promoVal = product.prixPromo!==undefined ? parseFloat(product.prixPromo) : (product.promoPrice!==undefined ? parseFloat(product.promoPrice) : null);
-
-const hasPromo = promoVal!==null && !isNaN(promoVal) && promoVal>0 && promoVal<priceVal;
-let discountBadgeHTML = "";
-
-if(hasPromo && priceVal>0){
-const discountPercent = Math.round(((priceVal-promoVal)/priceVal)*100);
-discountBadgeHTML = `<span class="badge-discount">-${discountPercent}%</span>`;
-}
-
-const displayPrice = hasPromo ? escapeHTML(promoVal) : escapeHTML(priceVal);
-const currencySymbol = escapeHTML(product.devise || product.currency || "FCFA");
-
-const oldPriceHTML = hasPromo ? `<span class="price-old">${escapeHTML(priceVal)} ${currencySymbol}</span>` : "";
-const isVideo = Boolean(video) || /\.(mp4|webm|ogg)(\?|$)/i.test(image);
-const mediaSrc = video || image;
-let mediaHTML = "";
-
-if(isVideo && mediaSrc){
-mediaHTML = `<video src="${escapeAttribute(mediaSrc)}" controls preload="metadata"></video>`;
-}else if(documentUrl){
-mediaHTML = `
-<a href="${escapeAttribute(documentUrl)}" target="_blank" rel="noopener noreferrer" class="doc-box">
-<span>📄</span>
-<p>Consulter le document</p>
-</a>
-`;
-}else if(image){
-mediaHTML = `
-<img src="${escapeAttribute(image)}" alt="${safeName}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-<div class="product-no-image" style="display:none">
-<strong>📦</strong>
-<span>Image indisponible</span>
-</div>
-`;
-}else{
-mediaHTML = `
-<div class="product-no-image">
-<strong>📦</strong>
-<span>Image indisponible</span>
-</div>
-`;
-}
-
-return `
-<article class="card" data-product-id="${escapeAttribute(product.id || "")}">
-${product.boost ? `<span class="badge-boost">🔥 HOT</span>` : ""}
-${discountBadgeHTML}
-<div class="media-container">${mediaHTML}</div>
-<div>
-<div class="market-tags"><span class="tag-express">⚡ Livraison Rapide</span></div>
-<h3>${safeName}</h3>
-${safeShortDesc ? `<div class="description-complete">${safeShortDesc}</div>` : `<div class="description-complete">Découvrez ce produit d'exception sur DAKPROÉLITE.</div>`}
-</div>
-<div>
-<div class="price-container">
-<span class="price">${displayPrice} ${currencySymbol}</span>
-${oldPriceHTML}
-</div>
-<div class="card-actions-row">
-<a href="produit.html?id=${escapeAttribute(product.id || "")}" class="btn-action btn-view">👁️ Voir</a>
-<button type="button" class="btn-action btn-copy" data-affiliate="${escapeAttribute(affiliateURL)}">🔗 Copier</button>
-<button type="button" class="btn-action btn-cart" data-id="${escapeAttribute(product.id || "")}">🛒 Panier</button>
-</div>
-<div class="affiliate-box">
-<input type="text" class="affiliate-input" value="${escapeAttribute(affiliateURL)}" readonly>
-</div>
-</div>
-</article>
-`;
-}
-
-
-/* =====================================================
-AFFICHAGE PRODUITS
-===================================================== */
-
-function renderProducts(list){
-const container = document.getElementById("products");
-if(!container)return;
-
-if(!Array.isArray(list) || list.length===0){
-container.innerHTML = `<div class="empty-message">Aucun produit disponible pour le moment.</div>`;
-return;
-}
-
-const uid = siteContext.currentUser?.uid || "";
-container.innerHTML = list.map(product=>generateCardHTML(product, uid)).join("");
-
-container.querySelectorAll(".btn-copy").forEach(button=>{
-button.addEventListener("click", async event=>{
-event.stopPropagation();
-const link = button.dataset.affiliate;
-try{
-if(navigator.clipboard && window.isSecureContext){
-await navigator.clipboard.writeText(link);
-}else{
-throw new Error("Clipboard indisponible");
-}
-const oldText = button.textContent;
-button.textContent = "✅ Copié !";
-setTimeout(()=>{ button.textContent = oldText; }, 1800);
-}catch{
-const input = button.closest(".card").querySelector(".affiliate-input");
-if(input){
-input.style.display = "block";
-input.focus();
-input.select();
-document.execCommand("copy");
-input.style.display = "none";
-}
-const oldText = button.textContent;
-button.textContent = "✅ Copié !";
-setTimeout(()=>{ button.textContent = oldText; }, 1800);
-}
-});
-});
-
-container.querySelectorAll(".btn-cart").forEach(button=>{
-button.addEventListener("click", async event=>{
-event.stopPropagation();
-const productId = button.dataset.id;
-ajouterAuPanierDirect(productId, button);
-});
-});
-}
-
-
-/* =====================================================
-AJOUT PANIER
-===================================================== */
-
-async function ajouterAuPanierDirect(productId, buttonEl){
-const user = auth.currentUser;
-if(!user){
-alert("Veuillez vous connecter pour ajouter un article à votre panier.");
-window.location.href = "profil-acheteur.html";
-return;
-}
-
-const product = window.allProductsData.find(p=>String(p.id)===String(productId));
-if(product){
-try{
-const itemRef = ref(db, `users/${user.uid}/panier/${product.id}`);
-const gsItemRef = ref(db, `users/${user.uid}/gs/cart/${product.id}`);
-const snapshot = await get(itemRef);
-
-let currentQty = 1;
-if(snapshot.exists()){
-currentQty = parseInt(snapshot.val().quantite || 0, 10)+1;
-}
-
-const unitPrice = parseFloat(product.prixPromo || product.prix || product.price || 0);
-const nameVal = product.nom || product.title || product.name || "Produit";
-const imgVal = product.image || product.imageUrl || product.photo || "";
-const devVal = product.devise || product.currency || "FCFA";
-const totalPrice = parseFloat((currentQty * unitPrice).toFixed(2));
-
-const payload = {
-id: product.id,
-nom: nameVal,
-prixUnitaire: unitPrice,
-devise: devVal,
-image: imgVal,
-quantite: currentQty,
-total: totalPrice,
-updatedAt: Date.now()
-};
-
-const updates = {};
-updates[`users/${user.uid}/panier/${product.id}`] = payload;
-updates[`users/${user.uid}/gs/cart/${product.id}`] = payload;
-
-await update(ref(db), updates);
-
-const allGsCartSnap = await get(ref(db, `users/${user.uid}/gs/cart`));
-let globalTotal = 0;
-if(allGsCartSnap.exists()){
-Object.values(allGsCartSnap.val()).forEach(item=>{
-globalTotal += parseFloat(item.total || 0);
-});
-}
-
-await set(ref(db, `users/${user.uid}/gs/total`), globalTotal);
-
-if(buttonEl){
-const oldText = buttonEl.textContent;
-buttonEl.textContent = "✅ Ajouté !";
-setTimeout(()=>{ buttonEl.textContent = oldText; }, 1500);
-}
-
-}catch(error){
-console.error("Erreur d'ajout au panier:", error);
-alert("Impossible d'ajouter le produit au panier.");
-}
-}
-}
-
-
-/* =====================================================
-PRODUIT PARTAGÉ
-===================================================== */
-
-function checkUrlForSharedProduct(){
-const urlParams = new URLSearchParams(window.location.search);
-const productId = urlParams.get("pid") || urlParams.get("id");
-if(!productId)return;
-
-const product = window.allProductsData.find(p=>String(p.id)===String(productId));
-if(!product)return;
-
-const modalContainer = document.getElementById("productModalContainer");
-if(!modalContainer)return;
-
-const priceVal = parseFloat(product.prix!==undefined ? product.prix : (product.price!==undefined ? product.price : 0));
-const promoVal = product.prixPromo!==undefined ? parseFloat(product.prixPromo) : (product.promoPrice!==undefined ? parseFloat(product.promoPrice) : null);
-const hasPromo = promoVal!==null && !isNaN(promoVal) && promoVal>0 && promoVal<priceVal;
-const effectivePrice = hasPromo ? promoVal : priceVal;
-const currencySymbol = escapeHTML(product.devise || product.currency || "FCFA");
-
-modalContainer.innerHTML = `
-<div class="modal-overlay">
-<div class="modal-content">
-<img src="${escapeAttribute(product.image || product.imageUrl || "")}" alt="${escapeHTML(product.nom || "Produit")}" style="width:100%;height:auto;max-height:220px;object-fit:contain;background:#080b10;border-radius:10px;margin-bottom:12px;border:1px solid #333;">
-<h2 style="color:var(--gold);margin-bottom:8px;font-size:18px;">${escapeHTML(product.nom || product.title || "Produit DAKPROÉLITE")}</h2>
-<div class="price-container" style="margin-bottom:12px;">
-<span class="price" style="font-size:18px;">${effectivePrice} ${currencySymbol}</span>
-${hasPromo ? `<span class="price-old">${priceVal}${currencySymbol}</span>` : ""}
-</div>
-<div style="background:#12161f;padding:12px;border-radius:8px;border:1px solid #222;margin-bottom:15px;">
-<h4 style="color:#fff;font-size:12px;margin-bottom:4px;">Description :</h4>
-<p style="color:#ccc;font-size:13px;line-height:1.5;white-space:pre-line;">${escapeHTML(product.description || "Aucune description disponible.")}</p>
-</div>
-<div style="display:flex;gap:10px;">
-<button class="btn-action btn-cart" id="btnModalAddToCart" style="padding:10px;">💳 SHOP NOW (Acheter)</button>
-<button class="btn-action" id="btnModalClose" style="background:#222;color:#fff;border-color:#444;">Fermer</button>
-</div>
-</div>
-</div>
-`;
-
-document.getElementById("btnModalAddToCart")?.addEventListener("click", ()=>{
-ajouterAuPanierDirect(productId, document.getElementById("btnModalAddToCart"));
-});
-
-document.getElementById("btnModalClose")?.addEventListener("click", ()=>{
-modalContainer.innerHTML = "";
-});
-}
-
-
-/* =====================================================
-BANNIÈRES FIREBASE
-===================================================== */
-
-function loadBanners(){
-onValue(ref(db,"bannieres"), snapshot=>{
-const data = snapshot.val();
-const container = document.getElementById("bannerContainer");
-const track = document.getElementById("bannerTrack");
-const dots = document.getElementById("bannerDots");
-
-if(!container || !track || !dots)return;
-
-if(!data || typeof data!=="object"){
-container.style.display = "none";
-track.innerHTML = "";
-dots.innerHTML = "";
-return;
-}
-
-const banners = Object.entries(data)
-.map(([id,banner])=>({ id, ...banner }))
-.filter(banner=>banner && banner.actif!==false);
-
-if(!banners.length){
-container.style.display = "none";
-track.innerHTML = "";
-dots.innerHTML = "";
-return;
-}
-
-totalSlides = banners.length;
-
-track.innerHTML = banners.map(banner=>{
-const image = escapeAttribute(banner.image || "");
-const title = escapeHTML(banner.titre || "");
-const description = escapeHTML(banner.description || "");
-
-return `
-<div class="banner-slide">
-<a href="javascript:void(0)" onclick="event.preventDefault();">
-<img src="${image}" alt="${title || "Publicité"}" loading="lazy">
-<div class="banner-content">
-${title ? `<h3>${title}</h3>` : ""}
-${description ? `<p>${description}</p>` : ""}
-</div>
-</a>
-</div>
-`;
-}).join("");
-
-dots.innerHTML = banners.map((_,index)=>`<span class="dot ${index===0?"active":""}" data-slide="${index}"></span>`).join("");
-
-dots.querySelectorAll(".dot").forEach(dot=>{
-dot.addEventListener("click", event=>{
-event.stopPropagation();
-currentIndex = Number(dot.dataset.slide);
-updateSlide();
-});
-});
-
-currentIndex = 0;
-updateSlide();
-container.style.display = "block";
-startAutoPlay();
-});
-}
-
-
-function startAutoPlay(){
-if(autoPlay) clearInterval(autoPlay);
-autoPlay = setInterval(moveSlide, 4000);
-isPaused = false;
-const pauseBtn = document.getElementById("btnBannerPause");
-if(pauseBtn) pauseBtn.textContent = "⏸";
-}
-
-function stopAutoPlay(){
-if(autoPlay) clearInterval(autoPlay);
-autoPlay = null;
-isPaused = true;
-const pauseBtn = document.getElementById("btnBannerPause");
-if(pauseBtn) pauseBtn.textContent = "▶";
-}
-
-document.getElementById("btnBannerPrev")?.addEventListener("click", (e)=>{
-e.stopPropagation();
-if(totalSlides <= 0) return;
-currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-updateSlide();
-});
-
-document.getElementById("btnBannerNext")?.addEventListener("click", (e)=>{
-e.stopPropagation();
-if(totalSlides <= 0) return;
-currentIndex = (currentIndex + 1) % totalSlides;
-updateSlide();
-});
-
-document.getElementById("btnBannerPause")?.addEventListener("click", (e)=>{
-e.stopPropagation();
-if(isPaused){
-startAutoPlay();
-}else{
-stopAutoPlay();
-}
-});
-
-function updateSlide(){
-const track = document.getElementById("bannerTrack");
-const dots = document.querySelectorAll(".dot");
-if(!track)return;
-track.style.transform = `translateX(-${currentIndex*100}%)`;
-dots.forEach((dot,index)=>dot.classList.toggle("active", index===currentIndex));
-}
-
-function moveSlide(){
-if(totalSlides<=0)return;
-currentIndex = (currentIndex+1) % totalSlides;
-updateSlide();
-}
-
-
-/* =====================================================
-ANNONCE
-===================================================== */
-
-function loadAnnouncement(){
-onValue(ref(db, "annonces/faya_buzz"), snapshot=>{
-const data = snapshot.val();
-const title = document.getElementById("fayaBuzzTitle");
-const text = document.getElementById("fayaBuzzText");
-
-if(!title || !text)return;
-
-if(!data || data.actif===false){
-title.textContent = "⚡ Annonce Officielle";
-text.textContent = "Bienvenue sur DAKPROÉLITE, votre plateforme de référence !";
-return;
-}
-
-title.textContent = data.titre || "⚡ Annonce Officielle";
-text.textContent = data.texte || data.text || "Bienvenue sur DAKPROÉLITE, votre plateforme de référence !";
-});
-}
-
-
-/* =====================================================
-INSTALLATION PWA
-===================================================== */
-
-let deferredPrompt = null;
-
-window.addEventListener("beforeinstallprompt", event=>{
-event.preventDefault();
-deferredPrompt = event;
-const button = document.getElementById("btnInstall");
-if(button){
-button.style.display = "block";
-}
-});
-
-document.getElementById("btnInstall")?.addEventListener("click", async()=>{
-if(!deferredPrompt)return;
-deferredPrompt.prompt();
-await deferredPrompt.userChoice;
-deferredPrompt = null;
-document.getElementById("btnInstall").style.display = "none";
-});
-
-
-/* =====================================================
-SERVICE WORKER
-===================================================== */
-
-if("serviceWorker" in navigator){
-window.addEventListener("load", ()=>{
-navigator.serviceWorker.register("./sw.js")
-.then(()=>{ console.log("DAKPROÉLITE : Service Worker actif."); })
-.catch(error=>{ console.error("Service Worker :", error); });
-});
-}
-
-
-/* =====================================================
-DÉMARRAGE
-===================================================== */
-
-loadProducts();
-loadBanners();
-loadAnnouncement();
-
-</script>
-
+  <div class="studio-container">
+    <div class="studio-header">
+      <h2><i class="fa-brands fa-youtube"></i> Studio de Publication DAKPRO ÉLITE</h2>
+      <span style="font-size: 12px; opacity: 0.8;">Haute Vitesse & Support Multi-médias</span>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <div class="stepper-nav">
+      <button class="step-btn active" id="tabStep1" type="button" onclick="switchStep(1)">
+        <i class="fa-solid fa-file-video"></i> 1. Média
+      </button>
+      <button class="step-btn" id="tabStep2" type="button" onclick="switchStep(2)">
+        <i class="fa-solid fa-list-check"></i> 2. Détails
+      </button>
+      <button class="step-btn" id="tabStep3" type="button" onclick="switchStep(3)">
+        <i class="fa-solid fa-globe"></i> 3. Visibilité
+      </button>
+    </div>
+
+    <div class="studio-content">
+      <div id="statusAlert" class="alert"></div>
+
+      <form id="formStudio" onsubmit="publierRessource(event)">
+        
+        <!-- ÉTAPE 1 : SÉLECTION MÉDIA -->
+        <div class="step-panel active" id="panelStep1">
+          <div class="upload-dropzone" onclick="document.getElementById('pInputMedia').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>Sélectionnez votre fichier (Image, Vidéo, PDF)</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+              Envoi ultra-rapide optimisé
+            </p>
+            <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileSelection(event)">
+          </div>
+
+          <div style="margin-top: 16px; text-align: center;">
+            <span style="font-size: 12px; color: var(--text-muted);">- OU SAISIR UNE URL DIRECTE -</span>
+            <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/fichier.mp4" style="margin-top: 8px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);" oninput="handleUrlInput(this.value)">
+          </div>
+
+          <!-- Zone Aperçu -->
+          <div id="previewContainer" style="display:none;">
+            <div class="media-preview-box" id="boxMediaPreview">
+              <img id="previewImage" style="display:none;" alt="Aperçu Image">
+              <video id="previewVideo" controls preload="metadata" style="display:none;">
+                <source id="videoSource" src="" type="video/mp4">
+              </video>
+            </div>
+            <div id="previewDoc" class="doc-preview-box" style="display:none;">
+              <i class="fa-solid fa-file-pdf" style="font-size: 24px; color: #dc2626;"></i>
+              <span id="docName">Document sélectionné</span>
+            </div>
+          </div>
+
+          <!-- Progression du chargement -->
+          <div class="progress-wrapper" id="progressWrapper">
+            <div class="progress-bar-fill" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0%</div>
+          </div>
+
+          <div class="actions-footer">
+            <div></div>
+            <button type="button" class="btn-primary" onclick="switchStep(2)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 2 : DÉTAILS DU PRODUIT / CONTENU -->
+        <div class="step-panel" id="panelStep2">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pType">Type de Publication</label>
+              <select id="pType" required>
+                <option value="produit">Produit Physique / Numérique</option>
+                <option value="cours">Cours en ligne / Formation</option>
+                <option value="epreuve">Épreuve / Document d'étude</option>
+                <option value="lien">Lien Externe / Produit Copié</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pCategorie">Catégorie</label>
+              <select id="pCategorie" required>
+                <option value="" disabled selected>-- Choisir une catégorie --</option>
+                
+                <optgroup label="🚗 Véhicules & Auto-Moto">
+                  <option value="VEHICULES_VOITURES">Voitures & Automobiles</option>
+                  <option value="VEHICULES_MOTOS">Motos, Scooters & Triporteurs</option>
+                  <option value="VEHICULES_CAMIONS">Camions, Engins & Utilitaires</option>
+                  <option value="VEHICULES_PIECES">Pièces Détachées & Accessoires Auto</option>
+                  <option value="VEHICULES_NAUTISME">Bateaux, Jetskis & Nautisme</option>
+                </optgroup>
+
+                <optgroup label="📱 Téléphonie & Objets Connectés">
+                  <option value="TELEPHONIE_SMARTPHONES">Smartphones & Téléphones</option>
+                  <option value="TELEPHONIE_TABLETTES">Tablettes Tactiles</option>
+                  <option value="TELEPHONIE_MONTRES">Montres Connectées & Bracelets</option>
+                  <option value="TELEPHONIE_ACCESSOIRES">Coques, Écouteurs & Chargeurs</option>
+                </optgroup>
+
+                <optgroup label="💻 Informatique & High-Tech">
+                  <option value="INFORMATIQUE_PC_PORTABLE">Ordinateurs Portables</option>
+                  <option value="INFORMATIQUE_PC_BUREAU">Ordinateurs de Bureau & All-in-One</option>
+                  <option value="INFORMATIQUE_COMPOSANTS">Composants PC (RAM, Disques, Cartes Graphiques)</option>
+                  <option value="INFORMATIQUE_PERIPHERIQUES">Claviers, Souris & Écrans</option>
+                  <option value="INFORMATIQUE_RESEAUX">Réseaux, Modems & Wi-Fi</option>
+                  <option value="INFORMATIQUE_STOCKAGE">Clés USB, Disques Durs & Cartes Mémoire</option>
+                </optgroup>
+
+                <optgroup label="📺 Électronique, TV & Audio">
+                  <option value="TV_AUDIO_TV">Téléviseurs & Smart TV</option>
+                  <option value="TV_AUDIO_SON">Barres de son, Hifi & Home Cinéma</option>
+                  <option value="TV_AUDIO_CASQUES">Casques Audio & Écouteurs Bluetooth</option>
+                  <option value="TV_AUDIO_PHOTO">Appareils Photo, Caméras & Drones</option>
+                  <option value="TV_AUDIO_PROJECTEURS">Vidéoprojecteurs & Accessoires</option>
+                </optgroup>
+
+                <optgroup label="🏠 Maison, Mobilier & Bricolage">
+                  <option value="MAISON_MEUBLES">Meubles, Canapés & Literie</option>
+                  <option value="MAISON_DECORATION">Décoration, Tapis & Luminaires</option>
+                  <option value="MAISON_CUISINE">Arts de la Table & Ustensiles de Cuisine</option>
+                  <option value="MAISON_BRICOLAGE">Outillage & Bricolage</option>
+                  <option value="MAISON_JARDIN">Jardin, Éclairage Extérieur & Énergie Solaire</option>
+                </optgroup>
+
+                <optgroup label="⚡ Électroménager">
+                  <option value="ELECTRO_GROS">Réfrigérateurs, Congélateurs & Lave-linge</option>
+                  <option value="ELECTRO_CUISINE">Micro-ondes, Friteuses & Mixeurs</option>
+                  <option value="ELECTRO_CLIMATISATION">Climatiseurs, Ventilateurs & Chauffage</option>
+                  <option value="ELECTRO_ENTRETIEN">Aspirateurs & Nettoyeurs</option>
+                </optgroup>
+
+                <optgroup label="👔 Mode & Chaussures Homme">
+                  <option value="MODE_HOMME_CHAUSSURES">Chaussures Cuir, Baskets & Moccasins</option>
+                  <option value="MODE_HOMME_VETEMENTS">Costumes, Chemises & Pantalons</option>
+                  <option value="MODE_HOMME_ACCESSOIRES">Montres, Ceintures & Sacs</option>
+                </optgroup>
+
+                <optgroup label="👗 Mode & Beauté Femme">
+                  <option value="MODE_FEMME_VETEMENTS">Robes, Ensembles & Tops</option>
+                  <option value="MODE_FEMME_CHAUSSURES">Talons, Baskets & Sandales</option>
+                  <option value="MODE_FEMME_SACS">Sacs à Main, Pochettes & Bagages</option>
+                  <option value="MODE_FEMME_BIJOUX">Bijoux, Perruques & Accessoires</option>
+                  <option value="MODE_BEAUTE_COSMETIQUE">Soins du Visage, Maquillage & Parfums</option>
+                </optgroup>
+
+                <optgroup label="👶 Bébé, Enfant & Jouets">
+                  <option value="BEBE_VETEMENTS">Vêtements & Chaussures Bébé</option>
+                  <option value="BEBE_PUERICULTURE">Poussettes, Biberons & Sièges Auto</option>
+                  <option value="BEBE_JOUETS">Jouets, Jeux d'Éveil & Peluches</option>
+                </optgroup>
+
+                <optgroup label="🎮 Jeux Vidéo & Consoles">
+                  <option value="GAMING_CONSOLES">Consoles (PS5, Xbox, Nintendo Switch)</option>
+                  <option value="GAMING_JEUX">Jeux Vidéo (CD, Dématérialisés)</option>
+                  <option value="GAMING_ACCESSOIRES">Manettes, Casques Gaming & Sièges</option>
+                </optgroup>
+
+                <optgroup label="⚽ Sports, Fitness & Loisirs">
+                  <option value="SPORT_FITNESS">Équipements de Musculation & Fitness</option>
+                  <option value="SPORT_MAILLOTS">Maillots de Sport & Chaussures de Crampon</option>
+                  <option value="SPORT_CAMPING">Randonnée, Camping & Matériel Plein Air</option>
+                  <option value="SPORT_VELOS">Vélos, Trottinettes & Glisse</option>
+                </optgroup>
+
+                <optgroup label="🏢 Immobilier (Vente & Location)">
+                  <option value="IMMOBILIER_APPARTEMENTS">Appartements & Studios</option>
+                  <option value="IMMOBILIER_MAISONS">Maisons, Villas & Duplex</option>
+                  <option value="IMMOBILIER_TERRAINS">Terrains & Parcelle à vendre</option>
+                  <option value="IMMOBILIER_BUREAUX">Bureaux, Magasins & Entrepôts</option>
+                </optgroup>
+
+                <optgroup label="📚 Éducation, Formations & Documents">
+                  <option value="FORMATIONS">Formations Vidéo & Cours en Ligne</option>
+                  <option value="DOCUMENTS_EPREUVES">Épreuves, Annales & Corrigés</option>
+                  <option value="LIVRES_EBOOKS">Livres, E-books & Romans</option>
+                  <option value="LOGICIELS_LICENCES">Logiciels, Scripts & Clés de Licence</option>
+                </optgroup>
+
+                <optgroup label="🏗️ Industrie, Fournitures & B2B">
+                  <option value="INDUSTRIE_MACHINES">Machines Industrielles & Outillage de Chantier</option>
+                  <option value="INDUSTRIE_MATERIAUX">Matériaux de Construction & Solaire</option>
+                  <option value="INDUSTRIE_FOURNITURES_BUREAU">Fournitures de Bureau & Papeterie</option>
+                  <option value="INDUSTRIE_PACKAGING">Emballages, Cartons & Bouteilles</option>
+                </optgroup>
+
+                <optgroup label="💼 Services & Prestations">
+                  <option value="SERVICES_FREELANCE">Services Informatiques, Web & Design</option>
+                  <option value="SERVICES_TRANSPORT">Transport, Logistique & Déménagement</option>
+                  <option value="SERVICES_EVENEMENTIEL">Événementiel, Traiteur & Location</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pNom">Titre du contenu</label>
+              <input type="text" id="pNom" required placeholder="Ex: Chaussure Italienne en Cuir">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixNormal">Prix Normal (FCFA)</label>
+              <input type="number" id="pPrixNormal" required placeholder="50000">
+            </div>
+
+            <div class="form-group">
+              <label for="pPrixPromo">Prix Promo (FCFA)</label>
+              <input type="number" id="pPrixPromo" placeholder="35000">
+            </div>
+
+            <div class="form-group">
+              <label for="pStock">Quantité / Stock</label>
+              <input type="number" id="pStock" value="100" required>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="pDescription">Description</label>
+              <textarea id="pDescription" rows="4" required placeholder="Rédigez la description de votre produit ou cours..."></textarea>
+            </div>
+          </div>
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(1)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="button" class="btn-primary" onclick="switchStep(3)">Suivant <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- ÉTAPE 3 : VISIBILITÉ & CONFIGURATION -->
+        <div class="step-panel" id="panelStep3">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pAuteur">Nom du Vendeur / Formateur</label>
+              <input type="text" id="pAuteur" required placeholder="Ex: DAKPRO OFFICIAL">
+            </div>
+
+            <div class="form-group">
+              <label for="pVendeurPhone">Téléphone Contact WhatsApp</label>
+              <input type="tel" id="pVendeurPhone" value="+2290197455309" required>
+            </div>
+          </div>
+
+          <input type="hidden" id="finalMediaUrlHolder">
+          <input type="hidden" id="mediaTypeHolder" value="image">
+
+          <div class="actions-footer">
+            <button type="button" class="btn-secondary" onclick="switchStep(2)"><i class="fa-solid fa-arrow-left"></i> Précédent</button>
+            <button type="submit" class="btn-primary" id="btnSubmitPublish">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
+      authDomain: "dakproelite.firebaseapp.com",
+      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
+      projectId: "dakproelite",
+      storageBucket: "dakproelite.firebasestorage.app",
+      messagingSenderId: "580591769206",
+      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    let selectedFile = null;
+    let currentObjectUrl = null;
+
+    function switchStep(stepNumber) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(`panelStep${stepNumber}`).classList.add('active');
+      document.getElementById(`tabStep${stepNumber}`).classList.add('active');
+    }
+
+    function showAlert(message, type = 'error') {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerText = message;
+      alertBox.style.display = 'block';
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetAlert() {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.style.display = 'none';
+      alertBox.innerText = '';
+    }
+
+    function resetPreviews() {
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+      document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('previewVideo').style.display = 'none';
+      document.getElementById('previewDoc').style.display = 'none';
+      document.getElementById('previewImage').src = '';
+      document.getElementById('videoSource').src = '';
+    }
+
+    function handleFileSelection(event) {
+      resetAlert();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      document.getElementById('pUrlMediaDirect').value = '';
+      document.getElementById('finalMediaUrlHolder').value = '';
+      resetPreviews();
+
+      document.getElementById('previewContainer').style.display = 'block';
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      currentObjectUrl = URL.createObjectURL(file);
+
+      if (file.type.startsWith('image/')) {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = currentObjectUrl;
+        img.style.display = 'block';
+      } else if (file.type.startsWith('video/')) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        const src = document.getElementById('videoSource');
+        src.src = currentObjectUrl;
+        vid.load();
+        vid.style.display = 'block';
+      } else {
+        holderType.value = 'document';
+        document.getElementById('docName').innerText = file.name;
+        document.getElementById('previewDoc').style.display = 'block';
+      }
+    }
+
+    function handleUrlInput(url) {
+      resetAlert();
+      url = url.trim();
+      selectedFile = null;
+      resetPreviews();
+
+      if (!url) return;
+
+      document.getElementById('previewContainer').style.display = 'block';
+      document.getElementById('finalMediaUrlHolder').value = url;
+      const holderType = document.getElementById('mediaTypeHolder');
+
+      if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
+        holderType.value = 'video';
+        const vid = document.getElementById('previewVideo');
+        document.getElementById('videoSource').src = url;
+        vid.load();
+        vid.style.display = 'block';
+      } else if (url.match(/\.(pdf|doc|docx)($|\?)/i)) {
+        holderType.value = 'document';
+        document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
+        document.getElementById('previewDoc').style.display = 'block';
+      } else {
+        holderType.value = 'image';
+        const img = document.getElementById('previewImage');
+        img.src = url;
+        img.style.display = 'block';
+      }
+    }
+
+    function cleanFileName(filename) {
+      const ext = filename.substring(filename.lastIndexOf('.'));
+      const name = filename.substring(0, filename.lastIndexOf('.'));
+      const sanitized = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "_");
+      return `${sanitized}_${Date.now()}${ext}`;
+    }
+
+    async function publierRessource(event) {
+      event.preventDefault();
+      resetAlert();
+
+      const form = document.getElementById('formStudio');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btnSubmitPublish');
+      const progressWrapper = document.getElementById('progressWrapper');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Publication en cours...`;
+
+      try {
+        let finalUrl = document.getElementById('finalMediaUrlHolder').value;
+        const mediaType = document.getElementById('mediaTypeHolder').value;
+
+        if (selectedFile) {
+          progressWrapper.style.display = 'block';
+          progressBar.style.width = '0%';
+          progressText.innerText = 'Initialisation...';
+
+          let folderName = 'images';
+          if (mediaType === 'video') folderName = 'videos';
+          if (mediaType === 'document') folderName = 'documents';
+
+          const sanitizedName = cleanFileName(selectedFile.name);
+          const filePath = `${folderName}/${sanitizedName}`;
+          const storageRef = storage.ref().child(filePath);
+          
+          const uploadTask = storageRef.put(selectedFile);
+
+          finalUrl = await new Promise((resolve, reject) => {
+            uploadTask.on(
+              firebase.storage.TaskEvent.STATE_CHANGED,
+              (snapshot) => {
+                if (snapshot.totalBytes > 0) {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  progressBar.style.width = `${progress.toFixed(0)}%`;
+                  progressText.innerText = `Envoi (${mediaType.toUpperCase()}) : ${progress.toFixed(0)}%`;
+                }
+              },
+              (error) => {
+                reject(new Error("Échec du téléversement vers Firebase Storage : " + error.message));
+              },
+              async () => {
+                try {
+                  const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                  resolve(downloadURL);
+                } catch (err) {
+                  reject(err);
+                }
+              }
+            );
+          });
+        }
+
+        if (!finalUrl) {
+          throw new Error("Veuillez sélectionner un fichier (Image, Vidéo, Document) ou renseigner une URL valide.");
+        }
+
+        const currentUser = firebase.auth().currentUser;
+        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
+
+        const maintenant = new Date();
+        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        const newRef = db.ref('publications').push();
+        const pubData = {
+          id: newRef.key,
+          nom: document.getElementById('pNom').value.trim(),
+          auteur: document.getElementById('pAuteur').value.trim(),
+          vendeurNom: document.getElementById('pAuteur').value.trim(),
+          vendeurPhone: document.getElementById('pVendeurPhone').value.trim(),
+          vendeurUid: vendorUid,
+          createdBy: vendorUid,
+          categorie: document.getElementById('pCategorie').value,
+          type: document.getElementById('pType').value,
+          prix: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          prixNormal: Number(document.getElementById('pPrixNormal').value),
+          prixPromo: Number(document.getElementById('pPrixPromo').value) || Number(document.getElementById('pPrixNormal').value),
+          stock: Number(document.getElementById('pStock').value) || 0,
+          description: document.getElementById('pDescription').value.trim(),
+          image: finalUrl,
+          imageUrl: finalUrl,
+          mediaUrl: finalUrl,
+          mediaType: mediaType,
+          createdAt: maintenant.getTime(),
+          datePublication: dateLisible,
+          heurePublication: heureLisible,
+          dateEtHeure: `${dateLisible} à ${heureLisible}`
+        };
+
+        await newRef.set(pubData);
+
+        showAlert(`Publication réussie avec succès !`, 'success');
+        form.reset();
+        resetPreviews();
+        selectedFile = null;
+        progressWrapper.style.display = 'none';
+        switchStep(1);
+
+      } catch (err) {
+        showAlert(err.message, 'error');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant`;
+      }
+    }
+  </script>
 </body>
 </html>
