@@ -1,426 +1,4 @@
-[05/10 05:55] AGLIGNAMOU: <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulaire de Publication - DAKPRO ÉLITE</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDKs (compat v9) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Ajout du SDK Firebase Storage -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-  <style>
-    :root {
-      --primary-gold: #d4af37;
-      --secondary-gold: #b8860b;
-      --dark-bg: #0f172a;
-      --card-bg: #ffffff;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --info-color: #3b82f6;
-      --bg-light: #f8fafc;
-      --success-color: #10b981;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-main); padding: 20px; }
-
-    .content-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .content-card h3 {
-      font-size: 18px;
-      margin-bottom: 16px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-      background: #fff;
-    }
-
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--primary-gold);
-    }
-
-    .btn-action {
-      background-color: var(--dark-bg);
-      color: var(--primary-gold);
-      border: 1px solid var(--primary-gold);
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      width: 100%;
-    }
-
-    .btn-action:hover {
-      background-color: #000;
-    }
-
-    .btn-action:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .preview-container {
-      margin-top: 10px;
-    }
-
-    .image-preview, .video-preview {
-      max-width: 100%;
-      max-height: 250px;
-      border-radius: 8px;
-      border: 1px dashed var(--primary-gold);
-      object-fit: contain;
-      display: none;
-      margin-top: 10px;
-      background: #000;
-    }
-
-    .doc-preview {
-      display: none;
-      font-weight: 600;
-      color: var(--info-color);
-      padding: 12px;
-      border: 1px dashed var(--border-color);
-      border-radius: 8px;
-      margin-top: 10px;
-      background: var(--bg-light);
-    }
-
-    .alert {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 16px;
-      display: none;
-    }
-
-    .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-    .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-  </style>
-</head>
-<body>
-
-  <div class="content-card">
-    <h3><i class="fa-solid fa-store" style="color: var(--primary-gold);"></i> Publier sur DAKPRO ÉLITE</h3>
-    
-    <div id="statusAlert" class="alert"></div>
-
-    <form id="formPublication" onsubmit="window.publierElement(event)">
-      <div class="form-grid">
-        
-        <div class="form-group">
-          <label for="pType">Type de Publication</label>
-          <select id="pType" required>
-            <option value="produit">Produit Physique / Numérique</option>
-            <option value="cours">Cours en ligne / Formation</option>
-            <option value="epreuve">Épreuve / Document d'étude</option>
-            <option value="lien">Lien Externe / Produit Copié</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="pCategorie">Catégorie</label>
-          <select id="pCategorie" required>
-            <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
-            <option value="TELEPHONIE">Téléphones Portable & Smartphones</option>
-            <option value="INFORMATIQUE_PC">Ordinateurs Portables & PC de Bureau</option>
-            <option value="MODE_HOMME_CHAUSSURES">Chaussures Homme</option>
-            <option value="JEUX_VIDEO">Consoles & Jeux Vidéo</option>
-            <option value="SANTE_COMPLEMENTS">Santé & Bien-être</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="pNom">Titre de la publication</label>
-          <input type="text" id="pNom" required placeholder="Ex: Chaussures Cuir Italien">
-        </div>
-
-        <div class="form-group">
-          <label for="pAuteur">Auteur / Nom du Vendeur</label>
-          <input type="text" id="pAuteur" required placeholder="Ex: DAKJUBILE">
-        </div>
-
-        <div class="form-group">
-          <label for="pPrixNormal">Prix Normal (FCFA)</label>
-          <input type="number" id="pPrixNormal" required placeholder="150000">
-        </div>
-
-        <div class="form-group">
-          <label for="pPrixPromo">Prix Promo (FCFA)</label>
-          <input type="number" id="pPrixPromo" placeholder="140000">
-        </div>
-
-        <div class="form-group">
-          <label for="pStock">Stock disponible</label>
-          <input type="number" id="pStock" value="100" required>
-        </div>
-
-        <div class="form-group">
-          <label for="pVendeurPhone">Téléphone du Vendeur</label>
-          <input type="tel" id="pVendeurPhone" placeholder="+2290197455309" value="+2290197455309">
-        </div>
-
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label for="pInputMedia">Fichier Média (Image, Vidéo MP4 ou Document PDF/Word) OU URL Directe</label>
-          <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" onchange="window.handleMediaUpload(event)">
-          
-          <small style="color: var(--text-muted); margin-top: 6px;">Ou coller directement l'URL d'un média hébergé :</small>
-          <input type="url" id="pUrlMediaDirect" placeholder="https://exemple.com/image-ou-video.mp4" oninput="window.handleDirectUrlInput(this.value)">
-          
-          <input type="hidden" id="base64Publish">
-          <input type="hidden" id="mediaTypePublish" value="image">
-          
-          <div class="preview-container">
-            <img id="previewImage" class="image-preview" alt="Aperçu Image">
-            <video id="previewVideo" class="video-preview" controls></video>
-            <div id="previewDoc" class="doc-preview">
-              <i class="fa-solid fa-file-lines"></i> <span id="docName">Document sélectionné</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label for="pDescription">Description détaillée</label>
-          <textarea id="pDescription" rows="4" required placeholder="Décrivez clairement votre produit ou service..."></textarea>
-        </div>
-
-      </div>
-
-      <button type="submit" class="btn-action" id="btnPublierSubmit">
-        <i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource
-      </button>
-    </form>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDR7INHKaazaqZt-xIcjk10JFiy58uXKO8",
-      authDomain: "dakproelite.firebaseapp.com",
-      databaseURL: "https://dakproelite-default-rtdb.firebaseio.com",
-      projectId: "dakproelite",
-      storageBucket: "dakproelite.firebasestorage.app",
-      messagingSenderId: "580591769206",
-      appId: "1:580591769206:web:9dc5fc1ba7d6db46087157"
-    };
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-    const storage = firebase.storage();
-
-    let selectedFile = null;
-
-    function resetPreviews() {
-      document.getElementById('previewImage').style.display = 'none';
-      document.getElementById('previewVideo').style.display = 'none';
-      document.getElementById('previewDoc').style.display = 'none';
-      document.getElementById('previewImage').src = '';
-      document.getElementById('previewVideo').src = '';
-      document.getElementById('docName').innerText = '';
-    }
-
-    window.handleMediaUpload = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      selectedFile = file;
-      document.getElementById('pUrlMediaDirect').value = '';
-      resetPreviews();
-
-      const previewImg = document.getElementById('previewImage');
-      const previewVid = document.getElementById('previewVideo');
-      const previewDoc = document.getElementById('previewDoc');
-      const mediaTypeInput = document.getElementById('mediaTypePublish');
-
-      if (file.type.startsWith('image/')) {
-        mediaTypeInput.value = 'image';
-        previewImg.src = URL.createObjectURL(file);
-        previewImg.style.display = 'block';
-      } else if (file.type.startsWith('video/')) {
-        mediaTypeInput.value = 'video';
-        previewVid.src = URL.createObjectURL(file);
-        previewVid.style.display = 'block';
-      } else {
-        mediaTypeInput.value = 'document';
-        document.getElementById('docName').innerText = file.name;
-        previewDoc.style.display = 'block';
-      }
-    };
-
-    window.handleDirectUrlInput = function(url) {
-      url = url.trim();
-      selectedFile = null;
-      if (!url) {
-        resetPreviews();
-        document.getElementById('base64Publish').value = '';
-        return;
-      }
-
-      document.getElementById('pInputMedia').value = '';
-      resetPreviews();
-
-      const previewImg = document.getElementById('previewImage');
-      const previewVid = document.getElementById('previewVideo');
-      const previewDoc = document.getElementById('previewDoc');
-      const mediaTypeInput = document.getElementById('mediaTypePublish');
-
-      document.getElementById('base64Publish').value = url;
-
-      if (url.match(/\.(mp4|webm|ogg)($\vert{}\?)/i)) {         mediaTypeInput.value = 'video';         previewVid.src = url;         previewVid.style.display = 'block';       } else if (url.match(/\.(pdf\vert{}doc\vert{}docx)($|\?)/i)) {
-        mediaTypeInput.value = 'document';
-        document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
-        previewDoc.style.display = 'block';
-      } else {
-        mediaTypeInput.value = 'image';
-        previewImg.src = url;
-        previewImg.style.display = 'block';
-      }
-    };
-
-    window.publierElement = async function(event) {
-      event.preventDefault();
-
-      const btnSubmit = document.getElementById('btnPublierSubmit');
-      const alertBox = document.getElementById('statusAlert');
-      
-      btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Traitement / Envoi du fichier...`;
-
-      try {
-        const currentUser = firebase.auth().currentUser;
-        const vendorUid = currentUser ? currentUser.uid : "bi7zhxqoYfY3TyZ7dMJuj2yhsx82";
-        
-        let finalMediaUrl = document.getElementById('base64Publish').value;
-        const mediaType = document.getElementById('mediaTypePublish').value;
-
-        // UPLOAD DU FICHIER SUR FIREBASE STORAGE SI UN FICHIER EST SÉLECTIONNÉ
-        if (selectedFile) {
-          const filePath = `publications/${Date.now()}_${selectedFile.name}`;
-          const storageRef = storage.ref().child(filePath);
-          const uploadTask = await storageRef.put(selectedFile);
-          finalMediaUrl = await uploadTask.ref.getDownloadURL();
-        }
-
-        if (!finalMediaUrl) {
-          throw new Error("Veuillez sélectionner un fichier ou coller une URL valide.");
-        }
-
-        const type = document.getElementById('pType').value;
-        const categorie = document.getElementById('pCategorie').value;
-        const nom = document.getElementById('pNom').value.trim();
-        const auteur = document.getElementById('pAuteur').value.trim();
-        const prixNormal = Number(document.getElementById('pPrixNormal').value);
-        const prixPromo = Number(document.getElementById('pPrixPromo').value) || prixNormal;
-        const stock = Number(document.getElementById('pStock').value) || 0;
-        const description = document.getElementById('pDescription').value.trim();
-        const vendorPhone = document.getElementById('pVendeurPhone').value.trim();
-
-        const maintenant = new Date();
-        const dateTimestamp = maintenant.getTime();
-        const dateLisible = maintenant.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const heureLisible = maintenant.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const dateEtHeureComplete = `${dateLisible} à ${heureLisible}`;
-
-        const newRef = db.ref('publications').push();
-        const publicationId = newRef.key;
-
-        const publicationData = {
-          auteur: auteur,
-          categorie: categorie,
-          createdAt: dateTimestamp,
-          datePublication: dateLisible,
-          heurePublication: heureLisible,
-          dateEtHeure: dateEtHeureComplete,
-          createdBy: vendorUid,
-          description: description,
-          id: publicationId,
-          image: finalMediaUrl,
-          imageUrl: finalMediaUrl,
-          mediaType: mediaType,
-          nom: nom,
-          prix: prixPromo,
-          prixNormal: prixNormal,
-          prixPromo: prixPromo,
-          stock: stock,
-          type: type,
-          vendeurNom: auteur,
-          vendeurPhone: vendorPhone,
-          vendeurUid: vendorUid
-        };
-
-        await newRef.set(publicationData);
-
-        alertBox.className = "alert alert-success";
-        alertBox.innerText = "Publication réussie le " + dateEtHeureComplete + " !";
-        alertBox.style.display = "block";
-
-        document.getElementById('formPublication').reset();
-        resetPreviews();
-        selectedFile = null;
-        document.getElementById('base64Publish').value = '';
-
-      } catch (error) {
-        alertBox.className = "alert alert-error";
-        alertBox.innerText = "Erreur lors de la publication : " + error.message;
-        alertBox.style.display = "block";
-      } finally {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier la Ressource`;
-      }
-    };
-  </script>
-</body>
-</html>
-[05/10 07:18] AGLIGNAMOU: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -434,7 +12,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <style>
     :root {
@@ -618,7 +195,7 @@
       height: 100%;
       background: linear-gradient(90deg, var(--secondary-gold), var(--primary-gold));
       width: 0%;
-      transition: width 0.2s ease-in-out;
+      transition: width 0.1s ease-in-out;
     }
 
     .progress-text {
@@ -683,7 +260,7 @@
   <div class="studio-container">
     <div class="studio-header">
       <h2><i class="fa-brands fa-youtube"></i> Studio de Publication DAKPRO ÉLITE</h2>
-      <span style="font-size: 12px; opacity: 0.8;">Haute Vitesse & Support Multi-médias</span>
+      <span style="font-size: 12px; opacity: 0.8;">Cloudinary Haute Vitesse & Multi-médias</span>
     </div>
 
     <!-- Stepper Navigation -->
@@ -710,7 +287,7 @@
             <i class="fa-solid fa-cloud-arrow-up"></i>
             <h3>Sélectionnez votre fichier (Image, Vidéo, PDF)</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
-              Envoi ultra-rapide optimisé
+              Envoi direct et rapide vers Cloudinary avec compteur de progression
             </p>
             <input type="file" id="pInputMedia" accept="image/*,video/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileSelection(event)">
           </div>
@@ -734,7 +311,7 @@
             </div>
           </div>
 
-          <!-- Progression du chargement -->
+          <!-- Progression du chargement Cloudinary avec Compteur dynamique -->
           <div class="progress-wrapper" id="progressWrapper">
             <div class="progress-bar-fill" id="progressBar"></div>
             <div class="progress-text" id="progressText">0%</div>
@@ -949,7 +526,10 @@
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.database();
-    const storage = firebase.storage();
+
+    // Configuration Cloudinary
+    const CLOUDINARY_CLOUD_NAME = "iufene3y";
+    const CLOUDINARY_UPLOAD_PRESET = "dakproelite_preset";
 
     let selectedFile = null;
     let currentObjectUrl = null;
@@ -1035,13 +615,7 @@
       document.getElementById('finalMediaUrlHolder').value = url;
       const holderType = document.getElementById('mediaTypeHolder');
 
-      if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
-        holderType.value = 'video';
-        const vid = document.getElementById('previewVideo');
-        document.getElementById('videoSource').src = url;
-        vid.load();
-        vid.style.display = 'block';
-      } else if (url.match(/\.(pdf|doc|docx)($|\?)/i)) {
+      if (url.match(/\.(mp4|webm|ogg)($\vert{}\?)/i)) { holderType.value = 'video'; const vid = document.getElementById('previewVideo'); document.getElementById('videoSource').src = url; vid.load(); vid.style.display = 'block'; } else if (url.match(/\.(pdf\vert{}doc\vert{}docx)($|\?)/i)) {
         holderType.value = 'document';
         document.getElementById('docName').innerText = url.split('/').pop().split('?')[0];
         document.getElementById('previewDoc').style.display = 'block';
@@ -1053,11 +627,46 @@
       }
     }
 
-    function cleanFileName(filename) {
-      const ext = filename.substring(filename.lastIndexOf('.'));
-      const name = filename.substring(0, filename.lastIndexOf('.'));
-      const sanitized = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "_");
-      return `${sanitized}_${Date.now()}${ext}`;
+    // Fonction Cloudinary avec compteur de progression en temps réel (0% à 100%)
+    function uploadToCloudinaryWithProgress(file, onProgress) {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        formData.append("folder", "dakproelite");
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, true);
+
+        // Écouteur d'événement pour calculer le pourcentage exact de 0 à 100%
+        xhr.upload.onprogress = function(event) {
+          if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            if (onProgress) {
+              onProgress(percentComplete);
+            }
+          }
+        };
+
+        xhr.onload = function() {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status >= 200 && xhr.status < 300 && data.secure_url) {
+              resolve(data.secure_url);
+            } else {
+              reject(new Error(data.error?.message || "Erreur lors de l'upload sur Cloudinary"));
+            }
+          } catch (e) {
+            reject(new Error("Erreur de traitement de la réponse Cloudinary."));
+          }
+        };
+
+        xhr.onerror = function() {
+          reject(new Error("Erreur réseau lors du téléversement vers Cloudinary. Vérifiez votre connexion."));
+        };
+
+        xhr.send(formData);
+      });
     }
 
     async function publierRessource(event) {
@@ -1085,40 +694,12 @@
         if (selectedFile) {
           progressWrapper.style.display = 'block';
           progressBar.style.width = '0%';
-          progressText.innerText = 'Initialisation...';
+          progressText.innerText = '0%';
 
-          let folderName = 'images';
-          if (mediaType === 'video') folderName = 'videos';
-          if (mediaType === 'document') folderName = 'documents';
-
-          const sanitizedName = cleanFileName(selectedFile.name);
-          const filePath = `${folderName}/${sanitizedName}`;
-          const storageRef = storage.ref().child(filePath);
-          
-          const uploadTask = storageRef.put(selectedFile);
-
-          finalUrl = await new Promise((resolve, reject) => {
-            uploadTask.on(
-              firebase.storage.TaskEvent.STATE_CHANGED,
-              (snapshot) => {
-                if (snapshot.totalBytes > 0) {
-                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  progressBar.style.width = `${progress.toFixed(0)}%`;
-                  progressText.innerText = `Envoi (${mediaType.toUpperCase()}) : ${progress.toFixed(0)}%`;
-                }
-              },
-              (error) => {
-                reject(new Error("Échec du téléversement vers Firebase Storage : " + error.message));
-              },
-              async () => {
-                try {
-                  const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                  resolve(downloadURL);
-                } catch (err) {
-                  reject(err);
-                }
-              }
-            );
+          // Lancement de l'upload avec mise à jour fluide de la barre de progression (0 à 100)
+          finalUrl = await uploadToCloudinaryWithProgress(selectedFile, (percent) => {
+            progressBar.style.width = percent + '%';
+            progressText.innerText = percent + '%';
           });
         }
 
@@ -1170,6 +751,7 @@
 
       } catch (err) {
         showAlert(err.message, 'error');
+        progressWrapper.style.display = 'none';
       } finally {
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publier maintenant`;

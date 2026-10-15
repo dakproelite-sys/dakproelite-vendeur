@@ -3,119 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAKPRO ÉLITE | Programme Ambassadeur & Affiliation Élite</title>
+    <title>Programme d'Affiliation - DAKPRO ÉLITE</title>
     <style>
-        :root { --gold: #d4af37; --dark: #0a0a0a; --card: #111; --border: #333; --success: #25d366; --accent: #3b82f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: #ccc; line-height: 1.6; padding: 20px; margin: 0; }
-        .container { max-width: 700px; margin: auto; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--gold); box-shadow: 0 4px 25px rgba(0,0,0,0.9); }
-        h1, h2, h3 { color: var(--gold); text-align: center; }
-        h1 { font-size: 24px; margin-bottom: 5px; }
-        h2 { font-size: 18px; margin-top: 30px; border-bottom: 1px solid var(--border); padding-bottom: 8px; text-align: left; }
-        .back-link { display: inline-block; color: var(--gold); margin-bottom: 20px; text-decoration: none; font-weight: bold; font-size: 14px; }
-        .back-link:hover { text-decoration: underline; }
-        
-        /* Barre supérieure : Navigation et Traducteur Google */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .policy-nav { display: flex; gap: 8px; flex-wrap: wrap; }
-        .policy-btn { background: #1a1a1a; color: var(--gold); border: 1px solid var(--gold); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 4px; }
-        .policy-btn:hover { background: var(--gold); color: #000; }
-
-        /* Widget de traduction Google personnalisé */
-        .translate-wrapper { background: #1a1a1a; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--gold); display: flex; align-items: center; gap: 6px; }
-        .goog-te-combo { background: #0a0a0a; color: var(--gold); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 12px; outline: none; cursor: pointer; }
-        .goog-te-banner-frame { display: none !important; }
-        body { top: 0 !important; }
-
-        .ambassador-hero { background: #1a1a1a; padding: 25px; border-left: 4px solid var(--gold); border-radius: 8px; margin: 20px 0; }
-        .commission-box { background: #0f1510; padding: 20px; border-radius: 12px; border: 1px solid var(--success); margin: 20px 0; }
-        .power-box { background: #10141f; padding: 20px; border-radius: 12px; border: 1px solid var(--accent); margin: 20px 0; }
-        
-        ul { padding-left: 20px; }
+        body { font-family: sans-serif; background: #0a0a0a; color: #ccc; line-height: 1.6; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #d4af37; }
+        h1, h2, h3 { color: #d4af37; text-align: center; }
+        .back-link { display: block; color: #d4af37; margin-bottom: 20px; text-decoration: none; font-size: 14px; }
+        .highlight { color: #d4af37; font-weight: bold; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #333; }
+        .btn-join { display: block; background: #d4af37; color: black; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 20px; }
+        ol { padding-left: 20px; }
         li { margin-bottom: 10px; }
-        strong { color: #fff; }
-        
-        .contact-footer { background: #151515; padding: 15px; border-radius: 10px; margin-top: 30px; text-align: center; border: 1px solid var(--border); }
-        .btn-wa { display: inline-block; background: var(--success); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; }
-        .footer-note { font-size: 12px; color: #777; text-align: center; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Lien de navigation interne pour rester cohérent avec votre Centre d'Aide -->
     <a href="centre-aide.html" class="back-link">← Retour au Centre d'Aide</a>
-    
-    <!-- Barre supérieure : Navigation et Traducteur Mondial -->
-    <div class="top-bar">
-        <div class="policy-nav">
-            <a href="politique-confidentialite.html" class="policy-btn">🛡️ Confidentialité</a>
-            <a href="reglement-interieur.html" class="policy-btn">📜 Règlement</a>
-            <a href="programme-ambassadeur.html" class="policy-btn" style="background: var(--gold); color: #000;">📦 Affiliation</a>
-        </div>
-        <div class="translate-wrapper">
-            <span style="font-size: 12px; color: var(--gold); font-weight: bold;">🌐 Langue :</span>
-            <div id="google_translate_element"></div>
-        </div>
+
+    <h1>📦 Programme d'Affiliation</h1>
+    <p style="text-align: center;"><em>Devenez ambassadeur DAKPRO ÉLITE et générez des revenus passifs.</em></p>
+
+    <div class="card">
+        <h3>Pourquoi nous rejoindre ?</h3>
+        <p>En tant qu'ambassadeur, vous recommandez les produits de notre plateforme. Chaque vente réalisée grâce à votre lien unique vous rapporte une commission directe sur votre portefeuille DAKPRO.</p>
     </div>
 
-    <h1>📦 Programme Ambassadeur & Affiliation Élite</h1>
-    <p style="text-align: center; color: #888; font-size: 14px; margin-top: 0;"><em>Propulsez votre réseau et générez des revenus exceptionnels avec DAKPRO ÉLITE.</em></p>
-    
-    <div class="ambassador-hero">
-        <h3 style="color: var(--gold); margin-top: 0; text-align: left;">🌟 Levier de Croissance & Liberté Financière</h3>
-        <p>"Le Programme Ambassadeur de DAKPRO ÉLITE a été stratégiquement conçu pour récompenser l'impact, le leadership et l'engagement de nos partenaires les plus ambitieux à travers l'Afrique et le monde."</p>
-        <p style="text-align: right; margin-bottom: 0; font-style: normal; font-weight: bold; color: var(--gold);">— David AGLIGNAMOU, Fondateur</p>
+    <h3>Comment ça marche ?</h3>
+    <ol>
+        <li><strong>Inscription :</strong> Activez votre statut d'affilié via le bouton ci-dessous.</li>
+        <li><strong>Partage :</strong> Obtenez votre lien unique et partagez-le sur vos réseaux sociaux.</li>
+        <li><strong>Suivi :</strong> Dès qu'un client achète via votre lien, la commission est automatiquement ajoutée à votre solde.</li>
+    </ol>
+
+    <h3>Structure des Commissions</h3>
+    <p>La valeur de votre commission est adaptée à la nature du produit :</p>
+    <ul>
+        <li><strong>Taux Standard :</strong> <span class="highlight">5%</span> sur la majorité du catalogue.</li>
+        <li><strong>Taux Premium :</strong> Jusqu'à <span class="highlight">10%</span> sur une sélection de produits spécifiques et promotions exclusives.</li>
+    </ul>
+    <p style="font-size: 13px; font-style: italic;">*Le taux appliqué est précisé sur la fiche de chaque article éligible.</p>
+
+    <h3>Vos Avantages</h3>
+    <ul>
+        <li><strong>Revenus sans limites :</strong> Plus vous partagez, plus vous gagnez.</li>
+        <li><strong>Tableau de bord dédié :</strong> Suivez vos clics, vos ventes et vos gains en temps réel.</li>
+        <li><strong>Paiement rapide :</strong> Vos commissions sont automatiquement créditées sur votre solde vendeur.</li>
+    </ul>
+
+    <div class="card">
+        <h3>Règles d'Or</h3>
+        <p style="font-size: 14px;">Pour maintenir la qualité de notre réseau, le spam et les méthodes de promotion trompeuses sont strictement interdits. Chaque ambassadeur doit agir avec intégrité.</p>
     </div>
 
-    <h2>1. Qu'est-ce que le Programme Ambassadeur ?</h2>
-    <p>En tant qu'ambassadeur ou affilié de <strong>DAKPRO ÉLITE</strong>, vous devenez un acteur clé de notre expansion e-commerce. Vous recommandez notre écosystème, nos services et nos produits certifiés, et vous toucherez des commissions financières directes et sécurisées sur chaque transaction générée par votre réseau.</p>
+    <a href="https://wa.me/2290197455309" class="btn-join">Activer mon statut d'Affilié</a>
 
-    <div class="commission-box">
-        <h3 style="color: var(--success); margin-top: 0; text-align: left;">💎 Structure des Rémunérations & Avantages</h3>
-        <ul>
-            <li><strong>Commissions sur Ventes & Parrainage :</strong> Recevez des pourcentages attractifs et immédiats sur chaque vente ou adhésion validée via votre lien d'affiliation unique.</li>
-            <li><strong>Traçabilité Automatique en Temps Réel :</strong> Votre tableau de bord personnel suit chaque clic, prospect, conversion et commission instantanément.</li>
-            <li><strong>Reversements Sécurisés :</strong> Vos gains sont audités et versés de manière transparente, garantissant une autonomie financière totale.</li>
-        </ul>
-    </div>
-
-    <h2>2. Les Règles d'Or de l'Affilié Professionnel</h2>
-    <div class="power-box">
-        <h3 style="color: #60a5fa; margin-top: 0; text-align: left;">🛡️ Éthique et Conformité du Réseau</h3>
-        <p>Pour préserver la réputation de prestige de la marque DAKPRO ÉLITE, chaque ambassadeur s'engage à respecter les principes suivants :</p>
-        <ul>
-            <li><strong>Transparence marketing :</strong> Interdiction formelle d'utiliser des méthodes trompeuses, du spam ou des fausses promesses pour recruter.</li>
-            <li><strong>Respect du protocole :</strong> Toute transaction issue du réseau doit observer nos standards de validation et de sécurité (notamment le système de scan QR).</li>
-            <li><strong>Intégrité de la marque :</strong> Valoriser l'excellence, la rigueur et le professionnalisme prônés par la plateforme.</li>
-        </ul>
-    </div>
-
-    <h2>3. Sanctions en Cas de Manquement</h2>
-    <p>Toute tentative de manipulation frauduleuse du système d'affiliation (faux parrainages, trafic artificiel, tromperie des clients) entraînera l'application immédiate de notre politique de tolérance zéro : gel instantané des commissions et bannissement définitif de l'écosystème DAKPRO ÉLITE.</p>
-
-    <div class="contact-footer">
-        <h3 style="margin-top: 0; color: var(--gold);">Prêt à devenir Ambassadeur Élite ?</h3>
-        <p style="font-size: 13px; color: #aaa;">Contactez notre cellule dédiée pour activer votre lien d'affiliation professionnel.</p>
-        📧 Email : <a href="mailto:Contact@dakproelite.com" style="color: var(--gold); text-decoration: none; font-weight: bold;">Contact@dakproelite.com</a><br>
-        <a href="https://wa.me/2290197455309" class="btn-wa">💬 Postuler / Contacter le Support WhatsApp</a>
-    </div>
-
-    <div class="footer-note">
-        © 2026 DAKPRO ÉLITE – Bâtir l'avenir du commerce numérique en toute confiance.
-    </div>
+    <p style="font-size: 12px; color: #888; text-align: center; margin-top: 20px;">
+        <em>DAKPRO ÉLITE se réserve le droit de modifier les taux de commission selon les campagnes promotionnelles en cours.</em>
+    </p>
 </div>
-
-<!-- Script Google Translate officiel pour la traduction mondiale instantanée -->
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'fr',
-            includedLanguages: 'en,es,fr,de,zh-CN,ar,pt,it',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
