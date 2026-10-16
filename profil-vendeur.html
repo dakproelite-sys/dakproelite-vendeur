@@ -119,15 +119,16 @@
       <h2>DAKPRO ÉLITE</h2>
     </div>
     <ul class="sidebar-menu">
-      <!-- 3 Menus de redirection externe -->
+      <!-- Le menu Accueil est maintenant placé en premier en haut de la liste -->
+      <li><a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">Accueil</span></a></li>
       <li><a href="dashboard-vendeur.html"><i class="fa-solid fa-chart-line"></i><span class="menu-text">Tableau de bord</span></a></li>
       <li><a href="boutique.html"><i class="fa-solid fa-store"></i><span class="menu-text">Ma Boutique</span></a></li>
       <li><a href="affiliation.html"><i class="fa-solid fa-users"></i><span class="menu-text">Affiliation</span></a></li>
+      <li><a href="profil.html"><i class="fa-solid fa-user-gear"></i><span class="menu-text">Mon Profil</span></a></li>
       
-      <!-- 3 Menus internes de la page -->
-      <li><a href="index.html"><i class="fa-solid fa-house"></i><span class="menu-text">1. Accueil</span></a></li>
-      <li class="active" onclick="window.showTab('publier', this)"><a><i class="fa-solid fa-plus-circle"></i><span class="menu-text">2. Publier Produit/Cours</span></a></li>
-      <li onclick="window.showTab('retrait', this)"><a><i class="fa-solid fa-wallet"></i><span class="menu-text">3. Retraits</span></a></li>
+      <!-- Menus internes de la page -->
+      <li class="active" onclick="window.showTab('publier', this)"><a><i class="fa-solid fa-plus-circle"></i><span class="menu-text">Publier Produit/Cours</span></a></li>
+      <li onclick="window.showTab('retrait', this)"><a><i class="fa-solid fa-wallet"></i><span class="menu-text">Retraits</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="window.deconnexionVendeur()"><i class="fa-solid fa-right-from-bracket"></i><span class="menu-text">Déconnexion</span></button>
@@ -201,18 +202,31 @@
     <!-- 2. RETRAIT SOLDE -->
     <section id="retrait" class="tab-section">
       <div class="content-card" id="cardProfilRetrait">
-        <h3>1. Enregistrement des Coordonnées de Retrait</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Renseignez obligatoirement le nom et le numéro de téléphone exacts sur lesquels recevoir vos fonds.</p>
+        <h3>1. Enregistrement des Coordonnées de Retrait & Paiement</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Renseignez vos informations de paiement exactes (Mobile Money ou Compte Bancaire) pour recevoir vos fonds en toute sécurité.</p>
         
         <form id="formProfilRetrait" onsubmit="window.enregistrerProfilRetrait(event)">
           <div class="form-grid">
             <div class="form-group">
-              <label>Nom & Prénom sur la carte d'identité *</label>
+              <label>Nom & Prénom du titulaire *</label>
               <input type="text" id="rProfilNom" required placeholder="Ex: Marc Aglignamou">
             </div>
             <div class="form-group">
-              <label>Numéro Téléphone Mobile Money *</label>
-              <input type="text" id="rProfilNumero" required placeholder="Ex: +2290197455309">
+              <label>Moyen de Paiement / Réseau *</label>
+              <select id="rProfilMoyen" required>
+                <option value="MTN MoMo">MTN Mobile Money</option>
+                <option value="Moov Money">Moov Money / Flooz</option>
+                <option value="Celtiis Cash">Celtiis Cash</option>
+                <option value="Wave">Wave</option>
+                <option value="Orange Money">Orange Money</option>
+                <option value="T-Money">T-Money</option>
+                <option value="M-Pesa">M-Pesa</option>
+                <option value="Carte Bancaire / Virement">Carte Bancaire / Virement (Visa / IBAN)</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Numéro de Téléphone ou Numéro de Compte / IBAN *</label>
+              <input type="text" id="rProfilNumero" required placeholder="Ex: +2290197455309 ou Numéro de compte bancaire">
             </div>
           </div>
           <button type="submit" class="btn-action"><i class="fa-solid fa-lock"></i> Enregistrer mes Identifiants de Retrait</button>
@@ -220,9 +234,10 @@
 
         <div id="boxProfilLocked" class="info-locked-box" style="display:none;">
           <h4 style="color: var(--success-color); font-size: 14px;"><i class="fa-solid fa-circle-check"></i> Coordonnées de Retrait Enregistrées</h4>
-          <p style="font-size: 13px; margin-top: 6px;"><strong>Nom du Bénéficiaire :</strong> <span id="dispProfilNom"></span></p>
-          <p style="font-size: 13px;"><strong>Numéro de Réception :</strong> <span id="dispProfilNum"></span></p>
-          <p style="font-size: 11px; color: var(--danger-color); margin-top: 8px;"><i class="fa-solid fa-lock"></i> Ces données sont verrouillées en base de données.</p>
+          <p style="font-size: 13px; margin-top: 6px;"><strong>Nom du Titulaire :</strong> <span id="dispProfilNom"></span></p>
+          <p style="font-size: 13px;"><strong>Moyen de Paiement :</strong> <span id="dispProfilMoyen"></span></p>
+          <p style="font-size: 13px;"><strong>Numéro / Compte de Réception :</strong> <span id="dispProfilNum"></span></p>
+          <p style="font-size: 11px; color: var(--danger-color); margin-top: 8px;"><i class="fa-solid fa-lock"></i> Ces données sont enregistrées et verrouillées pour sécuriser vos transferts.</p>
           <button class="btn-action" style="background:#e2e8f0; color:#334155; border:none; margin-top:10px;" onclick="window.contacterSupportModif()"><i class="fa-solid fa-headset"></i> Demander la modification au Support</button>
         </div>
       </div>
@@ -236,15 +251,6 @@
             <div class="form-group">
               <label>Montant à retirer (FCFA) *</label>
               <input type="number" id="rMontant" required min="1000" placeholder="Ex: 5000">
-            </div>
-            <div class="form-group">
-              <label>Réseau / Moyen de Paiement *</label>
-              <select id="rMoyen" required>
-                <option value="MTN MoMo">MTN Mobile Money</option>
-                <option value="Moov Money">Moov Money / Flooz</option>
-                <option value="Celtiis Cash">Celtiis Cash</option>
-                <option value="Wave">Wave</option>
-              </select>
             </div>
           </div>
           <button type="submit" class="btn-action" id="btnLancerRetrait"><i class="fa-solid fa-paper-plane"></i> Lancer le Retrait</button>
@@ -260,8 +266,8 @@
                 <th>Date</th>
                 <th>Bénéficiaire</th>
                 <th>Montant</th>
-                <th>Réseau</th>
-                <th>Numéro</th>
+                <th>Moyen</th>
+                <th>Numéro / Compte</th>
                 <th>Statut</th>
               </tr>
             </thead>
@@ -446,6 +452,7 @@
         document.getElementById('formProfilRetrait').style.display = 'none';
         document.getElementById('boxProfilLocked').style.display = 'block';
         document.getElementById('dispProfilNom').innerText = profilRetraitEnregistre.nom;
+        document.getElementById('dispProfilMoyen').innerText = profilRetraitEnregistre.moyenPaiement || "Mobile Money";
         document.getElementById('dispProfilNum').innerText = profilRetraitEnregistre.numero;
       } else {
         document.getElementById('formProfilRetrait').style.display = 'block';
@@ -456,20 +463,25 @@
     window.enregistrerProfilRetrait = async function(e) {
       e.preventDefault();
       const nom = document.getElementById('rProfilNom').value.trim();
+      const moyenPaiement = document.getElementById('rProfilMoyen').value;
       const numero = document.getElementById('rProfilNumero').value.trim();
 
-      if (!nom || !numero) {
-        alert("Veuillez renseigner votre nom et votre numéro.");
+      if (!nom || !numero || !moyenPaiement) {
+        alert("Veuillez remplir tous les champs de retrait.");
         return;
       }
 
-      await set(ref(database, 'vendeurs_profil_retrait/' + currentVendeurUid), {
+      const profilData = {
+        vendeurUid: currentVendeurUid,
         nom: nom,
+        moyenPaiement: moyenPaiement,
         numero: numero,
         dateEnregistrement: new Date().toISOString()
-      });
+      };
 
-      alert("Vos identifiants de retrait ont été enregistrés avec succès.");
+      await set(ref(database, 'vendeurs_profil_retrait/' + currentVendeurUid), profilData);
+
+      alert("Vos identifiants et moyen de retrait ont été enregistrés et enregistrés en base de données avec succès.");
       verifierProfilRetrait(currentVendeurUid);
     };
 
@@ -546,27 +558,28 @@
     window.demanderRetrait = async function(e) {
       e.preventDefault();
       if (!profilRetraitEnregistre) {
-        alert("Veuillez d'abord enregistrer vos identifiants de retrait (Nom & Numéro) dans la section '1' avant de lancer une demande.");
+        alert("Veuillez d'abord enregistrer vos identifiants de retrait (Nom & Numéro/Compte) dans la section '1' avant de lancer une demande.");
         return;
       }
 
       const montant = Number(document.getElementById('rMontant').value);
-      const moyen = document.getElementById('rMoyen').value;
 
       const newRetraitRef = push(ref(database, 'paiements'));
-      await set(newRetraitRef, {
+      const retraitData = {
         id: newRetraitRef.key,
         vendeurUid: currentVendeurUid,
         vendeurNomPrenom: profilRetraitEnregistre.nom,
         numeroReceiver: profilRetraitEnregistre.numero,
+        moyenPaiement: profilRetraitEnregistre.moyenPaiement,
         montant: montant,
-        moyenPaiement: moyen,
         statut: "En attente",
         type: "retrait_vendeur",
         dateDemande: new Date().toISOString()
-      });
+      };
 
-      alert("Demande de retrait transmise avec succès !");
+      await set(newRetraitRef, retraitData);
+
+      alert("Demande de retrait transmise avec succès sur votre compte enregistré (" + profilRetraitEnregistre.moyenPaiement + " - " + profilRetraitEnregistre.numero + ") !");
       e.target.reset();
     };
 
@@ -586,7 +599,7 @@
                   <td>${new Date(ret.dateDemande || Date.now()).toLocaleDateString('fr-FR')}</td>
                   <td><strong>${ret.vendeurNomPrenom}</strong></td>
                   <td><strong>${ret.montant} FCFA</strong></td>
-                  <td>${ret.moyenPaiement}</td>
+                  <td>${ret.moyenPaiement || 'Mobile Money'}</td>
                   <td>${ret.numeroReceiver}</td>
                   <td><span class="status-badge status-pending">${ret.statut}</span></td>
                 </tr>
