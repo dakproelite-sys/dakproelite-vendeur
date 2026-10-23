@@ -6,6 +6,16 @@
 
   <title>DAKPRO ÉLITE — Dashboard Vendeur</title>
 
+  <!-- PWA & Métadonnées Mobile -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DAKPRO ÉLITE">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -31,6 +41,7 @@
       --text-muted: #64748b;
       --border-color: #e2e8f0;
       --success-color: #10b981;
+      --danger-color: #ef4444;
       --bg-light: #f8fafc;
     }
 
@@ -87,12 +98,9 @@
     .refresh-btn {
       background: var(--primary-gold);
       color: #000;
-
       border: 0;
       padding: 10px 15px;
-
       border-radius: 8px;
-
       font-weight: 800;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -109,45 +117,30 @@
 
     .stats-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(auto-fit, minmax(180px, 1fr));
-
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
-
       margin-bottom: 25px;
     }
 
     .stat-card {
       background: var(--card-bg);
-
       padding: 18px;
-
       border-radius: 12px;
-
-      box-shadow:
-        0 4px 12px rgba(0,0,0,0.03);
-
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       border: 1px solid var(--border-color);
     }
 
     .stat-card .title {
       font-size: 11px;
-
       color: var(--text-muted);
-
       font-weight: 700;
-
       margin-bottom: 8px;
-
       text-transform: uppercase;
     }
 
     .stat-card .amount {
       font-size: 20px;
-
       font-weight: 800;
-
       color: var(--text-main);
     }
 
@@ -157,16 +150,10 @@
 
     .content-card {
       background: var(--card-bg);
-
       padding: 24px;
-
       border-radius: 12px;
-
       border: 1px solid var(--border-color);
-
-      box-shadow:
-        0 4px 12px rgba(0,0,0,0.03);
-
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       margin-bottom: 24px;
     }
 
@@ -185,33 +172,23 @@
 
     .data-table {
       width: 100%;
-
       border-collapse: collapse;
-
       margin-top: 16px;
-
       min-width: 700px;
     }
 
     .data-table th,
     .data-table td {
       padding: 12px 16px;
-
       text-align: left;
-
-      border-bottom:
-        1px solid var(--border-color);
-
+      border-bottom: 1px solid var(--border-color);
       font-size: 13.5px;
-
       vertical-align: middle;
     }
 
     .data-table th {
       background: #f1f5f9;
-
       color: var(--text-muted);
-
       font-weight: 700;
     }
 
@@ -222,15 +199,10 @@
     .prod-thumb {
       width: 50px;
       height: 50px;
-
       border-radius: 8px;
-
       object-fit: cover;
-
       background: #e2e8f0;
-
-      border:
-        1px solid var(--border-color);
+      border: 1px solid var(--border-color);
     }
 
     /* ================================
@@ -239,55 +211,64 @@
 
     .status-badge {
       padding: 4px 10px;
-
       border-radius: 20px;
-
       font-size: 12px;
-
       font-weight: 700;
-
       display: inline-block;
     }
 
     .status-success {
       background: #d1fae5;
-
       color: #065f46;
     }
 
     /* ================================
-       BOUTON COPIER
+       BOUTONS ACTIONS (Copier, Modifier, Supprimer)
     ================================= */
+
+    .action-buttons-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
 
     .btn-copy {
       background: var(--primary-gold);
-
       color: #000;
-
-      border: none;
-
-      padding: 8px 14px;
-
-      border-radius: 6px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      font-size: 12px;
-
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 6px;
-      transition: all 0.2s ease;
     }
-
     .btn-copy:hover {
       background: var(--secondary-gold);
-
       color: #fff;
+    }
+
+    .btn-edit {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .btn-edit:hover {
+      background: #2563eb;
+    }
+
+    .btn-delete {
+      background: var(--danger-color);
+      color: #fff;
+    }
+    .btn-delete:hover {
+      background: #dc2626;
     }
 
     /* ================================
@@ -296,9 +277,7 @@
 
     .empty {
       text-align: center;
-
       padding: 30px !important;
-
       color: var(--text-muted);
     }
 
@@ -311,23 +290,18 @@
     ================================= */
 
     @media (max-width: 600px) {
-
       body {
         padding: 10px;
       }
-
       .content-card {
         padding: 15px;
       }
-
       .dashboard-header {
         padding: 16px;
       }
-
       .dashboard-header h1 {
         font-size: 18px;
       }
-
     }
   </style>
 </head>
@@ -341,35 +315,19 @@
     =========================================== -->
 
     <header class="dashboard-header">
-
       <div>
-
         <h1>
-          <i
-            class="fa-solid fa-chart-line"
-            style="color:var(--primary-gold);"
-          ></i>
-
+          <i class="fa-solid fa-chart-line" style="color:var(--primary-gold);"></i>
           Dashboard Vendeur <span id="vendeurNameLabel" style="font-size: 14px; opacity: 0.8; font-weight: 400;"></span>
         </h1>
-
         <p id="vendeurSubText">
           DAKPRO ÉLITE — Suivi de vos ventes, publications et performances
         </p>
-
       </div>
 
-      <button
-        class="refresh-btn"
-        id="refreshDashboard"
-      >
-
-        <i class="fa-solid fa-rotate"></i>
-
-        Actualiser
-
+      <button class="refresh-btn" id="refreshDashboard">
+        <i class="fa-solid fa-rotate"></i> Actualiser
       </button>
-
     </header>
 
 
@@ -378,118 +336,40 @@
     =========================================== -->
 
     <section class="stats-grid">
-
       <div class="stat-card">
-
-        <div class="title">
-          Solde Disponible
-        </div>
-
-        <div
-          class="amount"
-          id="statSolde"
-        >
-          0 FCFA
-        </div>
-
+        <div class="title">Solde Disponible</div>
+        <div class="amount" id="statSolde">0 FCFA</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Gains d'Affiliation
-        </div>
-
-        <div
-          class="amount"
-          id="statGainsAffiliation"
-        >
-          0 FCFA
-        </div>
-
+        <div class="title">Gains d'Affiliation</div>
+        <div class="amount" id="statGainsAffiliation">0 FCFA</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Ventes Totales
-        </div>
-
-        <div
-          class="amount"
-          id="statVentes"
-        >
-          0 FCFA
-        </div>
-
+        <div class="title">Ventes Totales</div>
+        <div class="amount" id="statVentes">0 FCFA</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Mes Produits Publiés
-        </div>
-
-        <div
-          class="amount"
-          id="statProduits"
-        >
-          0
-        </div>
-
+        <div class="title">Mes Produits Publiés</div>
+        <div class="amount" id="statProduits">0</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Visiteurs / Clics
-        </div>
-
-        <div
-          class="amount"
-          id="statVisiteurs"
-        >
-          0
-        </div>
-
+        <div class="title">Visiteurs / Clics</div>
+        <div class="amount" id="statVisiteurs">0</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Commentaires
-        </div>
-
-        <div
-          class="amount"
-          id="statCommentaires"
-        >
-          0
-        </div>
-
+        <div class="title">Commentaires</div>
+        <div class="amount" id="statCommentaires">0</div>
       </div>
 
-
       <div class="stat-card">
-
-        <div class="title">
-          Mentions J'aime
-        </div>
-
-        <div
-          class="amount"
-          id="statLikes"
-        >
-          0
-        </div>
-
+        <div class="title">Mentions J'aime</div>
+        <div class="amount" id="statLikes">0</div>
       </div>
-
     </section>
 
 
@@ -498,25 +378,10 @@
     =========================================== -->
 
     <section class="content-card">
-
-      <h3>
-        Aperçu des performances de ventes & visites
-      </h3>
-
-      <div
-        style="
-          position:relative;
-          height:250px;
-          margin-top:15px;
-        "
-      >
-
-        <canvas
-          id="performanceChart"
-        ></canvas>
-
+      <h3>Aperçu des performances de ventes & visites</h3>
+      <div style="position:relative; height:250px; margin-top:15px;">
+        <canvas id="performanceChart"></canvas>
       </div>
-
     </section>
 
 
@@ -525,108 +390,38 @@
     =========================================== -->
 
     <section class="content-card">
-
-      <div
-        style="
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          margin-bottom:12px;
-          flex-wrap:wrap;
-          gap:10px;
-        "
-      >
-
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
         <h3>
-
-          <i
-            class="fa-solid fa-list-check"
-            style="color:var(--primary-gold);"
-          ></i>
-
+          <i class="fa-solid fa-list-check" style="color:var(--primary-gold);"></i>
           Mes Publications Actives
-
         </h3>
 
-
-        <button
-          class="btn-copy"
-          id="newProductBtn"
-          style="
-            font-size:12px;
-            padding:8px 14px;
-          "
-        >
-
-          <i class="fa-solid fa-plus"></i>
-
-          Nouveau Produit
-
+        <button class="btn-action btn-copy" id="newProductBtn" style="font-size:12px; padding:8px 14px;">
+          <i class="fa-solid fa-plus"></i> Nouveau Produit
         </button>
-
       </div>
-
 
       <div class="table-container">
-
         <table class="data-table">
-
           <thead>
-
             <tr>
-
-              <th>
-                Aperçu
-              </th>
-
-              <th>
-                Nom du Produit
-              </th>
-
-              <th>
-                Catégorie
-              </th>
-
-              <th>
-                Prix Promo / Normal
-              </th>
-
-              <th>
-                Stock
-              </th>
-
-              <th>
-                Actions
-              </th>
-
+              <th>Aperçu</th>
+              <th>Nom du Produit</th>
+              <th>Catégorie</th>
+              <th>Prix Promo / Normal</th>
+              <th>Stock</th>
+              <th>Actions (Lien / Modifier / Supprimer)</th>
             </tr>
-
           </thead>
-
-
-          <tbody
-            id="dashboardProductsList"
-          >
-
+          <tbody id="dashboardProductsList">
             <tr>
-
-              <td
-                colspan="6"
-                class="empty loading"
-              >
-
+              <td colspan="6" class="empty loading">
                 Chargement de vos publications...
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
   </main>
@@ -640,7 +435,7 @@
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     /* ==========================================
        CONFIGURATION FIREBASE DAKPRO ÉLITE
@@ -686,13 +481,13 @@
     }
 
     /* ==========================================
-       PROTECTION URL (Accepte aussi la base64)
+       PROTECTION URL
     =========================================== */
 
     function safeUrl(value, fallback = '477912.png') {
       const url = String(value || fallback);
       if (url.startsWith('data:image')) {
-        return url; // Conserver le format data:image direct pour la base64
+        return url;
       }
       return url.replaceAll('"', '%22').replaceAll("'", '%27');
     }
@@ -741,6 +536,27 @@
     }
 
     /* ==========================================
+       SUPPRESSION COMPLÈTE D'UN PRODUIT (Vendeur_publications uniquement)
+    =========================================== */
+
+    async function supprimerProduit(prodKey) {
+      if (!confirm("⚠️ Voulez-vous vraiment supprimer définitivement ce produit de votre boutique ?")) {
+        return;
+      }
+
+      try {
+        // Suppression exclusive ciblée sur 'vendeur_publications'
+        await remove(ref(database, `vendeur_publications/${prodKey}`));
+        alert("✅ Produit supprimé de vos publications avec succès !");
+      } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
+        alert("❌ Une erreur est survenue lors de la suppression.");
+      }
+    }
+
+    window.supprimerProduit = supprimerProduit;
+
+    /* ==========================================
        CHARGER PUBLICATIONS (vendeur_publications)
     =========================================== */
 
@@ -778,9 +594,6 @@
           Object.entries(publications).forEach(([prodKey, prod]) => {
             prod = prod || {};
 
-            /*
-             * Vérification exacte sur vendeurUid ou createdBy
-             */
             if (prod.vendeurUid !== uid && prod.createdBy !== uid) {
               return;
             }
@@ -838,75 +651,51 @@
             }
 
             /* ================================
-               LIEN PRODUIT
+               LIENS ET ACTIONS
             ================================= */
             const pageProduitUrl = `${window.location.origin}/produit.html?id=${encodeURIComponent(prodKey)}&aff=${encodeURIComponent(uid)}`;
+            const editPageUrl = `publier.html?id=${encodeURIComponent(prodKey)}`;
 
-            /* ================================
-               PRIX (Gestion nom / prix / promo)
-            ================================= */
             const prixNormalAffiche = prod.prixNormal ?? prod.prix ?? 0;
             const prixPromoAffiche = prod.prixPromo ?? prod.prix ?? prixNormalAffiche;
-
-            /* ================================
-               STOCK
-            ================================= */
             const stock = prod.stock !== undefined ? prod.stock : 100;
 
-            /* ================================
-               LIGNE TABLEAU
-            ================================= */
             const tr = document.createElement('tr');
 
             tr.innerHTML = `
+              <td>${thumbHtml}</td>
               <td>
-                ${thumbHtml}
-              </td>
-
-              <td>
-                <strong>
-                  ${safeText(prod.nom || prod.title || 'Produit sans nom')}
-                </strong>
+                <strong>${safeText(prod.nom || prod.title || 'Produit sans nom')}</strong>
                 <br>
-                <small style="color:var(--text-muted);">
-                  Auteur: ${safeText(prod.auteur || prod.vendeurNom || 'N/A')}
-                </small>
+                <small style="color:var(--text-muted);">Auteur: ${safeText(prod.auteur || prod.vendeurNom || 'N/A')}</small>
               </td>
-
               <td>
-                <span
-                  class="status-badge"
-                  style="background:#e2e8f0; color:#334155;"
-                >
+                <span class="status-badge" style="background:#e2e8f0; color:#334155;">
                   ${safeText(prod.categorie || 'GÉNÉRAL')}
                 </span>
               </td>
-
               <td>
-                <strong>
-                  ${money(prixPromoAffiche)}
-                </strong>
+                <strong>${money(prixPromoAffiche)}</strong>
                 <br>
-                <small
-                  style="
-                    text-decoration: line-through;
-                    color: var(--text-muted);
-                  "
-                >
+                <small style="text-decoration: line-through; color: var(--text-muted);">
                   ${money(prixNormalAffiche)}
                 </small>
               </td>
-
               <td>
-                <span class="status-badge status-success">
-                  ${safeText(stock)} en stock
-                </span>
+                <span class="status-badge status-success">${safeText(stock)} en stock</span>
               </td>
-
               <td>
-                <button class="btn-copy copy-product-link">
-                  <i class="fa-solid fa-link"></i> Lien
-                </button>
+                <div class="action-buttons-group">
+                  <button class="btn-action btn-copy copy-product-link">
+                    <i class="fa-solid fa-link"></i> Lien
+                  </button>
+                  <a href="${editPageUrl}" class="btn-action btn-edit">
+                    <i class="fa-solid fa-pen-to-square"></i> Modifier
+                  </a>
+                  <button class="btn-action btn-delete" onclick="supprimerProduit('${prodKey}')">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                  </button>
+                </div>
               </td>
             `;
 
@@ -918,9 +707,6 @@
             tbody.appendChild(tr);
           });
 
-          /* ==================================
-             AUCUN PRODUIT TROUVÉ
-          =================================== */
           if (totalMesProduits === 0) {
             tbody.innerHTML = `
               <tr>
@@ -940,7 +726,6 @@
         },
         error => {
           console.error('Erreur publications:', error);
-
           document.getElementById('dashboardProductsList').innerHTML = `
             <tr>
               <td colspan="6" class="empty">
@@ -1037,7 +822,6 @@
 
       currentVendeurUid = user.uid;
 
-      // Charger le nom d'utilisateur et les données
       chargerProfilVendeur(user.uid);
       chargerStats(user.uid);
       chargerMesProduits(user.uid);
