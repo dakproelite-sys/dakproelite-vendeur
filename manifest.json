@@ -1,16 +1,19 @@
 {
-  "id": "./",
-  "name": "DAKPROÉLITE | La Référence Marketplace",
-  "short_name": "DAKPROÉLITE",
-  "description": "DAKPROÉLITE, marketplace internationale pour acheter et vendre en ligne.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "name": "DAKPRO ÉLITE - Marketplace",
+  "short_name": "DAKPRO ÉLITE",
+  "description": "Plateforme e-commerce internationale et espace vendeur DAKPRO ÉLITE.",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#050505",
-  "theme_color": "#d4af37",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "lang": "fr",
-  "dir": "ltr",
+  "categories": [
+    "shopping",
+    "business",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png",
@@ -23,6 +26,32 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Boutique Marketplace",
+      "short_name": "Marketplace",
+      "description": "Accéder à la boutique et aux produits en ligne",
+      "url": "/index.html",
+      "icons": [
+        {
+          "src": "https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Espace Vendeur",
+      "short_name": "Vendeur",
+      "description": "Gérer vos publications et vos ventes",
+      "url": "/connexion.html",
+      "icons": [
+        {
+          "src": "https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

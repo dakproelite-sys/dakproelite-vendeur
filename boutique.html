@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boutique Officielle - DAKPRO ÉLITE</title>
+  <title id="pageTitle">Boutique Officielle - DAKPRO ÉLITE</title>
   
+  <!-- Balises Open Graph dynamiques pour un affichage propre sur WhatsApp et les réseaux sociaux -->
+  <meta property="og:title" content="Boutique Officielle - DAKPRO ÉLITE" id="ogTitle">
+  <meta property="og:description" content="Découvrez les produits exclusifs disponibles dans cette boutique officielle." id="ogDesc">
+  <meta property="og:image" content="https://i.postimg.cc/WpSc29mX/file-00000000ca8872438c17222eb828bc0c.png" id="ogImage">
+  <meta property="og:type" content="website">
+
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -85,7 +91,9 @@
       border: 1px solid var(--border-color);
     }
     .action-bar h2 { font-size: 18px; color: var(--text-main); font-weight: 700; }
-    .btn-share {
+    
+    .btn-actions-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-share, .btn-whatsapp-global {
       background: var(--primary-gold);
       color: #000;
       border: none;
@@ -97,9 +105,12 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      text-decoration: none;
       transition: all 0.2s ease;
     }
+    .btn-whatsapp-global { background: #25d366; color: #fff; }
     .btn-share:hover { background: var(--secondary-gold); color: #fff; }
+    .btn-whatsapp-global:hover { background: #1ebd5a; }
 
     /* GRILLE PRODUITS MULTI-COLONNES RESPONSIVE */
     .boutique-products-grid {
@@ -190,6 +201,24 @@
     }
     .btn-view-prod:hover { background: #000; color: var(--primary-gold); }
 
+    .btn-whatsapp-prod {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      text-align: center;
+      background: #25d366;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+    .btn-whatsapp-prod:hover { background: #1ebd5a; }
+
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
@@ -239,14 +268,17 @@
     <!-- BARRE D'ACTION -->
     <div class="action-bar">
       <h2>Catalogue des Produits En Ligne</h2>
-      <button class="btn-share" onclick="window.copierLienBoutique()"><i class="fa-solid fa-share-nodes"></i> Partager cette Boutique</button>
+      <div class="btn-actions-group">
+        <a id="btnGlobalWhatsapp" href="#" class="btn-whatsapp-global" style="display:none;" onclick="verifierConnexionAction(event, this.href)"><i class="fa-brands fa-whatsapp"></i> Discuter sur WhatsApp</a>
+        <button class="btn-share" onclick="window.copierLienBoutique()"><i class="fa-solid fa-share-nodes"></i> Partager cette Boutique</button>
+      </div>
     </div>
 
     <!-- GRILLE DES PRODUITS -->
     <div class="boutique-products-grid" id="boutiqueGrid">
       <div class="empty-state">
         <i class="fa-solid fa-spinner fa-spin"></i>
-        <p>Chargement des articles de la boutique...</p>
+        <p>Chargement des articles...</p>
       </div>
     </div>
   </main>
@@ -275,13 +307,38 @@
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // Extraction de l'ID du vendeur depuis le paramètre de requête URL ?vendeur=UID
     const urlParams = new URLSearchParams(window.location.search);
     let targetVendeurUid = urlParams.get('vendeur');
 
+    // Variable globale pour suivre l'état de connexion de l'utilisateur
+    window.utilisateurConnecte = null;
+
+    onAuthStateChanged(auth, (user) => {
+      window.utilisateurConnecte = user;
+    });
+
+    // Fonction globale de vérification de connexion avant d'autoriser l'action d'achat/commande
+    window.verifierConnexionAction = function(event, redirectUrl) {
+      if (!window.utilisateurConnecte) {
+        event.preventDefault();
+        alert("🔒 Vous devez être connecté à votre compte pour commander ou contacter ce vendeur.");
+        // Mémorise la page actuelle pour y revenir après connexion
+        localStorage.setItem("dakpro_redirection_apres_connexion", window.location.href);
+        // Redirection vers la page de connexion (ajustez le nom du fichier si c'est connexion.html ou login.html)
+        window.location.href = "connexion.html";
+        return false;
+      }
+      return true;
+    };
+
     window.copierLienBoutique = function() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        alert("Lien de la boutique copié dans le presse-papier !");
+      let baseHref = window.location.href.split('?')[0];
+      let finalLink = targetVendeurUid ? `${baseHref}?vendeur=${targetVendeurUid}` : window.location.href;
+      
+      navigator.clipboard.writeText(finalLink).then(() => {
+        alert("✅ Lien de la boutique copié avec succès ! Vous pouvez le coller sur votre statut WhatsApp.");
+      }).catch(err => {
+        console.error("Erreur de copie :", err);
       });
     };
 
@@ -290,7 +347,7 @@
         document.getElementById('boutiqueGrid').innerHTML = `
           <div class="empty-state">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <p>Aucun vendeur n'a été spécifié. Veuillez accéder à une boutique via un lien valide.</p>
+            <p>Aucun vendeur spécifié. Veuillez accéder à la boutique via un lien valide.</p>
           </div>
         `;
         document.getElementById('boutiqueNom').innerText = "Boutique Introuvable";
@@ -298,7 +355,6 @@
       }
 
       await chargerProfilVendeur(vendeurUid);
-      await chargerProduitsBoutique(vendeurUid);
     }
 
     async function chargerProfilVendeur(uid) {
@@ -307,15 +363,31 @@
         if (snapshot.exists()) {
           const data = snapshot.val();
           const nomBoutique = data.nomComplet || data.nomBoutique || "Boutique Vendeur";
-          const phone = data.telephone || "";
+          const phone = data.telephone || data.whatsapp || "";
           const email = data.email || "";
           const avatar = data.imageUrl || data.photoURL || "";
+
+          // Mise à jour dynamique des métadonnées pour le partage sur les réseaux sociaux
+          document.getElementById('pageTitle').innerText = `${nomBoutique} - DAKPRO ÉLITE`;
+          document.getElementById('ogTitle').setAttribute('content', `Boutique officielle de ${nomBoutique} - DAKPRO ÉLITE`);
+          document.getElementById('ogDesc').setAttribute('content', `Découvrez tous les produits et passez commande directement auprès de ${nomBoutique}.`);
+          if (avatar) {
+            document.getElementById('ogImage').setAttribute('content', avatar);
+          }
 
           document.getElementById('boutiqueNom').innerText = nomBoutique;
           
           if (phone) {
             document.getElementById('boutiquePhoneDisplay').innerHTML = `<i class="fa-solid fa-phone"></i> ${phone}`;
+            
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            const btnGlobalWa = document.getElementById('btnGlobalWhatsapp');
+            if (cleanPhone) {
+              btnGlobalWa.href = `https://wa.me/${cleanPhone}?text=Bonjour,%20je%20souhaite%20avoir%20plus%20d'informations%20sur%20les%20produits%20de%20votre%20boutique.`;
+              btnGlobalWa.style.display = "inline-flex";
+            }
           }
+          
           if (email) {
             document.getElementById('boutiqueEmailDisplay').innerHTML = `<i class="fa-solid fa-envelope"></i> ${email}`;
           }
@@ -327,30 +399,38 @@
             const initial = nomBoutique[0] ? nomBoutique[0].toUpperCase() : 'V';
             avatarContainer.innerHTML = `<span class="avatar-fallback">${initial}</span>`;
           }
+
+          await chargerProduitsVendeurUnique(uid, phone);
         } else {
           document.getElementById('boutiqueNom').innerText = "Boutique Partenaire";
+          await chargerProduitsVendeurUnique(uid, "");
         }
       } catch (err) {
-        console.error("Erreur profil:", err);
+        console.error("Erreur lors du chargement du profil :", err);
       }
     }
 
-    async function chargerProduitsBoutique(uid) {
+    async function chargerProduitsVendeurUnique(uid, vendeurPhone) {
       const grid = document.getElementById('boutiqueGrid');
       grid.innerHTML = "";
       let count = 0;
 
-      try {
-        const snapshot = await get(ref(database, 'vendeur_publications'));
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const prod = child.val();
-            const prodKey = prod.id || child.key;
+      const cleanVendeurPhone = vendeurPhone ? vendeurPhone.replace(/[^0-9]/g, '') : "";
 
-            if (prod.vendeurUid === uid || prod.createdBy === uid) {
+      try {
+        const snapVendeur = await get(ref(database, 'vendeur_publications'));
+        
+        if (snapVendeur.exists()) {
+          const tousProduits = snapVendeur.val();
+
+          Object.entries(tousProduits).forEach(([id, prod]) => {
+            const prodKey = prod.id || id;
+            const vendeurProp = prod.vendeurUid || prod.createdBy || prod.userId;
+
+            if (vendeurProp === uid && prod.actif !== false) {
               count++;
 
-              const mediaSrc = prod.image || prod.imageUrl || '477912.png';
+              const mediaSrc = prod.image || prod.imageUrl || prod.photo || '477912.png';
               const mType = prod.mediaType || 'image';
               
               let mediaHtml = `<img src="${mediaSrc}" alt="${prod.nom || 'Produit'}" onerror="this.src='477912.png'">`;
@@ -363,6 +443,15 @@
 
               const pageProduitUrl = `produit.html?id=${prodKey}&aff=${uid}`;
               const prixEffectif = prod.prixPromo || prod.prix || prod.prixNormal || 0;
+              const nomProduit = prod.nom || prod.title || 'Produit';
+
+              let whatsappProdBtn = "";
+              if (cleanVendeurPhone) {
+                const waMessage = encodeURIComponent(`Bonjour, je souhaite commander ce produit : *${nomProduit}* au prix de ${Number(prixEffectif).toLocaleString('fr-FR')} FCFA. Est-il disponible ?`);
+                const waLink = `https://wa.me/${cleanVendeurPhone}?text=${waMessage}`;
+                // Protection avec la fonction de vérification de connexion
+                whatsappProdBtn = `<a href="${waLink}" target="_blank" class="btn-whatsapp-prod" onclick="return verifierConnexionAction(event, this.href)"><i class="fa-brands fa-whatsapp"></i> Commander sur WhatsApp</a>`;
+              }
 
               grid.innerHTML += `
                 <div class="boutique-prod-card">
@@ -372,11 +461,12 @@
                   <div class="boutique-prod-body">
                     <div>
                       <div class="boutique-prod-category">${prod.categorie || 'PRODUIT'}</div>
-                      <div class="boutique-prod-title" title="${prod.nom || 'Produit'}">${prod.nom || prod.title || 'Produit sans nom'}</div>
+                      <div class="boutique-prod-title" title="${nomProduit}">${nomProduit}</div>
                       <div class="boutique-prod-price">${Number(prixEffectif).toLocaleString('fr-FR')} FCFA</div>
                     </div>
                     <div class="boutique-prod-actions">
-                      <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-cart-shopping"></i> Voir Produit / Acheter</a>
+                      <a href="${pageProduitUrl}" class="btn-view-prod"><i class="fa-solid fa-cart-shopping"></i> Voir les détails</a>
+                      ${whatsappProdBtn}
                     </div>
                   </div>
                 </div>
@@ -389,12 +479,12 @@
           grid.innerHTML = `
             <div class="empty-state">
               <i class="fa-solid fa-box-open"></i>
-              <p>Cette boutique n'a aucun produit publié pour le moment.</p>
+              <p>Cette boutique n'a publié aucun produit pour le moment.</p>
             </div>
           `;
         }
       } catch (err) {
-        console.error("Erreur chargement articles:", err);
+        console.error("Erreur lors du chargement des articles :", err);
         grid.innerHTML = `
           <div class="empty-state">
             <i class="fa-solid fa-triangle-exclamation"></i>
@@ -404,13 +494,14 @@
       }
     }
 
-    // Gestion de la détection URL ou Auth State
     if (targetVendeurUid) {
       initialiserBoutique(targetVendeurUid);
     } else {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           targetVendeurUid = user.uid;
+          const newUrl = `${window.location.pathname}?vendeur=${user.uid}`;
+          window.history.replaceState({}, '', newUrl);
           initialiserBoutique(targetVendeurUid);
         } else {
           initialiserBoutique(null);
